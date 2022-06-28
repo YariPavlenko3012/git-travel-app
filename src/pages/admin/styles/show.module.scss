@@ -1,0 +1,15 @@
+.show {
+  &__wrapper{
+    display: flex;
+    flex-wrap: wrap;
+  }
+  &__item{
+    width: calc(100% / 5);
+    padding: 0 10px;
+    &_key{
+      font-weight: bold;
+      display: inline-block;
+      margin-right: 7px;
+    }
+  }
+}
