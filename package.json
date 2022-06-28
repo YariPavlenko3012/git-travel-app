@@ -1,5 +1,5 @@
 {
-  "homepage": "http://YariPavlenko3012.github.io/travel-app-git",
+  "homepage": "http://YariPavlenko3012.github.io/git-travel-app",
   "name": "travel-frontend",
   "version": "0.1.0",
   "description": "Travel Frontend Worker",
@@ -43,10 +43,10 @@
     "redux-devtools-extension": "^2.13.8"
   },
   "scripts": {
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
     "serve": "./node_modules/.bin/serve -l 5000 -s build",
     "start": "react-scripts start",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
