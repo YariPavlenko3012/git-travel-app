@@ -1,0 +1,2 @@
+(this["webpackJsonptravel-frontend"]=this["webpackJsonptravel-frontend"]||[]).push([[28],{931:function(t,e,n){"use strict";n.r(e),n.d(e,"default",(function(){return c}));var r=n(0),i=n.n(r),o=n(13),a=n(3);function c(){return i.a.createElement("div",{style:{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",width:"100vw"}},i.a.createElement(o.b,{to:a.c,style:{backgroundColor:"blue",color:"white",width:200,textAlign:"center",fontSize:22}},"Go Start"))}}}]);
+//# sourceMappingURL=28.98cb7a84.chunk.js.map
