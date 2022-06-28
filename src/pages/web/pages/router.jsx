@@ -14,7 +14,7 @@ export default function RouterPage() {
     const routes = useMemo(() => ([
         {
             layout: GuestRoute,
-            path: AUTH_PAGE_LOGIN_URI,
+            path: "/",
             component: lazy(() => import('./Auth/Login'))
         },
     ]), []);
