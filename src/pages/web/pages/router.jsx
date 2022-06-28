@@ -14,7 +14,12 @@ export default function RouterPage() {
     const routes = useMemo(() => ([
         {
             layout: GuestRoute,
-            path: "/",
+            path: "/git-travel-app",
+            component: lazy(() => import('./HomeScreen'))
+        },
+        {
+            layout: GuestRoute,
+            path: AUTH_PAGE_LOGIN_URI,
             component: lazy(() => import('./Auth/Login'))
         },
     ]), []);
