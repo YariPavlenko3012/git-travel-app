@@ -2,7 +2,7 @@
  * external libs
  */
 import React from 'react';
-import {Route, Switch, useHistory} from 'react-router-dom';
+import {Route, Link, Switch, useHistory} from 'react-router-dom';
 /**
  * services
  */
@@ -15,7 +15,7 @@ import Admin from '../../pages/admin';
 /**
  * constants
  */
-import {ADMIN} from "../../constants/admin/uri.constant";
+import {ADMIN, ADMIN_COUNTRY_LIST_URI} from "../../constants/admin/uri.constant";
 /**
  * context
  */
@@ -28,6 +28,7 @@ export default function () {
     return (
         <AlertContextProvider>
             <AuthContextProvider>
+                <Link to={ADMIN_COUNTRY_LIST_URI}>GO</Link>
                 <Switch>
                     <Route path={ADMIN}>
                         <Admin/>
