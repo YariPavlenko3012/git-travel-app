@@ -5,10 +5,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 /**
- * components
- */
-import Routes from './components/Routes';
-/**
  * styles
  */
 import 'antd/dist/antd.css';
@@ -23,6 +19,10 @@ import './general.css';
  */
 import './helpers/axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+/**
+ * components
+ */
+import Routes from './components/Routes';
 
 ReactDOM.render(
 	<React.StrictMode>

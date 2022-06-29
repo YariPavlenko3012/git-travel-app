@@ -68,7 +68,7 @@ export default function UploadFiles({name, fileName}) {
                         </div>
                         <label className={styles.download__btn_actions}>
                             <input name="myFile" type="file" hidden={true} multiple={true} onChange={onChange}/>
-                            <img src="/img/download.svg" alt="download"
+                            <img src="/git-travel-app/img/download.svg" alt="download"
                                  className={styles.download__btn_download}/>
                         </label>
                     </div>

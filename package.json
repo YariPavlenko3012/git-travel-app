@@ -1,7 +1,7 @@
 {
   "name": "travel-frontend",
   "version": "0.1.0",
-  "homepage": "http://YariPavlenko3012.github.io",
+  "homepage": "http://YariPavlenko3012.github.io/git-travel-app",
   "description": "Travel Frontend Worker",
   "private": true,
   "dependencies": {
