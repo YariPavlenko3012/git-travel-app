@@ -18,6 +18,8 @@ export default function LanguageCreate() {
     
     const updateLanguage = async (value) => {
         await LanguageService.update(languageId, value);
+        
+        alert("Languages successfully updated")
     };
     
     const getCurrency = async () => {

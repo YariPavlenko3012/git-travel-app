@@ -14,6 +14,8 @@ export default function CurrencyCreate() {
     
     const createCurrency = async (value) => {
         await CurrencyService.create(value);
+    
+        alert("Currency successfully created")
     };
     
     return (

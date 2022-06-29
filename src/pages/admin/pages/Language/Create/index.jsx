@@ -14,6 +14,8 @@ export default function LanguageCreate() {
     
     const createLanguage = async (value) => {
         await LanguageService.create(value);
+    
+        alert("Languages successfully created")
     };
     
     return (
