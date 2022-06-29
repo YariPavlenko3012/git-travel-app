@@ -26,7 +26,8 @@ export default function UploadFiles({name, fileName}) {
         setValue(name, imgId)
     };
     
-    const onDelete = (deletedFile) => {
+    const onDelete = async (deletedFile) => {
+        await FilesService.delete({files_ids: [deletedFile.id]})
         const newFiles = previewFiles.filter(file => file.id !== deletedFile.id);
         setPreviewFiles(newFiles);
         setImageValue(name, newFiles);

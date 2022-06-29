@@ -11,8 +11,9 @@ import FormUI from '../../../../../components/Form'
 import FieldInput from "../../../../../components/Form/FieldInput";
 import CurrencyService from "../../../../../services/admin/currency.service";
 import CountryService from "../../../../../services/admin/country.service";
+import {ADMIN_CURRENCY_LIST_URI} from "../../../../../constants/admin/uri.constant";
 
-export default function CurrencyCreate() {
+export default function CurrencyCreate({ history }) {
     const [currency, setCurrency] = useState(null)
     const [isReady, setIsReady] = useState(false);
     const {currencyId} = useParams()
@@ -21,6 +22,8 @@ export default function CurrencyCreate() {
         await CurrencyService.update(currencyId, value);
     
         alert("Currency successfully updated")
+    
+        return history.push(ADMIN_CURRENCY_LIST_URI)
     };
     
     const getCurrency = async () => {

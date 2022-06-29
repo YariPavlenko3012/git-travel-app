@@ -10,8 +10,9 @@ import {useParams} from 'react-router-dom'
 import FormUI from '../../../../../components/Form'
 import FieldInput from "../../../../../components/Form/FieldInput";
 import LanguageService from "../../../../../services/admin/language.service";
+import {ADMIN_LANGUAGE_LIST_URI} from "../../../../../constants/admin/uri.constant";
 
-export default function LanguageCreate() {
+export default function LanguageCreate({ history }) {
     const [language, setLanguage] = useState(null)
     const [isReady, setIsReady] = useState(false);
     const {languageId} = useParams();
@@ -20,6 +21,8 @@ export default function LanguageCreate() {
         await LanguageService.update(languageId, value);
         
         alert("Languages successfully updated")
+    
+        return history.push(ADMIN_LANGUAGE_LIST_URI)
     };
     
     const getCurrency = async () => {
