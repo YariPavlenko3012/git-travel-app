@@ -60,11 +60,6 @@ export default function Login({history}) {
                                           prefix: <LockOutlined/>
                                       }}/>
                           <Space direction="vertical" style={{width: "100%"}} size={20}>
-                              <Row justify="space-between" align="middle">
-                                  <FieldCheckbox name="remember_me"
-                                                 label="Remember me"/>
-                                  <Link to={AUTH_PAGE_FORGOT_PASSWORD_URI}>Forgot password?</Link>
-                              </Row>
                               <Button type="primary"
                                       htmlType="submit" disabled={submitting} size="large"
                                       style={{width: "100%"}}>
