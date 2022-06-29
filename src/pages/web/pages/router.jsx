@@ -6,6 +6,7 @@ import {Switch, Route, Link} from 'react-router-dom';
 /**
  * constant
  */
+import HomeScreen from './HomeScreen'
 import {AUTH_PAGE_LOGIN_URI,} from "../../../constants/uri.constant";
 import GuestRoute from "../../../components/Routes/Permission/GuestRoute";
 import {ADMIN_COUNTRY_LIST_URI} from "../../../constants/admin/uri.constant";
@@ -13,11 +14,6 @@ import {ADMIN_COUNTRY_LIST_URI} from "../../../constants/admin/uri.constant";
 
 export default function RouterPage() {
     const routes = useMemo(() => ([
-        {
-            layout: GuestRoute,
-            path: "/git-travel-app",
-            component: lazy(() => import('./HomeScreen'))
-        },
         {
             layout: GuestRoute,
             path: AUTH_PAGE_LOGIN_URI,
@@ -35,7 +31,7 @@ export default function RouterPage() {
                               path={route.path}
                               component={route.component}/>
               ))}
-              <Route path={'/'} component={() => <Link to={ADMIN_COUNTRY_LIST_URI}>12</Link>}/>
+              <Route path={'/'} component={HomeScreen}/>
           </Switch>
       </div>
     );
