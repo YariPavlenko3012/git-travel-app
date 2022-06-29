@@ -14,8 +14,10 @@ import Header from '../admin/components/Header'
 import 'react-slidedown/lib/slidedown.css'
 
 export default function () {
+    
     return (
       <Fragment>
+          {console.log('ADMIN')}
           <Suspense fallback={null}>
               <Header />
               <WebRouter/>

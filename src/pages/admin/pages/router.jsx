@@ -1,7 +1,7 @@
 /**
  * external libs
  */
-import React, {lazy, useMemo} from 'react';
+import React, {Fragment, lazy, useMemo} from 'react';
 import {Switch, Route} from 'react-router-dom';
 /**
  * constant
@@ -132,9 +132,11 @@ export default function RouterPage() {
             component: lazy(() => import('./Currency/Create'))
         },
     ]), []);
+    {console.log('2')}
 
     return (
         <div>
+            {console.log('1')}
             <Switch>
                 {routes.map((route, i) => (
                     <route.layout exact

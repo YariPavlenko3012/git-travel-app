@@ -10,6 +10,8 @@ import WebRouter from './pages/router'
 
 
 export default function () {
+    {console.log('WEB')}
+    
     return (
         <Fragment>
             <Suspense fallback={null}>

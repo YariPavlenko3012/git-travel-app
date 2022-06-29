@@ -1,13 +1,14 @@
 /**
  * external libs
  */
-import React, {lazy, useMemo} from 'react';
-import {Switch} from 'react-router-dom';
+import React, {Fragment, lazy, useMemo} from 'react';
+import {Switch, Route, Link} from 'react-router-dom';
 /**
  * constant
  */
 import {AUTH_PAGE_LOGIN_URI,} from "../../../constants/uri.constant";
 import GuestRoute from "../../../components/Routes/Permission/GuestRoute";
+import {ADMIN_COUNTRY_LIST_URI} from "../../../constants/admin/uri.constant";
 
 
 export default function RouterPage() {
@@ -23,6 +24,7 @@ export default function RouterPage() {
             component: lazy(() => import('./Auth/Login'))
         },
     ]), []);
+    {console.log('WEB')}
     
     return (
       <div style={{width: 800}}>
@@ -33,6 +35,7 @@ export default function RouterPage() {
                               path={route.path}
                               component={route.component}/>
               ))}
+              <Route path={'/'} component={() => <Link to={ADMIN_COUNTRY_LIST_URI}>12</Link>}/>
           </Switch>
       </div>
     );
