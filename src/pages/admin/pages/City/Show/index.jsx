@@ -111,15 +111,19 @@ export default function CityList() {
               </div>
               <PreviewFiles previewFiles={city.images}/>
           </div>
-          <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
-              Sight of {city.name}
-              <Link to={ADMIN_MAKE_CREATE_SIGHT_URI(cityId)}>
-                  <Button type="primary" className={styles.show__btn}>
-                      Create sight
-                  </Button>
-              </Link>
-          </h3>
-          <SightTable sightList={sight} getSight={getSight}/>
+          {sight &&
+              <>
+                  <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
+                      Sight of {city.name}
+                      <Link to={ADMIN_MAKE_CREATE_SIGHT_URI(cityId)}>
+                          <Button type="primary" className={styles.show__btn}>
+                              Create sight
+                          </Button>
+                      </Link>
+                  </h3>
+                  <SightTable sightList={sight} getSight={getSight}/>
+              </>
+          }
       </div>
     )
 }
