@@ -8,8 +8,8 @@ import {EditOutlined, EyeOutlined} from '@ant-design/icons'
 /**
  * components
  */
-import Table from '../../../../components/Table'
-import SearchInputForTable from '../../../../components/Table/utils/search'
+import Table from '../../../../../components/Table'
+import SearchInputForTable from '../../../../../components/Table/utils/search'
 /**
  * constant
  */
@@ -19,7 +19,7 @@ import {
     ADMIN_MAKE_SHOW_COUNTRY_URI,
     ADMIN_MAKE_SHOW_CURRENCY_URI,
     ADMIN_MAKE_SHOW_LANGUAGE_URI
-} from "../../../../constants/admin/uri.constant";
+} from "../../../../../constants/admin/uri.constant";
 
 export default function CountryTable({countryList, getCountry}) {
     const history = useHistory();
@@ -55,7 +55,7 @@ export default function CountryTable({countryList, getCountry}) {
                       </Link>
                     )
                 }
-                
+
                 return <div style={{color: "red"}}>N/A</div>
             },
         },
@@ -138,7 +138,7 @@ export default function CountryTable({countryList, getCountry}) {
             )
         },
     ]), []);
-    
+
     return (
       <Table data={countryList || []}
              columns={columns}

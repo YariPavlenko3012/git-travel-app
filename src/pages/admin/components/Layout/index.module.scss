@@ -1,0 +1,23 @@
+.link{
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  background: #001628;
+  &.active{
+    background: #1890ff !important;
+    color: white;
+  }
+  &.child{
+    background: #000c17;
+    padding-left: 54px;
+  }
+}
+.icon{
+  padding-right: 8px;
+}

@@ -3,11 +3,11 @@
  */
 import React, {useEffect, useState} from 'react';
 import {Link} from 'react-router-dom'
-import {Button} from 'antd'
+import {Button, Tabs} from 'antd'
 /**
  * components
  */
-import TableCountries from '../../../components/Tables/Countries'
+import CountryTab from "./components/Tab";
 /**
  * services
  */
@@ -22,42 +22,32 @@ import {ADMIN_CREATE_COUNTRY_URI} from "../../../../../constants/admin/uri.const
 import styles from "../../../styles/show.module.scss";
 
 export default function CountryList() {
-    const [country, setCountry] = useState(null);
-    
     const getCountry = async (params = {}) => {
         const copyParams = JSON.parse(JSON.stringify(params));
-        
+
         if(copyParams.filters) {
             if(copyParams.filters.name) {
                 copyParams.country_name = copyParams.filters.name[0];
             }
-            
+
             if(copyParams.filters.capital) {
                 copyParams.city_name = copyParams.filters.capital[0];
             }
         }
-        
-        const countryList = await CountryService.list(copyParams);
-        setCountry({
-            data: countryList,
-            meta: {
-                current_page: 1,
-                per_page: 1000000000,
-                total: countryList.length,
-            }
-        })
+
+        return await CountryService.list(copyParams)
     };
-    
-    useEffect(() => {
-        getCountry();
-    }, []);
-    
-    if(!country) {
-        return <div>Loader...</div>
+
+    const getCountryWithCapital = async (params) => {
+        return await getCountry({...params, has_capital: 1})
     }
-    
+
+    const getCountryWithoutCapital = async (params) => {
+        return await getCountry({...params, has_capital: 0})
+    }
+
     return (
-      <div style={{padding: 20}}>
+      <div>
           <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
               Country
               <Link to={ADMIN_CREATE_COUNTRY_URI}>
@@ -66,7 +56,14 @@ export default function CountryList() {
                   </Button>
               </Link>
           </h3>
-          <TableCountries countryList={country} getCountry={getCountry}/>
+          <Tabs type="card">
+              <Tabs.TabPane tab="Completed" key="1">
+                  <CountryTab getCountry={getCountryWithCapital}/>
+              </Tabs.TabPane>
+              <Tabs.TabPane tab="Without capital" key="2">
+                  <CountryTab getCountry={getCountryWithoutCapital}/>
+              </Tabs.TabPane>
+          </Tabs>
       </div>
     )
 }

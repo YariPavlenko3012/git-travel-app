@@ -31,32 +31,32 @@ export default class CountryService {
                 return QueryString.stringify(params)
             }
         });
-        
-        countryList = countryList.map( country => new CountryModel(country));
-        
+
+        countryList.data = countryList.data.map( country => new CountryModel(country));
+
         return countryList;
     }
-    
+
     static async show(countryId) {
         return new CountryModel(await axios.get(API_MAKE_ADMIN_COUNTRY_SHOW(countryId)));
     }
-    
+
     static async create(data) {
         return new CountryModel(await axios.post(API_ADMIN_COUNTRY_CREATE, data));
     }
-    
+
     static async update(countryId, data) {
         return new CountryModel(await axios.put(API_MAKE_ADMIN_COUNTRY_UPDATE(countryId), data));
     }
-    
+
     static async createTranslate(countryId, data) {
         return await axios.post(API_MAKE_ADMIN_COUNTRY_TRANSLATE_CREATE(countryId), data);
     }
-    
+
     static async updateTranslate(countryId, translateId, data) {
         return await axios.put(API_MAKE_ADMIN_COUNTRY_TRANSLATE_EDIT(countryId, translateId), data);
     }
-    
+
     static async delete(countryId) {
         return await axios.delete(API_MAKE_ADMIN_COUNTRY_DELETE(countryId));
     }

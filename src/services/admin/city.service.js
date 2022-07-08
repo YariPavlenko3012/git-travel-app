@@ -14,6 +14,7 @@ import {
     API_MAKE_ADMIN_CITY_EDIT,
     API_MAKE_ADMIN_CITY_TAXI_EDIT,
     API_MAKE_ADMIN_CITY_TRANSLATE_EDIT,
+    API_MAKE_ADMIN_CITY_CHANGE_STATUS,
 } from "../../constants/admin/api.constant";
 /**
  * utils
@@ -32,38 +33,38 @@ export default class CityService {
                 return QueryString.stringify(params)
             }
         });
-    
-        cityList = cityList.map(city => new CityModel(city));
-    
+
+        cityList.data = cityList.data.map(city => new CityModel(city));
+
         return cityList;
     }
-    
+
     static async show(cityId) {
         return new CityModel(await axios.get(API_MAKE_ADMIN_CITY_SHOW(cityId)));
     }
-    
+
     static async create(data) {
         return new CityModel(await axios.post(API_ADMIN_CITY_CREATE, data));
     }
-    
+
     static async update(cityId, data) {
         return new CityModel(await axios.put(API_MAKE_ADMIN_CITY_EDIT(cityId), data));
     }
-    
+
     static async createTaxi(cityId, data) {
         return await axios.post(API_MAKE_ADMIN_CITY_TAXI_CREATE(cityId), data);
     }
-    
+
     static async updateTaxi(cityId, cabId, data) {
         return await axios.put(API_MAKE_ADMIN_CITY_TAXI_EDIT(cityId, cabId), data);
     }
-    
-    static async createTranslate(cityId, data) {
-        return await axios.post(API_MAKE_ADMIN_CITY_TRANSLATE_CREATE(cityId), data);
+
+    static async updateTranslate(cityId, translateId, data) {
+        return await axios.put(API_MAKE_ADMIN_CITY_TRANSLATE_EDIT(cityId, translateId), data);
     }
-    
-    static async updateTranslate(countryId, translateId, data) {
-        return await axios.put(API_MAKE_ADMIN_CITY_TRANSLATE_EDIT(countryId, translateId), data);
+
+    static async updateWorkStatus(cityId, workStatus) {
+        return await axios.put(API_MAKE_ADMIN_CITY_CHANGE_STATUS(cityId), {work_status: workStatus});
     }
 }
 

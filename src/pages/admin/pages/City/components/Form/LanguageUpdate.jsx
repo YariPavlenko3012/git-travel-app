@@ -29,12 +29,11 @@ const languages_list = [
 
 export default function UpdateCityLanguageForm({cityId, getCity, city}) {
     const updateCityTranslate = async (value) => {
+        console.log('1')
         await CityService.updateTranslate(cityId, value.id, {city_id: cityId, ...value});
         await getCity(cityId)
     };
-    
-    console.log(city.languages, "city.languages")
-    
+
     return (
       <div style={{display: "flex", justifyContent: "space-between"}}>
           {languages_list.map((lang) => (

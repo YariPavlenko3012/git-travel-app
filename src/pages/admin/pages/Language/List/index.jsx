@@ -25,7 +25,7 @@ import styles from "../../../styles/show.module.scss";
 
 export default function LanguageList({ history }) {
     const [language, setLanguage] = useState(null);
-    
+
     const columns = useMemo(() => ([
         {
             title: 'ID',
@@ -56,7 +56,7 @@ export default function LanguageList({ history }) {
             )
         },
     ]), []);
-    
+
     const getLanguage = async (params = {}) => {
         const languageList = await LanguageService.list(params);
         setLanguage({
@@ -68,17 +68,17 @@ export default function LanguageList({ history }) {
             }
         })
     };
-    
+
     useEffect(() => {
         getLanguage();
     }, []);
-    
+
     if(!language) {
         return <div>Loader...</div>
     }
-    
+
     return (
-      <div style={{padding: 20}}>
+      <div>
           <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
               Language
               <Link to={ADMIN_CREATE_LANGUAGE_URI}>

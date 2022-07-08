@@ -8,8 +8,8 @@ import {EditOutlined, EyeOutlined} from '@ant-design/icons'
 /**
  * components
  */
-import Table from '../../../../components/Table'
-import SearchInputForTable from '../../../../components/Table/utils/search'
+import Table from '../../../../../components/Table'
+import SearchInputForTable from '../../../../../components/Table/utils/search'
 /**
  * constant
  */
@@ -17,7 +17,7 @@ import {
     ADMIN_MAKE_EDIT_SIGHT_URI,
     ADMIN_MAKE_SHOW_CITY_URI,
     ADMIN_MAKE_SHOW_SIGHT_URI
-} from "../../../../constants/admin/uri.constant";
+} from "../../../../../constants/admin/uri.constant";
 
 export default function SightTable({sightList, getSight}) {
     const history = useHistory();
@@ -80,7 +80,7 @@ export default function SightTable({sightList, getSight}) {
             )
         },
     ]), []);
-    
+
     return (
       <Table data={sightList || []}
              columns={columns}

@@ -4,6 +4,11 @@
 import React, {Fragment, lazy, useMemo} from 'react';
 import {Switch, Route} from 'react-router-dom';
 /**
+ * components
+ */
+import AuthRoute from "../../../components/Routes/Permission/AuthRoute";
+import Layout from "../components/Layout";
+/**
  * constant
  */
 import {
@@ -24,9 +29,8 @@ import {
     ADMIN_EDIT_SIGHT_URI,
     ADMIN_SHOW_SIGHT_URI,
     ADMIN_CREATE_SIGHT_URI,
-    ADMIN_CREATE_CURRENCY_URI,
+    ADMIN_CREATE_CURRENCY_URI, ADMIN_USERS_CREATE,
 } from "../../../constants/admin/uri.constant";
-import AuthRoute from "../../../components/Routes/Permission/AuthRoute";
 
 
 export default function RouterPage() {
@@ -101,11 +105,6 @@ export default function RouterPage() {
             path: ADMIN_EDIT_LANGUAGE_URI,
             component: lazy(() => import('./Language/Edit'))
         },
-        // {
-        //     layout: AuthRoute,
-        //     path: ADMIN_SHOW_LANGUAGE_URI,
-        //     component: lazy(() => import('./Language/Show'))
-        // },
         {
             layout: AuthRoute,
             path: ADMIN_CREATE_LANGUAGE_URI,
@@ -121,30 +120,30 @@ export default function RouterPage() {
             path: ADMIN_CURRENCY_LIST_URI,
             component: lazy(() => import('./Currency/List'))
         },
-        // {
-        //     layout: AuthRoute,
-        //     path: ADMIN_SHOW_CURRENCY_URI,
-        //     component: lazy(() => import('./Currency/Show'))
-        // },
         {
             layout: AuthRoute,
             path: ADMIN_CREATE_CURRENCY_URI,
             component: lazy(() => import('./Currency/Create'))
         },
+        {
+            layout: AuthRoute,
+            path: ADMIN_USERS_CREATE,
+            component: lazy(() => import('./Users/Create'))
+        },
     ]), []);
-    {console.log('2')}
 
     return (
         <div>
-            {console.log('1')}
-            <Switch>
-                {routes.map((route, i) => (
-                    <route.layout exact
-                                  key={i}
-                                  path={route.path}
-                                  component={route.component}/>
-                ))}
-            </Switch>
+            <Layout>
+                <Switch>
+                    {routes.map((route, i) => (
+                        <route.layout exact
+                                      key={i}
+                                      path={route.path}
+                                      component={route.component}/>
+                    ))}
+                </Switch>
+            </Layout>
         </div>
     );
 }

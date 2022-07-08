@@ -27,6 +27,7 @@ export const API_ADMIN_CITY_LIST = `${ADMIN_CITY}`;
 export const API_ADMIN_CITY_CREATE = `${ADMIN_CITY}`;
 export const API_MAKE_ADMIN_CITY_EDIT = cityId => `${ADMIN_CITY}/${cityId}`;
 export const API_MAKE_ADMIN_CITY_SHOW = cityId => `${ADMIN_CITY}/${cityId}`;
+export const API_MAKE_ADMIN_CITY_CHANGE_STATUS = cityId => `${ADMIN_CITY}/${cityId}/change-status`;
 export const API_MAKE_ADMIN_CITY_TRANSLATE_CREATE = cityId =>`${ADMIN_CITY}/${cityId}/languages`;
 export const API_MAKE_ADMIN_CITY_TRANSLATE_EDIT = (cityId, translateId) => `${ADMIN_CITY}/${cityId}/languages/${translateId}`;
 export const API_MAKE_ADMIN_CITY_TAXI_CREATE = cityId => `${ADMIN_CITY}/${cityId}/cabs`;

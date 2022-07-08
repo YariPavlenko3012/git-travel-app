@@ -33,7 +33,7 @@ export default function UpdateLanguageCountry({ countryId, getCountry, country }
         await CountryService.updateTranslate(countryId, value.id, {country_id: countryId, ...value});
         await getCountry(countryId)
     };
-    
+
     return (
       <div style={{display: "flex", justifyContent: "space-between"}}>
           {languages_list.map((lang) => (

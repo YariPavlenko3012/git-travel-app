@@ -8,7 +8,6 @@ import {Link} from "react-router-dom";
  * components
  */
 import CountryUpdateForm from '../components/Form/CountryUpdate'
-import LanguageCreateForm from '../components/Form/LanguageCreate'
 import LanguageUpdateForm from '../components/Form/LanguageUpdate'
 /**
  * services
@@ -24,21 +23,21 @@ export default function CountryCreate() {
     const [country, setCountry] = useState(null)
     const [isReady, setIsReady] = useState(false);
     const {countryId} = useParams();
-    
+
     const getCountry = async () => {
         setIsReady(false);
         setCountry(await CountryService.show(countryId));
         setIsReady(true);
     };
-    
+
     useEffect(() => {
         getCountry()
     }, []);
-    
+
     if(!isReady) {
         return <div>Loader...</div>
     }
-    
+
     return (
       <div>
           <div style={{fontSize: 24, fontWeight: 800, marginBottom: 10}}>
@@ -48,14 +47,7 @@ export default function CountryCreate() {
               <CountryUpdateForm getCountry={getCountry} countryId={countryId} country={country}/>
           </div>
           <div style={{paddingBottom: 30}}>
-              {!!country.languages.length && (
-                <LanguageUpdateForm getCountry={getCountry} countryId={countryId} country={country}/>
-              )}
-          </div>
-          <div style={{paddingBottom: 30}}>
-              {!country.languages.length && (
-                <LanguageCreateForm getCountry={getCountry} countryId={countryId}/>
-              )}
+              <LanguageUpdateForm getCountry={getCountry} countryId={countryId} country={country}/>
           </div>
       </div>
     )

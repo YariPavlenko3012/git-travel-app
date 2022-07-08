@@ -3,7 +3,7 @@ export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 const REQUEST_VERSION = "/v1"
 
 //AUTH
-const AUTH = `${REQUEST_VERSION}/auth`;
+const AUTH = `${REQUEST_VERSION}/admin`;
 export const API_REGISTRATION_URL = `${AUTH}/register`;
 export const API_LOGIN_URL = `${AUTH}/login`;
 export const API_FORGOT_PASSWORD_URL = `${AUTH}/reset-password`;

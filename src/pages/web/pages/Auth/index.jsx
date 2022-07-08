@@ -4,9 +4,8 @@
 import React from 'react'
 import {Tabs} from 'antd'
 /**
- * external libs
+ * components
  */
-import Registration from './Registration'
 import Login from './Login'
 
 export default function Auth() {

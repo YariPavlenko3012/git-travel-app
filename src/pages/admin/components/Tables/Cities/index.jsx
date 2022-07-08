@@ -8,8 +8,9 @@ import {EditOutlined, EyeOutlined} from '@ant-design/icons'
 /**
  * components
  */
-import Table from '../../../../components/Table'
-import SearchInputForTable from '../../../../components/Table/utils/search'
+import Table from '../../../../../components/Table'
+import SearchInputForTable from '../../../../../components/Table/utils/search'
+import ChangeWorkStatus from "./components/ChangeWorkStatus";
 /**
  * constant
  */
@@ -17,7 +18,7 @@ import {
     ADMIN_MAKE_EDIT_CITY_URI,
     ADMIN_MAKE_SHOW_CITY_URI,
     ADMIN_MAKE_SHOW_COUNTRY_URI
-} from "../../../../constants/admin/uri.constant";
+} from "../../../../../constants/admin/uri.constant";
 
 export default function CityTable({cityList, getCity}) {
     const history = useHistory();
@@ -40,6 +41,12 @@ export default function CityTable({cityList, getCity}) {
             key: 'country',
             ...SearchInputForTable(),
             render: (country) => <Link to={ADMIN_MAKE_SHOW_COUNTRY_URI(country.id)} style={{color: country.name ? "#0d6efd" : "red"}}>{country.name || "No name"}</Link>
+        },
+        {
+            title: 'Work Status',
+            dataIndex: 'work_status',
+            key: 'work_status',
+            render: (_, city) => <ChangeWorkStatus cityId={city.id}/>
         },
         {
             title: 'Image count',
@@ -82,7 +89,7 @@ export default function CityTable({cityList, getCity}) {
             )
         },
     ]), []);
-    
+
     return (
       <Table data={cityList || []}
              columns={columns}

@@ -24,21 +24,21 @@ import PreviewFiles from "../../../../../components/PreviewFiles";
 export default function SightList() {
     const [sight, setSight] = useState(null);
     const {sightId} = useParams();
-    
+
     const getSight = async () => {
         setSight(await SightService.show(sightId))
     };
-    
+
     useEffect(() => {
         getSight();
     }, []);
-    
+
     if(!sight){
         return <div>Loader...</div>
     }
-    
+
     return (
-      <div style={{padding: 20}}>
+      <div>
           <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
               {sight.name}
               <Link to={ADMIN_MAKE_EDIT_SIGHT_URI(sightId)}>

@@ -17,13 +17,6 @@ import FieldInput from '../../../../../components/Form/FieldInput'
 import AuthService from '../../../../../services/auth.service';
 import StorageService from "../../../../../services/storage.service";
 /**
- * constants
- */
-import {
-    AUTH_PAGE_FORGOT_PASSWORD_URI,
-    AUTH_PAGE_PAGE
-} from '../../../../../constants/uri.constant';
-/**
  * context
  */
 import {AuthContext} from "../../../../context/auth.context";

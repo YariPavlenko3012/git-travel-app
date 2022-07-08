@@ -15,7 +15,7 @@ export default function TableUI({data, columns, fetchingData, ...props}) {
         await fetchingData({
             sort_column: sorter.field,
             sort_type: sorter.order === 'ascend' ? "asc" : "desc",
-            current_page: pagination.current,
+            page: pagination.current,
             per_page: pagination.pageSize,
             filters,
         });

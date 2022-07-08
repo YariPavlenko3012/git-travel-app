@@ -49,3 +49,7 @@ export const ADMIN_SHOW_CURRENCY_URI = `${ADMIN_CURRENCY}/:currencyId`;
 export const ADMIN_MAKE_SHOW_CURRENCY_URI = (currencyId) => `${ADMIN_CURRENCY}/${currencyId}`;
 export const ADMIN_EDIT_CURRENCY_URI = `${ADMIN_CURRENCY}/edit/:currencyId`;
 export const ADMIN_MAKE_EDIT_CURRENCY_URI = currencyId => `${ADMIN_CURRENCY}/edit/${currencyId}`;
+
+//CURRENCY
+const ADMIN_USERS = `${ADMIN}/users`;
+export const ADMIN_USERS_CREATE = `${ADMIN_USERS}/create`;

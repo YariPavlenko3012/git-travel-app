@@ -32,50 +32,41 @@ export default function CountryList() {
     const [city, setCity] = useState(null);
     const [country, setCountry] = useState(null);
     const {countryId} = useParams();
-    
+
     const getCity = async (params = {}) => {
         const copyParams = JSON.parse(JSON.stringify(params))
-        
+
         if(copyParams.filters) {
             if(copyParams.filters.country) {
                 copyParams.country_name = copyParams.filters.country[0];
             }
-            
+
             if(copyParams.filters.name) {
                 copyParams.city_name = copyParams.filters.name[0];
             }
         }
-        
-        const cityList = await CityService.list({
+
+        setCity(await CityService.list({
             ...params,
             country_id: countryId
-        });
-        
-        setCity({
-            data: cityList,
-            meta: {
-                current_page: 1,
-                per_page: 1000000000,
-                total: cityList.length,
-            }
-        })
+        }))
     };
-    
+
     const getCountry = async () => {
         setCountry(await CountryService.show(countryId))
     };
-    
+
     useEffect(() => {
         getCity();
         getCountry();
     }, []);
-    
+
     if(!country) {
         return <div>Loader...</div>
     }
-    
+
     return (
-      <div style={{padding: 20}}>
+      <div>
           <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
               {country.name}
               <Link to={ADMIN_MAKE_EDIT_COUNTRY_URI(countryId)}>

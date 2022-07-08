@@ -31,36 +31,28 @@ export default function CityList() {
     const [sight, setSight] = useState(null);
     const [city, setCity] = useState(null);
     const {cityId} = useParams();
-    
+
     const getSight = async (params = {}) => {
-        const sightList = await SightService.list({
+        setSight(await SightService.list({
             ...params,
             city_id: cityId
-        });
-        setSight({
-            data: sightList,
-            meta: {
-                current_page: 1,
-                per_page: 1000000000,
-                total: sightList.length,
-            }
-        })
+        }))
     };
     const getCity = async () => {
         setCity(await CityService.show(cityId))
     };
-    
+
     useEffect(() => {
         getSight();
         getCity();
     }, []);
-    
+
     if(!city) {
         return <div>Loader...</div>
     }
-    
+
     return (
-      <div style={{padding: 20}}>
+      <div>
           <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
               {city.name}
               <Link to={ADMIN_MAKE_EDIT_CITY_URI(cityId)}>
@@ -106,7 +98,7 @@ export default function CityList() {
                           Cab phone number:
                       </span>
                       {city.cabs.map(({phone_number}) => phone_number).join(",")}
-                  
+
                   </p>
               </div>
               <PreviewFiles previewFiles={city.images}/>

@@ -28,7 +28,7 @@ import styles from "../../../styles/show.module.scss";
 
 export default function CurrencyList({ history }) {
     const [currency, setCurrency] = useState(null);
-    
+
     const columns = useMemo(() => ([
         {
             title: 'ID',
@@ -55,7 +55,7 @@ export default function CurrencyList({ history }) {
             )
         },
     ]), []);
-    
+
     const getCurrency = async (params = {}) => {
         const currencyList = await CurrencyService.list(params);
         setCurrency({
@@ -67,17 +67,17 @@ export default function CurrencyList({ history }) {
             }
         })
     };
-    
+
     useEffect(() => {
         getCurrency();
     }, []);
-    
+
     if(!currency) {
         return <div>Loader...</div>
     }
-    
+
     return (
-      <div style={{padding: 20}}>
+      <div>
           <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
               Currency
               <Link to={ADMIN_CREATE_CURRENCY_URI}>
