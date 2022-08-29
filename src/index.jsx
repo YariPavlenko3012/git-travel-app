@@ -7,6 +7,7 @@ import { HashRouter } from 'react-router-dom';
 /**
  * styles
  */
+import 'bootstrap/dist/css/bootstrap.min.css';
 import 'antd/dist/antd.css';
 import 'react-phone-input-2/lib/style.css'
 import 'react-date-range/dist/styles.css'; // main style file
@@ -18,7 +19,6 @@ import './general.css';
  * helpers
  */
 import './helpers/axios';
-import 'bootstrap/dist/css/bootstrap.min.css';
 /**
  * components
  */
