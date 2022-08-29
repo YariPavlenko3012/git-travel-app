@@ -1,11 +1,11 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "88b1855bd669101c5cc4d542bcf673d3",
+    "revision": "a7079519fad645df0a15e385b7d75e0d",
     "url": "/git-travel-app/index.html"
   },
   {
-    "revision": "2bb4d4e7740ba552300c",
-    "url": "/git-travel-app/static/css/11.aebbeb3f.chunk.css"
+    "revision": "ab122388acb58d5c582a",
+    "url": "/git-travel-app/static/css/11.f96683bd.chunk.css"
   },
   {
     "revision": "e02375902c1d02faf82b",
@@ -60,7 +60,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/git-travel-app/static/css/31.22a91576.chunk.css"
   },
   {
-    "revision": "f564dd62943565de94b4",
+    "revision": "669de9c25846ff561244",
     "url": "/git-travel-app/static/css/main.c39d4b87.chunk.css"
   },
   {
@@ -80,12 +80,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/git-travel-app/static/js/10.b718d9fe.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "2bb4d4e7740ba552300c",
-    "url": "/git-travel-app/static/js/11.0142a15d.chunk.js"
+    "revision": "ab122388acb58d5c582a",
+    "url": "/git-travel-app/static/js/11.28c0b70d.chunk.js"
   },
   {
     "revision": "f89a144118d10a7b0c54bc09cb08502f",
-    "url": "/git-travel-app/static/js/11.0142a15d.chunk.js.LICENSE.txt"
+    "url": "/git-travel-app/static/js/11.28c0b70d.chunk.js.LICENSE.txt"
   },
   {
     "revision": "e02375902c1d02faf82b",
@@ -308,12 +308,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/git-travel-app/static/js/9.af74f720.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "f564dd62943565de94b4",
-    "url": "/git-travel-app/static/js/main.69842f5e.chunk.js"
+    "revision": "669de9c25846ff561244",
+    "url": "/git-travel-app/static/js/main.fde64c94.chunk.js"
   },
   {
     "revision": "4e0e34f265fae8f33b01b27ae29d9d6f",
-    "url": "/git-travel-app/static/js/main.69842f5e.chunk.js.LICENSE.txt"
+    "url": "/git-travel-app/static/js/main.fde64c94.chunk.js.LICENSE.txt"
   },
   {
     "revision": "9555c18e6678cfb8e8e3",
