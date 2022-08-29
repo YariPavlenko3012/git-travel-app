@@ -19,7 +19,7 @@ import CountryService from "../../../../../services/admin/country.service";
 import {ADMIN_MAKE_SHOW_COUNTRY_URI} from "../../../../../constants/admin/uri.constant";
 
 
-export default function CountryCreate() {
+export default function CountryUpdate() {
     const [country, setCountry] = useState(null)
     const [isReady, setIsReady] = useState(false);
     const {countryId} = useParams();

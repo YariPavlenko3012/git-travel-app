@@ -21,20 +21,7 @@ import CountryService from "../../../../../../services/admin/country.service";
 /**
  * constants
  */
-import {ADMIN_MAKE_EDIT_COUNTRY_URI} from "../../../../../../constants/admin/uri.constant";
-
-const languages_list = [
-    {
-        id: 1,
-        lang_code: "ru",
-        name: "Русский"
-    },
-    {
-        id: 2,
-        lang_code: "en",
-        name: "English"
-    }
-]
+import {ADMIN_MAKE_EDIT_COUNTRY_URI, ADMIN_MAKE_SHOW_COUNTRY_URI} from "../../../../../../constants/admin/uri.constant";
 
 export default function CreateCountryForm() {
     const history = useHistory();
@@ -46,7 +33,7 @@ export default function CreateCountryForm() {
 
         const {id} = await CountryService.create(copyValues);
 
-        return history.push(ADMIN_MAKE_EDIT_COUNTRY_URI(id))
+        return history.push(ADMIN_MAKE_SHOW_COUNTRY_URI(id))
     };
 
     return (
@@ -56,7 +43,6 @@ export default function CreateCountryForm() {
                       has_seas: false,
                       has_mountains: false,
                   },
-                  languages: languages_list.map( ({id}) => ({language_id: id}))
               }}
               render={({handleSubmit, submitting}) => (
                 <Form onFinish={handleSubmit} layout="vertical">
@@ -81,6 +67,18 @@ export default function CreateCountryForm() {
                                 <FieldInput label="Population"
                                             name="country.population"
                                             type="number"
+                                            placeholder="Enter population"
+                                            required={true}/>
+                            </div>
+                            <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
+                                <FieldInput label="name"
+                                            name="country.country_name"
+                                            placeholder="Enter population"
+                                            required={true}/>
+                            </div>
+                            <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
+                                <FieldInput label="desc"
+                                            name="country.country_description"
                                             placeholder="Enter population"
                                             required={true}/>
                             </div>
@@ -131,24 +129,6 @@ export default function CreateCountryForm() {
                             </div>
                         </div>
                         <UploadFiles name="country.images" fileName="images"/>
-                    </div>
-                    <h5 style={{marginTop: 40}}>Translate</h5>
-                    <div>
-                        <div style={{display: "flex", justifyContent: "space-between"}}>
-                            {languages_list.map((lang, index) => (
-                                <div style={{width: `calc(100% / ${languages_list.length} - 10px)`}} key={lang.id}>
-                                    <h4>{lang.name} - {lang.lang_code}</h4>
-                                    <FieldInput label="Country name"
-                                                name={`languages[${index}].country_name`}
-                                                placeholder={`Enter city name (${lang.lang_code})`}
-                                                required={true}/>
-                                    <FieldTextarea label="Country description"
-                                                   name={`languages[${index}].country_description`}
-                                                   placeholder={`Enter city description (${lang.lang_code})`}
-                                                   required={true}/>
-                                </div>
-                            ))}
-                        </div>
                     </div>
                     <Button variant="primary" htmlType="submit" disabled={submitting}>Create</Button>
                 </Form>

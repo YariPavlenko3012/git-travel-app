@@ -9,7 +9,7 @@ import {Input} from 'antd'
  */
 import FormItem from './components/FormItem'
 
-export default function FieldInput({label = "", name, placeholder = "", type = "text", disabled = false, onBlur, input, ...rest}) {
+export default function FieldInput({label = "", name, placeholder = "", type = "text", disabled = false, onBlur, onChange, onPaste, input, ...rest}) {
     const Components = type === 'password' ? Input.Password : Input;
 
     return (
@@ -18,7 +18,18 @@ export default function FieldInput({label = "", name, placeholder = "", type = "
                 <FormItem label={label} name={name} {...props} {...rest}>
                     <React.Fragment>
                         <Components placeholder={placeholder}
-                                    onChange={props.input.onChange}
+                                    onChange={(e) => {
+                                        if(onChange){
+                                            onChange(e.target.value)
+                                        }
+
+                                        props.input.onChange(e)
+                                    }}
+                                    onPaste={e => {
+                                        if(onPaste){
+                                            onPaste(e.clipboardData.getData('Text'))
+                                        }
+                                    }}
                                     onBlur={(e) => {
                                         if(onBlur) {
                                             onBlur(e)

@@ -16,9 +16,9 @@ import CityService from "../../../../../../services/admin/city.service";
 
 const languages_list = [
     {
-        id: 1,
-        lang_code: "ru",
-        name: "Русский"
+        id: 10,
+        lang_code: "uk",
+        name: "Українська"
     },
     {
         id: 2,
@@ -29,7 +29,6 @@ const languages_list = [
 
 export default function UpdateCityLanguageForm({cityId, getCity, city}) {
     const updateCityTranslate = async (value) => {
-        console.log('1')
         await CityService.updateTranslate(cityId, value.id, {city_id: cityId, ...value});
         await getCity(cityId)
     };

@@ -11,6 +11,9 @@ import CityTab from "./components/Tab"
  * services
  */
 import CityService from "../../../../../services/admin/city.service";
+/**
+ * enums
+ */
 import CityWorkStatusEnum from "../../../../../enums/CityWorkStatus";
 
 export default function CityList() {
@@ -31,15 +34,15 @@ export default function CityList() {
     };
 
     const getPendingCity = async (params = {}) => {
-        return await getCity({...params, work_status: CityWorkStatusEnum.pending})
+        return await getCity({...params, country_id: 1, work_status: CityWorkStatusEnum.pending})
     }
 
     const getInProgressCity = async (params = {}) => {
-        return await getCity({...params, work_status: CityWorkStatusEnum.inProgress})
+        return await getCity({...params, country_id: 1, work_status: CityWorkStatusEnum.inProgress})
     }
 
     const getDoneCity = async (params = {}) => {
-        return await getCity({...params, work_status: CityWorkStatusEnum.done})
+        return await getCity({...params, country_id: 1, work_status: CityWorkStatusEnum.done})
     }
 
     return (

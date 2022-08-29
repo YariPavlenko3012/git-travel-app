@@ -13,6 +13,15 @@ export const API_MAKE_ADMIN_COUNTRY_SHOW = countryId => `${ADMIN_COUNTRY}/${coun
 export const API_MAKE_ADMIN_COUNTRY_TRANSLATE_CREATE = countryId =>  `${ADMIN_COUNTRY}/${countryId}/languages`;
 export const API_MAKE_ADMIN_COUNTRY_TRANSLATE_EDIT = (countryId, translateId) => `${ADMIN_COUNTRY}/${countryId}/languages/${translateId}`;
 
+const ADMIN_STATE = `${ADMIN}/states`;
+export const API_ADMIN_STATE_LIST = `${ADMIN_STATE}`;
+export const API_ADMIN_STATE_CREATE = `${ADMIN_STATE}`;
+export const API_MAKE_ADMIN_STATE_UPDATE = countryId => `${ADMIN_STATE}/${countryId}`;
+export const API_MAKE_ADMIN_STATE_DELETE = countryId => `${ADMIN_STATE}/${countryId}`;
+export const API_MAKE_ADMIN_STATE_SHOW = countryId => `${ADMIN_STATE}/${countryId}`;
+export const API_MAKE_ADMIN_STATE_TRANSLATE_CREATE = countryId =>  `${ADMIN_STATE}/${countryId}/languages`;
+export const API_MAKE_ADMIN_STATE_TRANSLATE_EDIT = (countryId, translateId) => `${ADMIN_STATE}/${countryId}/languages/${translateId}`;
+
 const ADMIN_SIGHT = `${ADMIN}/sights`;
 export const API_ADMIN_SIGHT_LIST = `${ADMIN_SIGHT}`;
 export const API_ADMIN_SIGHT_CREATE = `${ADMIN_SIGHT}`;
@@ -54,3 +63,9 @@ export const API_DICTIONARY_COUNTRIES_URL = `${DICTIONARY}/countries`;
 export const API_DICTIONARY_CITIES_URL = `${DICTIONARY}/cities`;
 export const API_DICTIONARY_LANGUAGES_URL = `${DICTIONARY}/languages`;
 export const API_DICTIONARY_CURRENCIES_URL = `${DICTIONARY}/currencies`;
+export const API_DICTIONARY_STATES_URL = `${DICTIONARY}/states`;
+
+//DICTIONARY
+const USER = `${ADMIN}/users`;
+export const API_ADMIN_USER_LIST = `${USER}`;
+export const API_MAKE_ADMIN_USER_GET = userId =>  `${USER}/${userId}`;

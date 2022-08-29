@@ -16,9 +16,9 @@ import CountryService from "../../../../../../services/admin/country.service";
 
 const languages_list = [
     {
-        id: 1,
-        lang_code: "ru",
-        name: "Русский"
+        id: 10,
+        lang_code: "uk",
+        name: "Українська"
     },
     {
         id: 2,

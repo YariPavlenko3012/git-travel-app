@@ -2,7 +2,7 @@
  * external libs
  */
 import {Button, Form} from "antd";
-import React, {useContext} from "react";
+import React, {useContext, useState} from "react";
 import {useHistory} from 'react-router-dom'
 /**
  * components
@@ -25,20 +25,8 @@ import {AuthContext} from "../../../../../context/auth.context";
  */
 import {ADMIN_MAKE_EDIT_SIGHT_URI} from "../../../../../../constants/admin/uri.constant";
 
-const languages_list = [
-    {
-        id: 1,
-        lang_code: "ru",
-        name: "Русский"
-    },
-    {
-        id: 2,
-        lang_code: "en",
-        name: "English"
-    }
-];
-
 export default function SightCreateForm({ cityId }) {
+    const [coordinates, setCoordinates] = useState([]);
     const {user} = useContext(AuthContext);
     const history = useHistory();
 
@@ -53,14 +41,23 @@ export default function SightCreateForm({ cityId }) {
         return history.push(ADMIN_MAKE_EDIT_SIGHT_URI(id))
     };
 
+    const changeCoordinates = ( value ) => {
+        const coordinates = value.split(',');
+
+        if(coordinates.length === 2){
+            setCoordinates([coordinates[0], coordinates[1]])
+        }
+    }
+
     return (
       <FormUI onSubmit={createSight}
               initialValues={{
                   sight: {
+                      latitude: coordinates[0],
+                      longitude: coordinates[1],
                       city_id: +cityId,
                       user_id: user.id
                   },
-                  languages: languages_list.map( ({id}) => ({language_id: id}))
               }}
               render={({handleSubmit, submitting}) => (
                 <Form onFinish={handleSubmit} layout="vertical">
@@ -77,37 +74,33 @@ export default function SightCreateForm({ cityId }) {
                                                  }}/>
                             </div>
                             <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
+                                <FieldInput label="Sight name"
+                                            name="sight.sight_name"
+                                            placeholder="Enter sight name"
+                                            required={true}/>
+                            </div>
+                            <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
+                                <FieldInput label="Sight Description"
+                                            name="sight.sight_description"
+                                            placeholder="Enter sight description"
+                                            required={true}/>
+                            </div>
+                            <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
                                 <FieldInput label="Latitude"
                                             name="sight.latitude"
+                                            onPaste={changeCoordinates}
                                             placeholder="Enter latitude"
                                             required={true}/>
                             </div>
                             <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
                                 <FieldInput label="Longitude"
                                             name="sight.longitude"
+                                            onPaste={changeCoordinates}
                                             placeholder="Enter longitude"
                                             required={true}/>
                             </div>
                         </div>
-                        <UploadFiles name="sight.images" fileName="images"/>
-                    </div>
-                    <h5 style={{marginTop: 40}}>Translate</h5>
-                    <div>
-                        <div style={{display: "flex", justifyContent: "space-between"}}>
-                            {languages_list.map((lang, index) => (
-                                <div style={{width: `calc(100% / ${languages_list.length} - 10px)`}} key={lang.id}>
-                                    <h4>{lang.name} - {lang.lang_code}</h4>
-                                    <FieldInput label="Sight name"
-                                                name={`languages[${index}].sight_name`}
-                                                placeholder={`Enter sight name (${lang.lang_code})`}
-                                                required={true}/>
-                                    <FieldTextarea label="Sight description"
-                                                   name={`languages[${index}].sight_description`}
-                                                   placeholder={`Enter sight description (${lang.lang_code})`}
-                                                   required={true}/>
-                                </div>
-                            ))}
-                        </div>
+                        <UploadFiles name="sight.images" fileName="images"  keyFiles="files_ids"/>
                     </div>
                     <Button variant="primary" htmlType="submit" disabled={submitting}>Create</Button>
                 </Form>

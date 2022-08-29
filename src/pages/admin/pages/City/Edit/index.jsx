@@ -20,7 +20,7 @@ import CityUpdateForm from '../components/Form/CityUpdate'
 import {ADMIN_MAKE_SHOW_CITY_URI} from "../../../../../constants/admin/uri.constant";
 
 
-export default function CityCreate() {
+export default function CityUpdate() {
     const [city, setCity] = useState(null)
     const [isReady, setIsReady] = useState(false);
     const {cityId} = useParams();

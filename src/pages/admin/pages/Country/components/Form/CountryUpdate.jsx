@@ -22,11 +22,11 @@ export default function UpdateCountryForm({countryId, getCountry, country}) {
     const updateCountry = async (value) => {
         const copyValues = JSON.parse(JSON.stringify(value));
         copyValues.files_ids = (copyValues.images || []).map(({id}) => id);
-        
+
         await CountryService.update(countryId, copyValues)
         await getCountry(countryId)
     };
-    
+
     return (
       <FormUI onSubmit={updateCountry}
               initialValues={{
@@ -44,7 +44,7 @@ export default function UpdateCountryForm({countryId, getCountry, country}) {
                   has_mountains: Boolean(country.has_mountains),
                   images: country.images
               }}
-              render={({handleSubmit, submitting}) => (
+              render={({handleSubmit,  submitting, submitErrors}) => (
                 <Form onFinish={handleSubmit} layout="vertical">
                     <div style={{display: "flex", flexWrap: "wrap", alignItems: "flex-end"}}>
                         <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
@@ -125,7 +125,7 @@ export default function UpdateCountryForm({countryId, getCountry, country}) {
                             <FieldCheckbox label='Has mountains' name="has_mountains"/>
                         </div>
                     </div>
-                    <UploadFiles name="images" fileName="images"/>
+                    <UploadFiles name="images" fileName="images" keyFiles="files_ids"/>
                     <Button variant="primary" htmlType="submit" disabled={submitting}>Update</Button>
                 </Form>
               )}

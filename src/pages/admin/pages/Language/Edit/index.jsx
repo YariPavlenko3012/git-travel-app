@@ -12,33 +12,33 @@ import FieldInput from "../../../../../components/Form/FieldInput";
 import LanguageService from "../../../../../services/admin/language.service";
 import {ADMIN_LANGUAGE_LIST_URI} from "../../../../../constants/admin/uri.constant";
 
-export default function LanguageCreate({ history }) {
+export default function LanguageUpdate({ history }) {
     const [language, setLanguage] = useState(null)
     const [isReady, setIsReady] = useState(false);
     const {languageId} = useParams();
-    
+
     const updateLanguage = async (value) => {
         await LanguageService.update(languageId, value);
-        
+
         alert("Languages successfully updated")
-    
+
         return history.push(ADMIN_LANGUAGE_LIST_URI)
     };
-    
+
     const getCurrency = async () => {
         setIsReady(false);
         setLanguage(await LanguageService.show(languageId));
         setIsReady(true);
     };
-    
+
     useEffect(() => {
         getCurrency()
     }, []);
-    
+
     if(!isReady){
         return <div>Loader...</div>
     }
-    
+
     return (
       <FormUI onSubmit={updateLanguage}
               initialValues={{
@@ -61,8 +61,8 @@ export default function LanguageCreate({ history }) {
                                         required={true}/>
                         </div>
                     </div>
-            
-            
+
+
                     <Button variant="primary" htmlType="submit" disabled={submitting}>Update</Button>
                 </Form>
               )}

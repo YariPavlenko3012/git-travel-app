@@ -11,7 +11,7 @@ import FormItem from './components/FormItem'
 
 
 export default function FieldSelect({label, name, options, select, placeholder, defaultValue, disabled, onChange, ...rest}) {
-    
+
     return (
       <Field name={name}>
           {props => (
@@ -36,6 +36,6 @@ export default function FieldSelect({label, name, options, select, placeholder, 
             </FormItem>
           )}
       </Field>
-    
+
     )
 }

@@ -18,7 +18,7 @@ import SightService from "../../../../../services/admin/sight.service";
 import {ADMIN_MAKE_SHOW_SIGHT_URI} from "../../../../../constants/admin/uri.constant";
 
 
-export default function SightEdit() {
+export default function SightUpdate() {
     const [sight, setSight] = useState(null);
     const [isReady, setIsReady] = useState(false);
     const {sightId} = useParams();

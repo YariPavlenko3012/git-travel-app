@@ -24,10 +24,11 @@ import styles from '../../../styles/show.module.scss'
 import {
     ADMIN_MAKE_CREATE_SIGHT_URI,
     ADMIN_MAKE_EDIT_CITY_URI,
-    ADMIN_MAKE_SHOW_COUNTRY_URI
+    ADMIN_MAKE_SHOW_STATE_URI,
+    ADMIN_MAKE_SHOW_COUNTRY_URI,
 } from "../../../../../constants/admin/uri.constant";
 
-export default function CityList() {
+export default function CityShow() {
     const [sight, setSight] = useState(null);
     const [city, setCity] = useState(null);
     const {cityId} = useParams();
@@ -79,13 +80,13 @@ export default function CityList() {
                       <span className={styles.show__item_key}>
                           Country:
                       </span>
-                      <Link to={ADMIN_MAKE_SHOW_COUNTRY_URI(city.country.id)}>{city.country.name}</Link>
+                      <Link to={ADMIN_MAKE_SHOW_COUNTRY_URI(city?.state?.country?.id)}>{city?.state?.country?.name}</Link>
                   </p>
                   <p className={styles.show__item}>
                       <span className={styles.show__item_key}>
-                          Population:
+                          State:
                       </span>
-                      {city.population}
+                      <Link to={ADMIN_MAKE_SHOW_STATE_URI(city?.state?.id)}>{city?.state?.name}</Link>
                   </p>
                   <p className={styles.show__item}>
                       <span className={styles.show__item_key}>

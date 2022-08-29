@@ -12,11 +12,21 @@ export const ADMIN_MAKE_SHOW_COUNTRY_URI = (countryId) => `${ADMIN_COUNTRY}/${co
 export const ADMIN_EDIT_COUNTRY_URI = `${ADMIN_COUNTRY}/edit/:countryId`;
 export const ADMIN_MAKE_EDIT_COUNTRY_URI = countryId => `${ADMIN_COUNTRY}/edit/${countryId}`;
 
+//STATE
+const ADMIN_STATE = `${ADMIN}/state`;
+export const ADMIN_STATE_LIST_URI = `${ADMIN_STATE}`;
+export const ADMIN_CREATE_STATE_URI = `${ADMIN_STATE}/create/:countryId`;
+export const ADMIN_MAKE_CREATE_STATE_URI = (countryId) => `${ADMIN_STATE}/create/${countryId}`;
+export const ADMIN_SHOW_STATE_URI = `${ADMIN_STATE}/:stateId`;
+export const ADMIN_MAKE_SHOW_STATE_URI = (stateId) => `${ADMIN_STATE}/${stateId}`;
+export const ADMIN_EDIT_STATE_URI = `${ADMIN_STATE}/edit/:stateId`;
+export const ADMIN_MAKE_EDIT_STATE_URI = stateId => `${ADMIN_STATE}/edit/${stateId}`;
+
 //CITY
 const ADMIN_CITY = `${ADMIN}/city`;
 export const ADMIN_CITY_LIST_URI = `${ADMIN_CITY}`;
-export const ADMIN_CREATE_CITY_URI = `${ADMIN_CITY}/create/:countryId`;
-export const ADMIN_MAKE_CREATE_CITY_URI = (countryId) => `${ADMIN_CITY}/create/${countryId}`;
+export const ADMIN_CREATE_CITY_URI = `${ADMIN_CITY}/create/:stateId`;
+export const ADMIN_MAKE_CREATE_CITY_URI = (stateId) => `${ADMIN_CITY}/create/${stateId}`;
 export const ADMIN_SHOW_CITY_URI = `${ADMIN_CITY}/:cityId`;
 export const ADMIN_MAKE_SHOW_CITY_URI = (cityId) => `${ADMIN_CITY}/${cityId}`;
 export const ADMIN_EDIT_CITY_URI = `${ADMIN_CITY}/edit/:cityId`;
@@ -50,6 +60,11 @@ export const ADMIN_MAKE_SHOW_CURRENCY_URI = (currencyId) => `${ADMIN_CURRENCY}/$
 export const ADMIN_EDIT_CURRENCY_URI = `${ADMIN_CURRENCY}/edit/:currencyId`;
 export const ADMIN_MAKE_EDIT_CURRENCY_URI = currencyId => `${ADMIN_CURRENCY}/edit/${currencyId}`;
 
-//CURRENCY
+//USERS
 const ADMIN_USERS = `${ADMIN}/users`;
 export const ADMIN_USERS_CREATE = `${ADMIN_USERS}/create`;
+
+//ADMIN_STATISTICS_USERS
+const ADMIN_STATISTICS_USERS = `${ADMIN}/users-statistics`;
+export const ADMIN_STATISTICS_USERS_LIST = `${ADMIN_STATISTICS_USERS}`;
+export const ADMIN_STATISTICS_PRICE = `${ADMIN_STATISTICS_USERS}/price`;

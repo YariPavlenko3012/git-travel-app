@@ -29,7 +29,10 @@ import {
     ADMIN_EDIT_SIGHT_URI,
     ADMIN_SHOW_SIGHT_URI,
     ADMIN_CREATE_SIGHT_URI,
-    ADMIN_CREATE_CURRENCY_URI, ADMIN_USERS_CREATE,
+    ADMIN_CREATE_CURRENCY_URI,
+    ADMIN_USERS_CREATE,
+    ADMIN_STATISTICS_USERS_LIST,
+    ADMIN_STATISTICS_PRICE, ADMIN_STATE_LIST_URI, ADMIN_EDIT_STATE_URI, ADMIN_CREATE_STATE_URI, ADMIN_SHOW_STATE_URI
 } from "../../../constants/admin/uri.constant";
 
 
@@ -54,6 +57,26 @@ export default function RouterPage() {
             layout: AuthRoute,
             path: ADMIN_SHOW_COUNTRY_URI,
             component: lazy(() => import('./Country/Show'))
+        },
+        {
+            layout: AuthRoute,
+            path: ADMIN_STATE_LIST_URI,
+            component: lazy(() => import('./State/List'))
+        },
+        {
+            layout: AuthRoute,
+            path: ADMIN_EDIT_STATE_URI,
+            component: lazy(() => import('./State/Edit'))
+        },
+        {
+            layout: AuthRoute,
+            path: ADMIN_SHOW_STATE_URI,
+            component: lazy(() => import('./State/Show'))
+        },
+        {
+            layout: AuthRoute,
+            path: ADMIN_CREATE_STATE_URI,
+            component: lazy(() => import('./State/Create'))
         },
         {
             layout: AuthRoute,
@@ -130,20 +153,28 @@ export default function RouterPage() {
             path: ADMIN_USERS_CREATE,
             component: lazy(() => import('./Users/Create'))
         },
+        {
+            layout: AuthRoute,
+            path: ADMIN_STATISTICS_PRICE,
+            component: lazy(() => import('./Statistics/Price'))
+        },
+        {
+            layout: AuthRoute,
+            path: ADMIN_STATISTICS_USERS_LIST,
+            component: lazy(() => import('./Statistics/Users'))
+        },
     ]), []);
 
     return (
-        <div>
-            <Layout>
-                <Switch>
-                    {routes.map((route, i) => (
-                        <route.layout exact
-                                      key={i}
-                                      path={route.path}
-                                      component={route.component}/>
-                    ))}
-                </Switch>
-            </Layout>
-        </div>
+        <Layout>
+            <Switch>
+                {routes.map((route, i) => (
+                    <route.layout exact
+                                  key={i}
+                                  path={route.path}
+                                  component={route.component}/>
+                ))}
+            </Switch>
+        </Layout>
     );
 }

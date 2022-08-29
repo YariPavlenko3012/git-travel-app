@@ -40,7 +40,9 @@ export default function CityTable({cityList, getCity}) {
             dataIndex: 'country',
             key: 'country',
             ...SearchInputForTable(),
-            render: (country) => <Link to={ADMIN_MAKE_SHOW_COUNTRY_URI(country.id)} style={{color: country.name ? "#0d6efd" : "red"}}>{country.name || "No name"}</Link>
+            render: (_, city) => {
+                return <Link to={ADMIN_MAKE_SHOW_COUNTRY_URI(city?.state?.country?.id)} style={{color: city?.state?.country?.name ? "#0d6efd" : "red"}}>{city?.state?.country?.name || "No name"}</Link>
+            }
         },
         {
             title: 'Work Status',
@@ -53,11 +55,6 @@ export default function CityTable({cityList, getCity}) {
             dataIndex: 'images',
             key: 'images',
             render: images => <div style={{color: images.length ? "#0d6efd" : "red"}}>{images.length || 0}</div>,
-        },
-        {
-            title: 'Population',
-            dataIndex: 'population',
-            key: 'population',
         },
         {
             title: 'Taxi name',

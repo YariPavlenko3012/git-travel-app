@@ -10,6 +10,7 @@ import {
     API_DICTIONARY_COUNTRIES_URL,
     API_DICTIONARY_CURRENCIES_URL,
     API_DICTIONARY_LANGUAGES_URL,
+    API_DICTIONARY_STATES_URL,
 } from "../constants/admin/api.constant";
 /**
  * utils
@@ -25,7 +26,7 @@ export default class DictionaryService {
             }
         });
     }
-    
+
     static async cities(params = {}) {
         return await axios.get(API_DICTIONARY_CITIES_URL, {
             params,
@@ -34,13 +35,17 @@ export default class DictionaryService {
             }
         });
     }
-    
+
     static async languages() {
         return await axios.get(API_DICTIONARY_LANGUAGES_URL);
     }
-    
+
     static async currencies() {
         return await axios.get(API_DICTIONARY_CURRENCIES_URL);
+    }
+
+    static async states() {
+        return await axios.get(API_DICTIONARY_STATES_URL);
     }
 }
 

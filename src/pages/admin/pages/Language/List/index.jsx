@@ -19,8 +19,10 @@ import LanguageService from "../../../../../services/admin/language.service";
 import {
     ADMIN_CREATE_LANGUAGE_URI,
     ADMIN_MAKE_EDIT_LANGUAGE_URI,
-    ADMIN_MAKE_SHOW_COUNTRY_URI
 } from "../../../../../constants/admin/uri.constant";
+/**
+ * styles
+ */
 import styles from "../../../styles/show.module.scss";
 
 export default function LanguageList({ history }) {

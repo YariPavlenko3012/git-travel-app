@@ -3,25 +3,30 @@
  */
 import React, {useMemo, useState, useEffect} from 'react';
 import {Link, useParams} from 'react-router-dom'
+import {Button} from "antd";
 /**
  * components
  */
-import Table from '../../../../../components/Table'
-import SearchInputForTable from '../../../../../components/Table/utils/search'
+import PreviewFiles from "../../../../../components/PreviewFiles";
 /**
  * services
  */
 import SightService from "../../../../../services/admin/sight.service";
+/**
+ * constants
+ */
 import {
-    ADMIN_MAKE_CREATE_SIGHT_URI,
-    ADMIN_MAKE_EDIT_CITY_URI, ADMIN_MAKE_EDIT_SIGHT_URI, ADMIN_MAKE_SHOW_CITY_URI,
-    ADMIN_MAKE_SHOW_COUNTRY_URI
+    ADMIN_MAKE_EDIT_SIGHT_URI,
+    ADMIN_MAKE_SHOW_CITY_URI,
+    ADMIN_MAKE_SHOW_COUNTRY_URI,
+    ADMIN_MAKE_SHOW_STATE_URI,
 } from "../../../../../constants/admin/uri.constant";
-import {Button} from "antd";
+/**
+ * styles
+ */
 import styles from "../../../styles/show.module.scss";
-import PreviewFiles from "../../../../../components/PreviewFiles";
 
-export default function SightList() {
+export default function SightShow() {
     const [sight, setSight] = useState(null);
     const {sightId} = useParams();
 
@@ -63,9 +68,21 @@ export default function SightList() {
                   </p>
                   <p className={styles.show__item}>
                       <span className={styles.show__item_key}>
-                          Description:
+                          Country:
                       </span>
-                      <span style={{color: sight.description ? "black" : "red"}}>{sight.description || "No description"}</span>
+                      <Link to={ADMIN_MAKE_SHOW_COUNTRY_URI(sight.city?.state?.country?.id)}>{sight.city?.state?.country?.name}</Link>
+                  </p>
+                  <p className={styles.show__item}>
+                      <span className={styles.show__item_key}>
+                          State:
+                      </span>
+                      <Link to={ADMIN_MAKE_SHOW_STATE_URI(sight.city?.state?.id)}>{sight.city?.state?.name}</Link>
+                  </p>
+                  <p className={styles.show__item}>
+                      <span className={styles.show__item_key}>
+                          City:
+                      </span>
+                      <Link to={ADMIN_MAKE_SHOW_CITY_URI(sight.city?.id)}>{sight.city?.name}</Link>
                   </p>
                   <p className={styles.show__item}>
                       <span className={styles.show__item_key}>
@@ -79,11 +96,11 @@ export default function SightList() {
                       </span>
                       {sight.longitude}
                   </p>
-                  <p className={styles.show__item}>
+                  <p className={styles.show__item} style={{width: "100%"}}>
                       <span className={styles.show__item_key}>
-                          City:
+                          Description:
                       </span>
-                      <Link to={ADMIN_MAKE_SHOW_CITY_URI(sight.city.id)} style={{color: sight.city.name ? "#0d6efd" : "red"}}>{sight.city.name || "No name"}</Link>
+                      <span style={{color: sight.description ? "black" : "red"}}>{sight.description || "No description"}</span>
                   </p>
               </div>
               <PreviewFiles previewFiles={sight.images}/>

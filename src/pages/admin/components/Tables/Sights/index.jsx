@@ -26,7 +26,8 @@ export default function SightTable({sightList, getSight}) {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
-            render: name => <div style={{color: name ? "black" : "red"}}>{name || "No name"}</div>
+            render: (_, sight) => <Link to={ADMIN_MAKE_SHOW_SIGHT_URI(sight.id)}
+                                        style={{color: sight.name ? "#0d6efd" : "red"}}>{sight.name || "No name"}</Link>
         },
         {
             title: 'Description',

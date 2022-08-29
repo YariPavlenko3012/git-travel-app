@@ -25,7 +25,7 @@ export default function SightList() {
     };
 
     useEffect(() => {
-        getSight();
+        getSight({country_id: 1});
     }, []);
 
     if(!sight) {

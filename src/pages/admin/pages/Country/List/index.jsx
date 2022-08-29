@@ -15,13 +15,13 @@ import CountryService from "../../../../../services/admin/country.service";
 /**
  * constant
  */
-import {ADMIN_CREATE_COUNTRY_URI} from "../../../../../constants/admin/uri.constant";
+import {ADMIN_CREATE_COUNTRY_URI, ADMIN_MAKE_SHOW_COUNTRY_URI} from "../../../../../constants/admin/uri.constant";
 /**
  * styles
  */
 import styles from "../../../styles/show.module.scss";
 
-export default function CountryList() {
+export default function CountryList({ history }) {
     const getCountry = async (params = {}) => {
         const copyParams = JSON.parse(JSON.stringify(params));
 
@@ -45,6 +45,13 @@ export default function CountryList() {
     const getCountryWithoutCapital = async (params) => {
         return await getCountry({...params, has_capital: 0})
     }
+
+    useEffect(() => {
+        return history.push(ADMIN_MAKE_SHOW_COUNTRY_URI(1))
+    }, [])
+
+
+    return null
 
     return (
       <div>

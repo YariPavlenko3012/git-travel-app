@@ -10,7 +10,7 @@ import styles from './index.module.scss';
 
 export default function PreviewFiles({previewFiles}) {
     const [inProp, setInProp] = useState(false);
-    
+
     return (
       <div className="preview-img" style={{marginBottom: "1rem"}}>
           <div className={styles.download__btn_wrapper}>
@@ -25,7 +25,7 @@ export default function PreviewFiles({previewFiles}) {
                 <div style={{overflow: "hidden"}}>
                     <div className={styles.download__preview}>
                         {previewFiles.map(file => (
-                          <div className={styles.download__preview_wrapper}>
+                          <div className={styles.download__preview_wrapper} key={file.id}>
                               <img className={styles.download__preview_img} src={file.path} alt="image"/>
                           </div>
                         ))}
@@ -33,7 +33,7 @@ export default function PreviewFiles({previewFiles}) {
                 </div>
               )}
           </SlideDown>
-      
+
       </div>
     )
 }

@@ -8,7 +8,7 @@ export default class CityModel {
         this.id = data.id;
         this.name = data.name;
         this.description = data.description;
-        this.country = new CountryModel(data.country);
+        this.state = data.state;
         this.languages = (data.languages || []).map( language => new CityLanguageModel(language));
         this.images = (data.images || []).map( image => new MediaModel(image));
         this.population = data.population;

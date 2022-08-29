@@ -13,33 +13,33 @@ import CurrencyService from "../../../../../services/admin/currency.service";
 import CountryService from "../../../../../services/admin/country.service";
 import {ADMIN_CURRENCY_LIST_URI} from "../../../../../constants/admin/uri.constant";
 
-export default function CurrencyCreate({ history }) {
+export default function CurrencyUpdate({ history }) {
     const [currency, setCurrency] = useState(null)
     const [isReady, setIsReady] = useState(false);
     const {currencyId} = useParams()
-    
+
     const updateCurrency = async (value) => {
         await CurrencyService.update(currencyId, value);
-    
+
         alert("Currency successfully updated")
-    
+
         return history.push(ADMIN_CURRENCY_LIST_URI)
     };
-    
+
     const getCurrency = async () => {
         setIsReady(false);
         setCurrency(await CurrencyService.show(currencyId));
         setIsReady(true);
     };
-    
+
     useEffect(() => {
         getCurrency()
     }, []);
-    
+
     if(!isReady){
         return <div>Loader...</div>
     }
-    
+
     return (
       <FormUI onSubmit={updateCurrency}
               initialValues={{

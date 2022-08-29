@@ -15,6 +15,7 @@ export default function FieldRadio({label, name, data, onChange}) {
         <FormItem label={label} name={name} {...field}>
             {data.map(radio => (
                 <Field
+                    key={radio.value}
                     value={radio.value}
                     name={name}
                     type="radio"

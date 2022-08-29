@@ -10,18 +10,20 @@ import CityCreateForm from '../components/Form/CityCreate'
 /**
  * constants
  */
-import {ADMIN_MAKE_SHOW_COUNTRY_URI} from "../../../../../constants/admin/uri.constant";
+import {
+    ADMIN_MAKE_SHOW_STATE_URI
+} from "../../../../../constants/admin/uri.constant";
 
 export default function CityCreate() {
-    const {countryId} = useParams();
-    
+    const {stateId} = useParams();
+
     return (
       <div>
           <div style={{fontSize: 24, fontWeight: 800, marginBottom: 10}}>
-              <Link to={ADMIN_MAKE_SHOW_COUNTRY_URI(countryId)}> {"<-"} Go to view country</Link>
+              <Link to={ADMIN_MAKE_SHOW_STATE_URI(stateId)}> {"<-"} Go to view state</Link>
           </div>
           <div style={{paddingBottom: 30}}>
-              <CityCreateForm countryId={countryId}/>
+              <CityCreateForm stateId={stateId}/>
           </div>
       </div>
     )

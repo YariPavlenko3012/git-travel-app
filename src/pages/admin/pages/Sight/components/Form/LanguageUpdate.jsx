@@ -16,9 +16,9 @@ import SightService from "../../../../../../services/admin/sight.service";
 
 const languages_list = [
     {
-        id: 1,
-        lang_code: "ru",
-        name: "Русский"
+        id: 10,
+        lang_code: "uk",
+        name: "Українська"
     },
     {
         id: 2,
@@ -32,7 +32,7 @@ export default function LanguageUpdateForm({sightId, sight, getSight}) {
         await SightService.updateTranslate(sightId, value.id, {sight_id: sightId, ...value});
         await getSight(sightId)
     };
-    
+
     return (
       <div style={{display: "flex", justifyContent: "space-between"}}>
           {languages_list.map((lang) => (
