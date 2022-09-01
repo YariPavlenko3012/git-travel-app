@@ -19,6 +19,8 @@ import {
     ADMIN_MAKE_SHOW_CITY_URI,
     ADMIN_MAKE_SHOW_COUNTRY_URI
 } from "../../../../../constants/admin/uri.constant";
+import PreviewFilesOriental from "../../../../../components/PreviewFilesOriental";
+import FileOrientationEnums from "../../../../../enums/FileOrientation";
 
 export default function CityTable({cityList, getCity}) {
     const history = useHistory();
@@ -34,9 +36,9 @@ export default function CityTable({cityList, getCity}) {
             key: 'img',
             render: (_, city) => {
                 return (
-                    <div style={{display: "flex"}}>
-                        <img style={{marginRight: 10, width: 72, height: 40}} src={city.landscape_image.path} alt="img"/>
-                        <img style={{width: 28, height: 40}} src={city.portrait_image.path} alt="img"/>
+                    <div style={{display: "flex", gap: 10}}>
+                        <PreviewFilesOriental oriental={FileOrientationEnums.landscape} image={city.landscape_image} height={40}/>
+                        <PreviewFilesOriental oriental={FileOrientationEnums.portrait} image={city.portrait_image} height={40}/>
                     </div>
                 )
             }

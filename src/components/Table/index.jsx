@@ -1,7 +1,8 @@
 import {Table} from "antd";
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useRef} from "react";
 
 export default function TableUI({data, columns, fetchingData, ...props}) {
+    const tableRef = useRef(null)
     const [pagination, setPagination] = useState({
         current: data.meta.current_page,
         pageSize: data.meta.per_page,
@@ -11,6 +12,7 @@ export default function TableUI({data, columns, fetchingData, ...props}) {
 
     const handleTableChange = async (pagination, filters, sorter) => {
         setLoading(true);
+        window.scrollTo(0, tableRef.current.offsetTop);
 
         await fetchingData({
             sort_column: sorter.field,
@@ -35,12 +37,16 @@ export default function TableUI({data, columns, fetchingData, ...props}) {
 
     return (
         <Table
+            ref={tableRef}
             columns={columns}
             dataSource={tableData.map( (item, index) => ({key: index, ...item}))}
             pagination={pagination}
             loading={loading}
             onChange={handleTableChange}
             {...props}
+            scroll={{
+                scrollToFirstRowOnChange: true,
+            }}
         />
     )
 }

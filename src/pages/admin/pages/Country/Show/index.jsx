@@ -280,9 +280,9 @@ export default function CountryShow() {
                       </span> {country.ambulance_number}
                     </p>
                 </div>
-                <div style={{display: "flex", gap: 10}}>
-                    <PreviewFilesOriental oriental={FileOrientationEnums.landscape} previewFiles={country.landscape_image}/>
-                    <PreviewFilesOriental oriental={FileOrientationEnums.portrait} previewFiles={country.portrait_image}/>
+                <div style={{display: "flex", gap: 10, marginBottom: 10}}>
+                    <PreviewFilesOriental oriental={FileOrientationEnums.landscape} image={country.landscape_image} height={100}/>
+                    <PreviewFilesOriental oriental={FileOrientationEnums.portrait} image={country.portrait_image} height={100}/>
                 </div>
             </div>
 
