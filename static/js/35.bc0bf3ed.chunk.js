@@ -1,2 +1,0 @@
-(this["webpackJsonptravel-frontend"]=this["webpackJsonptravel-frontend"]||[]).push([[35],{958:function(t,n,e){"use strict";e.r(n),e.d(n,"default",(function(){return a}));var r=e(0),u=e(46),s=e(33),o=e(40);function a(t){var n=t.history,e=Object(r.useContext)(o.a).setUser;return Object(r.useEffect)((function(){return u.a.logout(),e(null),n.push(s.a)}),[]),null}}}]);
-//# sourceMappingURL=35.bc0bf3ed.chunk.js.map
