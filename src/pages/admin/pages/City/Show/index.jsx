@@ -108,8 +108,8 @@ export default function CityShow() {
                   </p>
               </div>
               <div style={{display: "flex", gap: 10, marginBottom: 10}}>
-                  <PreviewFilesOriental oriental={FileOrientationEnums.landscape} image={city.landscape_image} height={100}/>
-                  <PreviewFilesOriental oriental={FileOrientationEnums.portrait} image={city.portrait_image} height={100}/>
+                  <PreviewFilesOriental oriental={FileOrientationEnums.landscape} image={city.landscape_image?.path} height={100}/>
+                  <PreviewFilesOriental oriental={FileOrientationEnums.portrait} image={city.portrait_image?.path} height={100}/>
               </div>
           </div>
           {sight &&

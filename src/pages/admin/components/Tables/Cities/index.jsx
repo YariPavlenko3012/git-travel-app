@@ -37,8 +37,8 @@ export default function CityTable({cityList, getCity}) {
             render: (_, city) => {
                 return (
                     <div style={{display: "flex", gap: 10}}>
-                        <PreviewFilesOriental oriental={FileOrientationEnums.landscape} image={city.landscape_image} height={40}/>
-                        <PreviewFilesOriental oriental={FileOrientationEnums.portrait} image={city.portrait_image} height={40}/>
+                        <PreviewFilesOriental oriental={FileOrientationEnums.landscape} image={city.landscape_image?.path} height={40}/>
+                        <PreviewFilesOriental oriental={FileOrientationEnums.portrait} image={city.portrait_image?.path} height={40}/>
                     </div>
                 )
             }

@@ -281,8 +281,8 @@ export default function CountryShow() {
                     </p>
                 </div>
                 <div style={{display: "flex", gap: 10, marginBottom: 10}}>
-                    <PreviewFilesOriental oriental={FileOrientationEnums.landscape} image={country.landscape_image} height={100}/>
-                    <PreviewFilesOriental oriental={FileOrientationEnums.portrait} image={country.portrait_image} height={100}/>
+                    <PreviewFilesOriental oriental={FileOrientationEnums.landscape} image={country.landscape_image?.path} height={100}/>
+                    <PreviewFilesOriental oriental={FileOrientationEnums.portrait} image={country.portrait_image?.path} height={100}/>
                 </div>
             </div>
 
