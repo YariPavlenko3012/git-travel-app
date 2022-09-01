@@ -25,6 +25,13 @@ export default function FieldSelect({label, name, options, select, placeholder, 
                       options={options}
                       disabled={disabled}
                       style={{minWidth: "100%"}}
+                      filterOption={(text, {label, value}) => {
+                          const textLowerCase = text.trim().toLowerCase()
+                          const labelLowerCase = label.toLowerCase()
+                          const valueLowerCase = value.toString().toLowerCase()
+
+                          return labelLowerCase.includes(textLowerCase) || valueLowerCase.includes(text)
+                      }}
                       onChange={(val) => {
                           if(onChange) {
                               onChange(val)
