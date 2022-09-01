@@ -29,6 +29,19 @@ export default function CityTable({cityList, getCity}) {
             key: 'id',
         },
         {
+            title: 'Images',
+            dataIndex: 'img',
+            key: 'img',
+            render: (_, city) => {
+                return (
+                    <div style={{display: "flex"}}>
+                        <img style={{marginRight: 10, width: 72, height: 40}} src={city.landscape_image.path} alt="img"/>
+                        <img style={{width: 28, height: 40}} src={city.portrait_image.path} alt="img"/>
+                    </div>
+                )
+            }
+        },
+        {
             title: 'City name',
             dataIndex: 'name',
             key: 'name',
