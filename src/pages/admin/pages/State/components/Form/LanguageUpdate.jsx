@@ -52,7 +52,7 @@ export default function UpdateLanguageCountry({ stateId, getState, state }) {
                     render={({handleSubmit}) => (
                       <Form onFinish={handleSubmit} layout="vertical"
                             style={{width: `calc(100% / ${languages_list.length} - 10px)`}}>
-                          <h4>{lang.name} - {lang.lang_code}</h4>
+                          <h5>{lang.name} - {lang.lang_code}</h5>
                           <FieldInput label="State name"
                                       name="state_name"
                                       placeholder={`Enter state name (${lang.lang_code})`}

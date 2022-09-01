@@ -8,7 +8,7 @@ import {Button} from "antd";
  * components
  */
 import SightTable from '../../../components/Tables/Sights';
-import PreviewFiles from "../../../../../components/PreviewFiles";
+import PreviewFilesOriental from "../../../../../components/PreviewFilesOriental";
 /**
  * services
  */
@@ -27,6 +27,11 @@ import {
     ADMIN_MAKE_SHOW_STATE_URI,
     ADMIN_MAKE_SHOW_COUNTRY_URI,
 } from "../../../../../constants/admin/uri.constant";
+/**
+ * enum
+ */
+import FileOrientationEnums from "../../../../../enums/FileOrientation";
+
 
 export default function CityShow() {
     const [sight, setSight] = useState(null);
@@ -102,7 +107,10 @@ export default function CityShow() {
 
                   </p>
               </div>
-              <PreviewFiles previewFiles={city.images}/>
+              <div style={{display: "flex", gap: 10}}>
+                  <PreviewFilesOriental oriental={FileOrientationEnums.landscape} previewFiles={city.landscape_image}/>
+                  <PreviewFilesOriental oriental={FileOrientationEnums.portrait} previewFiles={city.portrait_image}/>
+              </div>
           </div>
           {sight &&
               <>

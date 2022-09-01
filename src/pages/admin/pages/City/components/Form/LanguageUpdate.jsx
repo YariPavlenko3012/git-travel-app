@@ -43,7 +43,6 @@ export default function UpdateCityLanguageForm({cityId, getCity, city}) {
                                 ...accum,
                                 id: translate.id,
                                 city_name: translate.city_name,
-                                city_description: translate.city_description,
                             }
                         }
                         return accum
@@ -52,15 +51,11 @@ export default function UpdateCityLanguageForm({cityId, getCity, city}) {
                     render={({handleSubmit}) => (
                       <Form onFinish={handleSubmit} layout="vertical"
                             style={{width: `calc(100% / ${languages_list.length} - 10px)`}}>
-                          <h4>{lang.name} - {lang.lang_code}</h4>
+                          <h5>{lang.name} - {lang.lang_code}</h5>
                           <FieldInput label="City name"
                                       name="city_name"
                                       placeholder={`Enter city name (${lang.lang_code})`}
                                       required={true}/>
-                          <FieldTextarea label="City description"
-                                         name="city_description"
-                                         placeholder={`Enter city description (${lang.lang_code})`}
-                                         required={true}/>
                           <Button variant="primary" htmlType="submit">Update</Button>
                       </Form>
                     )}

@@ -12,6 +12,7 @@ import FieldSelectLanguage from "../../../../../../components/Select/Language";
 import FieldInput from "../../../../../../components/Form/FieldInput";
 import FieldCheckbox from "../../../../../../components/Form/FieldCheckbox";
 import UploadFiles from "../../../../../../components/UploadFiles";
+import UploadOrientalFile from "../../../../../../components/UploadOrientalFile";
 import FormUI from "../../../../../../components/Form";
 import FieldTextarea from "../../../../../../components/Form/FieldTextarea";
 /**
@@ -22,6 +23,7 @@ import CountryService from "../../../../../../services/admin/country.service";
  * constants
  */
 import {ADMIN_MAKE_EDIT_COUNTRY_URI, ADMIN_MAKE_SHOW_COUNTRY_URI} from "../../../../../../constants/admin/uri.constant";
+import FileOrientationEnums from "../../../../../../enums/FileOrientation";
 
 export default function CreateCountryForm() {
     const history = useHistory();
@@ -29,7 +31,8 @@ export default function CreateCountryForm() {
     const createCountry = async (value) => {
         const copyValues = JSON.parse(JSON.stringify(value));
 
-        copyValues.files_ids = (copyValues.country.images || []).map(({id}) => id);
+        copyValues.country.landscape_image = copyValues.country.landscape_image?.id || null;
+        copyValues.country.portrait_image = copyValues.country.portrait_image?.id || null;
 
         const {id} = await CountryService.create(copyValues);
 
@@ -128,7 +131,14 @@ export default function CreateCountryForm() {
                                 <FieldCheckbox label='Has mountains' name="country.has_mountains"/>
                             </div>
                         </div>
-                        <UploadFiles name="country.images" fileName="images"/>
+                        <div style={{display: "flex", flexWrap: "wrap", alignItems: "flex-end"}}>
+                            <div style={{marginRight: 10}}>
+                                <UploadOrientalFile oriental={FileOrientationEnums.landscape} name="country.landscape_image"/>
+                            </div>
+                            <div style={{marginRight: 10}}>
+                                <UploadOrientalFile oriental={FileOrientationEnums.portrait} name="country.portrait_image"/>
+                            </div>
+                        </div>
                     </div>
                     <Button variant="primary" htmlType="submit" disabled={submitting}>Create</Button>
                 </Form>

@@ -46,12 +46,12 @@ export default function CountryList({ history }) {
         return await getCountry({...params, has_capital: 0})
     }
 
-    useEffect(() => {
-        return history.push(ADMIN_MAKE_SHOW_COUNTRY_URI(1))
-    }, [])
-
-
-    return null
+    // useEffect(() => {
+    //     return history.push(ADMIN_MAKE_SHOW_COUNTRY_URI(1))
+    // }, [])
+    //
+    //
+    // return null
 
     return (
       <div>

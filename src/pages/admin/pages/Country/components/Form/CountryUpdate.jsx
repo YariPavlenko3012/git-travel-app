@@ -17,11 +17,14 @@ import UploadFiles from "../../../../../../components/UploadFiles";
  * services
  */
 import CountryService from "../../../../../../services/admin/country.service";
+import UploadOrientalFile from "../../../../../../components/UploadOrientalFile";
+import FileOrientationEnums from "../../../../../../enums/FileOrientation";
 
 export default function UpdateCountryForm({countryId, getCountry, country}) {
     const updateCountry = async (value) => {
         const copyValues = JSON.parse(JSON.stringify(value));
-        copyValues.files_ids = (copyValues.images || []).map(({id}) => id);
+        copyValues.landscape_image = copyValues.landscape_image?.id || null;
+        copyValues.portrait_image = copyValues.portrait_image?.id || null;
 
         await CountryService.update(countryId, copyValues)
         await getCountry(countryId)
@@ -40,12 +43,15 @@ export default function UpdateCountryForm({countryId, getCountry, country}) {
                   happiness_rating: country.happiness_rating,
                   country_area: country.country_area,
                   highest_point: country.highest_point,
+                  landscape_image: country.landscape_image,
+                  portrait_image: country.portrait_image,
                   has_seas: Boolean(country.has_seas),
                   has_mountains: Boolean(country.has_mountains),
                   images: country.images
               }}
               render={({handleSubmit,  submitting, submitErrors}) => (
                 <Form onFinish={handleSubmit} layout="vertical">
+                    <h5>General</h5>
                     <div style={{display: "flex", flexWrap: "wrap", alignItems: "flex-end"}}>
                         <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
                             <FieldSelectCurrency name="currency"
@@ -125,7 +131,14 @@ export default function UpdateCountryForm({countryId, getCountry, country}) {
                             <FieldCheckbox label='Has mountains' name="has_mountains"/>
                         </div>
                     </div>
-                    <UploadFiles name="images" fileName="images" keyFiles="files_ids"/>
+                    <div style={{display: "flex", flexWrap: "wrap", alignItems: "flex-end"}}>
+                        <div style={{marginRight: 10}}>
+                            <UploadOrientalFile oriental={FileOrientationEnums.landscape} name="landscape_image"/>
+                        </div>
+                        <div style={{marginRight: 10}}>
+                            <UploadOrientalFile oriental={FileOrientationEnums.portrait} name="portrait_image"/>
+                        </div>
+                    </div>
                     <Button variant="primary" htmlType="submit" disabled={submitting}>Update</Button>
                 </Form>
               )}

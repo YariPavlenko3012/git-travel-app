@@ -20,13 +20,16 @@ import CityService from "../../../../../../services/admin/city.service";
  */
 import {ADMIN_MAKE_EDIT_CITY_URI, ADMIN_MAKE_SHOW_CITY_URI} from "../../../../../../constants/admin/uri.constant";
 import FieldTextarea from "../../../../../../components/Form/FieldTextarea";
+import UploadOrientalFile from "../../../../../../components/UploadOrientalFile";
+import FileOrientationEnums from "../../../../../../enums/FileOrientation";
 
 export default function CreateCityForm({stateId}) {
     const history = useHistory();
 
     const createCity = async (value) => {
         const copyValues = JSON.parse(JSON.stringify(value));
-        copyValues.files_ids = (copyValues.city.images || []).map(({id}) => id);
+        copyValues.city.landscape_image = copyValues.city.landscape_image?.id || null;
+        copyValues.city.portrait_image = copyValues.city.portrait_image?.id || null;
 
         const {id} = await CityService.create(copyValues);
 
@@ -60,14 +63,15 @@ export default function CreateCityForm({stateId}) {
                                                 required={true}/>
 
                                 </div>
-                                <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
-                                    <FieldTextarea label="City description"
-                                                   name={`city.city_description`}
-                                                   placeholder={`Enter city description`}
-                                                   required={true}/>
+                            </div>
+                            <div style={{display: "flex", flexWrap: "wrap", alignItems: "flex-end"}}>
+                                <div style={{marginRight: 10}}>
+                                    <UploadOrientalFile oriental={FileOrientationEnums.landscape} name="city.landscape_image"/>
+                                </div>
+                                <div style={{marginRight: 10}}>
+                                    <UploadOrientalFile oriental={FileOrientationEnums.portrait} name="city.portrait_image"/>
                                 </div>
                             </div>
-                            <UploadFiles name="city.images" fileName="images"/>
                         </div>
                         <h5 style={{marginTop: 40}}>Cabs</h5>
                         <div>

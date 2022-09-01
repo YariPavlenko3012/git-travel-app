@@ -102,7 +102,11 @@ export default function StateShow() {
               </div>
           </div>
           <Tabs type="card">
-              <Tabs.TabPane tab="City" key="1">
+              <Tabs.TabPane tab={(
+                  <span>
+                        City ({city?.meta.total})
+                    </span>
+              )} key="1">
                   {city && (
                       <>
                           <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
@@ -117,7 +121,11 @@ export default function StateShow() {
                       </>
                   )}
               </Tabs.TabPane>
-              <Tabs.TabPane tab="Sight" key="2">
+              <Tabs.TabPane tab={(
+                  <span>
+                        Sight ({sight?.meta.total})
+                    </span>
+              )} key="2">
                   {sight && (
                       <>
                           <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>

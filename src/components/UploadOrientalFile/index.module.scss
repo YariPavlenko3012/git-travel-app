@@ -1,0 +1,78 @@
+.download {
+  &__btn{
+    margin-bottom: 10px;
+    &_actions{
+
+      border: 1px solid #d9d9d9;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      &.landscape{
+        width: 180px;
+        height: 100px;
+      }
+      &.portrait{
+        width: 70px;
+        height: 100px;
+      }
+      &.error{
+        border: 1px solid #ff4d4f;
+      }
+    }
+    &_download{
+      position: absolute;
+      top:50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+    }
+    &_photo{
+      position: absolute;
+      top:0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+    }
+  }
+  &__preview {
+    background: #F2F7FE;
+    padding: 0.7rem;
+    display: flex;
+    flex-wrap: wrap;
+    &_wrapper {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      padding: 10px;
+    }
+
+    &_img {
+      width: 100%;
+      height: 100%;
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    &_delete {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      cursor: pointer;
+      background: white;
+      border: 1px solid black;
+      width: 25px;
+      height: 25px;
+      border-radius: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}

@@ -122,7 +122,12 @@ textarea{
         max-width: 1140px;
     }
 }
-
+h3{
+    font-size: calc(1.3rem + .6vw);
+}
+h5{
+    font-size: 1.25rem;
+}
 .slick-track{
     margin: 0;
 }

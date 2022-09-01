@@ -39,6 +39,7 @@ export default function UpdateSightForm({sight, sightId, getSight}) {
               }}
               render={({handleSubmit, submitting}) => (
                 <Form onFinish={handleSubmit} layout="vertical">
+                    <h5>General</h5>
                     <div style={{display: "flex", flexWrap: "wrap", alignItems: "flex-end"}}>
                         <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
                             <FieldSelectCity name="city_id"

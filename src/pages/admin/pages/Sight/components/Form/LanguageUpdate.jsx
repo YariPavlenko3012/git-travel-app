@@ -52,7 +52,7 @@ export default function LanguageUpdateForm({sightId, sight, getSight}) {
                     render={({handleSubmit}) => (
                       <Form onFinish={handleSubmit} layout="vertical"
                             style={{width: `calc(100% / ${languages_list.length} - 10px)`}}>
-                          <h4>{lang.name} - {lang.lang_code}</h4>
+                          <h5>{lang.name} - {lang.lang_code}</h5>
                           <FieldInput label="Sight name"
                                       name="sight_name"
                                       placeholder={`Enter sight name (${lang.lang_code})`}
