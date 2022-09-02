@@ -7,7 +7,7 @@ export const PriceContext = createContext({});
 
 export function PriceContextProvider({children}) {
     const prices = {
-        sight: 10,
+        sight: 15,
         city: 15,
         country: 20,
     }
