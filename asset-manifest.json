@@ -11,8 +11,8 @@
     "static/js/4.c2a3ec80.chunk.js": "/git-travel-app/static/js/4.c2a3ec80.chunk.js",
     "static/js/4.c2a3ec80.chunk.js.map": "/git-travel-app/static/js/4.c2a3ec80.chunk.js.map",
     "main.css": "/git-travel-app/static/css/main.da659384.chunk.css",
-    "main.js": "/git-travel-app/static/js/main.c8e001b6.chunk.js",
-    "main.js.map": "/git-travel-app/static/js/main.c8e001b6.chunk.js.map",
+    "main.js": "/git-travel-app/static/js/main.01f271ea.chunk.js",
+    "main.js.map": "/git-travel-app/static/js/main.01f271ea.chunk.js.map",
     "runtime-main.js": "/git-travel-app/static/js/runtime-main.f44a2bdd.js",
     "runtime-main.js.map": "/git-travel-app/static/js/runtime-main.f44a2bdd.js.map",
     "static/js/7.a96cea8e.chunk.js": "/git-travel-app/static/js/7.a96cea8e.chunk.js",
@@ -88,7 +88,7 @@
     "static/js/35.1716e7e5.chunk.js": "/git-travel-app/static/js/35.1716e7e5.chunk.js",
     "static/js/35.1716e7e5.chunk.js.map": "/git-travel-app/static/js/35.1716e7e5.chunk.js.map",
     "index.html": "/git-travel-app/index.html",
-    "precache-manifest.03de4ff4868e28dee8722c0ea879f512.js": "/git-travel-app/precache-manifest.03de4ff4868e28dee8722c0ea879f512.js",
+    "precache-manifest.7cdf45bc6d4a359355cf0392ab6e6b16.js": "/git-travel-app/precache-manifest.7cdf45bc6d4a359355cf0392ab6e6b16.js",
     "service-worker.js": "/git-travel-app/service-worker.js",
     "static/css/11.f96683bd.chunk.css.map": "/git-travel-app/static/css/11.f96683bd.chunk.css.map",
     "static/css/12.9ba87e0d.chunk.css.map": "/git-travel-app/static/css/12.9ba87e0d.chunk.css.map",
@@ -132,7 +132,7 @@
     "static/js/7.a96cea8e.chunk.js.LICENSE.txt": "/git-travel-app/static/js/7.a96cea8e.chunk.js.LICENSE.txt",
     "static/js/8.dbc210e3.chunk.js.LICENSE.txt": "/git-travel-app/static/js/8.dbc210e3.chunk.js.LICENSE.txt",
     "static/js/9.291968ea.chunk.js.LICENSE.txt": "/git-travel-app/static/js/9.291968ea.chunk.js.LICENSE.txt",
-    "static/js/main.c8e001b6.chunk.js.LICENSE.txt": "/git-travel-app/static/js/main.c8e001b6.chunk.js.LICENSE.txt",
+    "static/js/main.01f271ea.chunk.js.LICENSE.txt": "/git-travel-app/static/js/main.01f271ea.chunk.js.LICENSE.txt",
     "static/media/slick-theme.css": "/git-travel-app/static/media/slick.f97e3bbf.svg"
   },
   "entrypoints": [
@@ -140,6 +140,6 @@
     "static/css/11.f96683bd.chunk.css",
     "static/js/11.a6a9615a.chunk.js",
     "static/css/main.da659384.chunk.css",
-    "static/js/main.c8e001b6.chunk.js"
+    "static/js/main.01f271ea.chunk.js"
   ]
 }
