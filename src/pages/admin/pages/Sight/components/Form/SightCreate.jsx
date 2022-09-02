@@ -26,7 +26,6 @@ import {AuthContext} from "../../../../../context/auth.context";
 import {ADMIN_MAKE_EDIT_SIGHT_URI} from "../../../../../../constants/admin/uri.constant";
 
 export default function SightCreateForm({ cityId }) {
-    const [coordinates, setCoordinates] = useState([]);
     const {user} = useContext(AuthContext);
     const history = useHistory();
 
@@ -41,11 +40,16 @@ export default function SightCreateForm({ cityId }) {
         return history.push(ADMIN_MAKE_EDIT_SIGHT_URI(id))
     };
 
-    const changeCoordinates = ( value ) => {
+    const changeCoordinates = ( value, setValues ) => {
         const coordinates = value.split(',');
 
+        console.log(coordinates, "coordinates")
+
         if(coordinates.length === 2){
-            setCoordinates([coordinates[0], coordinates[1]])
+            setTimeout(() => {
+                setValues("sight.latitude", coordinates[0])
+                setValues("sight.longitude", coordinates[1])
+            }, 0)
         }
     }
 
@@ -53,13 +57,11 @@ export default function SightCreateForm({ cityId }) {
       <FormUI onSubmit={createSight}
               initialValues={{
                   sight: {
-                      latitude: coordinates[0],
-                      longitude: coordinates[1],
                       city_id: +cityId,
                       user_id: user.id
                   },
               }}
-              render={({handleSubmit, submitting}) => (
+              render={({handleSubmit, values, submitting, form}) => (
                 <Form onFinish={handleSubmit} layout="vertical">
                     <h5>General</h5>
                     <div>
@@ -85,17 +87,20 @@ export default function SightCreateForm({ cityId }) {
                                             placeholder="Enter sight description"
                                             required={true}/>
                             </div>
+                            {console.log(values, "values")}
                             <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
                                 <FieldInput label="Latitude"
                                             name="sight.latitude"
-                                            onPaste={changeCoordinates}
+                                            value={values.sight.latitude || ""}
+                                            onPaste={val => changeCoordinates(val, form.mutators.setValue)}
                                             placeholder="Enter latitude"
                                             required={true}/>
                             </div>
                             <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
                                 <FieldInput label="Longitude"
                                             name="sight.longitude"
-                                            onPaste={changeCoordinates}
+                                            value={values.sight.longitude || ""}
+                                            onPaste={val => changeCoordinates(val, form.mutators.setValue)}
                                             placeholder="Enter longitude"
                                             required={true}/>
                             </div>

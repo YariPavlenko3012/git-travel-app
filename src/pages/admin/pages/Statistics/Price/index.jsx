@@ -43,7 +43,8 @@ export default function User(){
             title: 'Cities',
             dataIndex: 'cities',
             key: 'cities',
-            render: cities => `${cities} (${cities * prices.city}₴)`
+            render: cities => `0₴`,
+            // render: cities => `${cities} (${cities * prices.city}₴)`
         },
         {
             title: 'Sights',
@@ -55,7 +56,8 @@ export default function User(){
             title: 'Total',
             dataIndex: 'total',
             key: 'total',
-            render: (total, user) => `${user.countries * prices.country + user.cities * prices.city + user.sights * prices.sight}₴`
+            // render: (total, user) => `${user.countries * prices.country + user.cities * prices.city + user.sights * prices.sight}₴`
+            render: (total, user) => `${user.countries * prices.country  + user.sights * prices.sight}₴`
         },
     ]), []);
 
