@@ -9,7 +9,7 @@ import {
     API_DICTIONARY_CITIES_URL,
     API_DICTIONARY_COUNTRIES_URL,
     API_DICTIONARY_CURRENCIES_URL,
-    API_DICTIONARY_LANGUAGES_URL,
+    API_DICTIONARY_LANGUAGES_URL, API_DICTIONARY_SIGHT_URL,
     API_DICTIONARY_STATES_URL,
 } from "../constants/admin/api.constant";
 /**
@@ -46,6 +46,10 @@ export default class DictionaryService {
 
     static async states() {
         return await axios.get(API_DICTIONARY_STATES_URL);
+    }
+
+    static async sights() {
+        return await axios.get(API_DICTIONARY_SIGHT_URL);
     }
 }
 

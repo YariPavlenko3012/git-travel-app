@@ -64,6 +64,7 @@ export const API_DICTIONARY_CITIES_URL = `${DICTIONARY}/cities`;
 export const API_DICTIONARY_LANGUAGES_URL = `${DICTIONARY}/languages`;
 export const API_DICTIONARY_CURRENCIES_URL = `${DICTIONARY}/currencies`;
 export const API_DICTIONARY_STATES_URL = `${DICTIONARY}/states`;
+export const API_DICTIONARY_SIGHT_URL = `${DICTIONARY}/sights`;
 
 //DICTIONARY
 const USER = `${ADMIN}/users`;
