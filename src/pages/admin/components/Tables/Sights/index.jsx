@@ -27,7 +27,8 @@ export default function SightTable({sightList, getSight}) {
             dataIndex: 'name',
             key: 'name',
             render: (_, sight) => <Link to={ADMIN_MAKE_SHOW_SIGHT_URI(sight.id)}
-                                        style={{color: sight.name ? "#0d6efd" : "red"}}>{sight.name || "No name"}</Link>
+                                        style={{color: sight.name ? "#0d6efd" : "red"}}>{sight.name || "No name"}</Link>,
+            ...SearchInputForTable()
         },
         {
             title: 'Description',
@@ -40,7 +41,6 @@ export default function SightTable({sightList, getSight}) {
             dataIndex: 'city',
             key: 'city',
             render: city => <Link to={ADMIN_MAKE_SHOW_CITY_URI(city.id)} style={{color: city.name ? "#0d6efd" : "red"}}>{city.name || "No name"}</Link>,
-            ...SearchInputForTable()
         },
         {
             title: 'Latitude',

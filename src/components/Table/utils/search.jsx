@@ -25,7 +25,10 @@ export default function SearchInputForTable( ) {
                   >
                       Search
                   </Button>
-                  <Button onClick={clearFilters} size="small" style={{ width: 90 }}>
+                  <Button onClick={() => {
+                      clearFilters();
+                      confirm({ closeDropdown: true });
+                  }} size="small" style={{ width: 90 }}>
                       Reset
                   </Button>
               </Space>
@@ -33,6 +36,6 @@ export default function SearchInputForTable( ) {
         ),
         filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
     });
-    
+
     return getColumnSearchProps();
 }
