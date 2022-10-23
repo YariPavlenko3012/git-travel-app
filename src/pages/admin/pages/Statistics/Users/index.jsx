@@ -3,6 +3,7 @@
  */
 import React, {useEffect, useState, useMemo, useContext} from 'react'
 import {Button, DatePicker} from "antd";
+import moment from 'moment';
 /**
  * components
  */
@@ -15,6 +16,11 @@ import UsersService from "../../../../../services/admin/users.service";
  * context
  */
 import {PriceContext} from "../../../../context/price.context";
+/**
+ * utils
+ */
+import Calendar from "../../../../../utils/Calendar";
+import DateTime from "../../../../../utils/DateTime";
 
 const { RangePicker } = DatePicker;
 
@@ -22,7 +28,7 @@ const { RangePicker } = DatePicker;
 export default function User(){
     const {prices} = useContext(PriceContext)
     const [users, setUsers] = useState(null);
-    const [searchDate, setSearchDate] = useState(['', ''])
+    const [searchDate, setSearchDate] = useState(null)
     const [isReady, setIsReady] = useState(false);
 
     const columns = useMemo(() => ([
@@ -64,10 +70,10 @@ export default function User(){
         },
     ]), []);
 
-    const getUser = async ( params = {} ) => {
+    const getUser = async ( params = {}, rangeDate = null ) => {
         setIsReady(true)
         const newParams = {}
-        const [start_date, end_date] = searchDate;
+        const [start_date, end_date] = searchDate || getSearchDate();
 
         if(start_date){
             newParams.start_date = start_date
@@ -78,6 +84,21 @@ export default function User(){
 
         setUsers(await UsersService.list( {...params, ...newParams} ))
         setIsReady(false)
+    }
+
+    const getSearchDate = () => {
+        const now = new Date();
+        const currentMonth = now.getMonth();
+        const currentYear = now.getFullYear();
+
+        const rangeDate = [
+            DateTime.dateToYmd(new Date(currentYear, currentMonth, 1)),
+            DateTime.dateToYmd(new Date(currentYear, currentMonth, Calendar.daysInMonth(new Date())))
+        ]
+
+        setSearchDate(rangeDate)
+
+        return rangeDate;
     }
 
     useEffect(() => {
@@ -92,8 +113,11 @@ export default function User(){
         <>
             <div style={{marginBottom: 20, display: "flex", alignItems: "center", justifyContent: "space-between"}}>
                 <h3>Prices</h3>
+                {console.log(searchDate, "searchDate")}
                 <div style={{display: "flex", alignItems: "center", justifyContent: "flex-end"}}>
-                    <RangePicker onChange={(_, date) => setSearchDate(date)}/>
+                    <RangePicker defaultValue={[moment(searchDate[0], 'YYYY-MM-DD'), moment(searchDate[1], 'YYYY-MM-DD')]}
+                                 allowClear={true}
+                                 onChange={(_, date) => setSearchDate(date)}/>
                     <Button type="primary" onClick={() => getUser()}>
                         Filter
                     </Button>
