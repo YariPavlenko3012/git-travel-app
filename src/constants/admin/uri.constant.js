@@ -42,6 +42,17 @@ export const ADMIN_MAKE_SHOW_SIGHT_URI = (sightId) => `${ADMIN_SIGHT}/${sightId}
 export const ADMIN_EDIT_SIGHT_URI = `${ADMIN_SIGHT}/edit/:sightId`;
 export const ADMIN_MAKE_EDIT_SIGHT_URI = sightId => `${ADMIN_SIGHT}/edit/${sightId}`;
 
+
+//PARK
+const ADMIN_PARK = `${ADMIN}/park`;
+export const ADMIN_PARK_LIST_URI = `${ADMIN_PARK}`;
+// export const ADMIN_CREATE_SIGHT_URI = `${ADMIN_SIGHT}/create/:cityId`;
+// export const ADMIN_MAKE_CREATE_SIGHT_URI = (cityId) => `${ADMIN_SIGHT}/create/${cityId}`;
+// export const ADMIN_SHOW_SIGHT_URI = `${ADMIN_SIGHT}/:sightId`;
+// export const ADMIN_MAKE_SHOW_SIGHT_URI = (sightId) => `${ADMIN_SIGHT}/${sightId}`;
+// export const ADMIN_EDIT_SIGHT_URI = `${ADMIN_SIGHT}/edit/:sightId`;
+// export const ADMIN_MAKE_EDIT_SIGHT_URI = sightId => `${ADMIN_SIGHT}/edit/${sightId}`;
+
 //LANGUAGE
 const ADMIN_LANGUAGE = `${ADMIN}/language`;
 export const ADMIN_LANGUAGE_LIST_URI = `${ADMIN_LANGUAGE}`;

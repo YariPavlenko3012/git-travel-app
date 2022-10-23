@@ -215,3 +215,6 @@ div.arrow_box img{
     display: none;
 }
 
+.gmnoprint,.gm-fullscreen-control{
+    display: none;
+}

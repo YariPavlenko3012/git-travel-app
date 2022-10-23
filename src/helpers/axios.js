@@ -14,6 +14,7 @@ import StorageService from "../services/storage.service";
 
 axios.interceptors.request.use(async (req) => {
 	req.headers.Accept = 'application/json';
+	req.headers['Content-Type'] = 'application/json';
 	req.headers.Authorization = 'Bearer ' + StorageService.accessToken;
 	req.headers['Api-Key'] = btoa(process.env.REACT_APP_API_KEY);
 

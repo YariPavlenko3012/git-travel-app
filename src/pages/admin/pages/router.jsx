@@ -32,7 +32,12 @@ import {
     ADMIN_CREATE_CURRENCY_URI,
     ADMIN_USERS_CREATE,
     ADMIN_STATISTICS_USERS_LIST,
-    ADMIN_STATISTICS_PRICE, ADMIN_STATE_LIST_URI, ADMIN_EDIT_STATE_URI, ADMIN_CREATE_STATE_URI, ADMIN_SHOW_STATE_URI
+    ADMIN_STATISTICS_PRICE,
+    ADMIN_STATE_LIST_URI,
+    ADMIN_EDIT_STATE_URI,
+    ADMIN_CREATE_STATE_URI,
+    ADMIN_SHOW_STATE_URI,
+    ADMIN_PARK_LIST_URI
 } from "../../../constants/admin/uri.constant";
 
 
@@ -163,6 +168,11 @@ export default function RouterPage() {
             path: ADMIN_STATISTICS_USERS_LIST,
             component: lazy(() => import('./Statistics/Users'))
         },
+        // {
+        //     layout: AuthRoute,
+        //     path: ADMIN_PARK_LIST_URI,
+        //     component: lazy(() => import('./Park'))
+        // },
     ]), []);
 
     return (
