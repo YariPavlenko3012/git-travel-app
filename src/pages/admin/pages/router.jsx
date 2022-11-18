@@ -37,7 +37,7 @@ import {
     ADMIN_EDIT_STATE_URI,
     ADMIN_CREATE_STATE_URI,
     ADMIN_SHOW_STATE_URI,
-    ADMIN_PARK_LIST_URI
+    ADMIN_GENERATE_PLACE_URI, ADMIN_ROUTE_URI
 } from "../../../constants/admin/uri.constant";
 
 
@@ -170,9 +170,14 @@ export default function RouterPage() {
         },
         // {
         //     layout: AuthRoute,
-        //     path: ADMIN_PARK_LIST_URI,
-        //     component: lazy(() => import('./Park'))
+        //     path: ADMIN_GENERATE_PLACE_URI,
+        //     component: lazy(() => import('./GeneratePlace'))
         // },
+        {
+            layout: AuthRoute,
+            path: ADMIN_ROUTE_URI,
+            component: lazy(() => import('./Route'))
+        },
     ]), []);
 
     return (

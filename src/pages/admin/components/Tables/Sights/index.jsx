@@ -1,9 +1,9 @@
 /**
  * external libs
  */
-import React, {useMemo} from 'react';
+import React, {useMemo, useEffect, useState} from 'react';
 import {Link, useHistory} from 'react-router-dom'
-import {Button, Space, Tooltip} from 'antd'
+import {Button, Checkbox, Space, Tooltip} from 'antd'
 import {EditOutlined, EyeOutlined} from '@ant-design/icons'
 /**
  * components
@@ -18,8 +18,10 @@ import {
     ADMIN_MAKE_SHOW_CITY_URI,
     ADMIN_MAKE_SHOW_SIGHT_URI
 } from "../../../../../constants/admin/uri.constant";
+import PlaceTypeTranslate from "../../../../../utils/PlaceTypeTranslate";
 
 export default function SightTable({sightList, getSight}) {
+    const [withPlaceType, setWithPlaceType] = useState(true);
     const history = useHistory();
     const columns = useMemo(() => ([
         {
@@ -40,17 +42,50 @@ export default function SightTable({sightList, getSight}) {
             title: 'City',
             dataIndex: 'city',
             key: 'city',
-            render: city => <Link to={ADMIN_MAKE_SHOW_CITY_URI(city.id)} style={{color: city.name ? "#0d6efd" : "red"}}>{city.name || "No name"}</Link>,
+            render: city => {
+                if(!city){
+                    return null
+                }
+                return <Link to={ADMIN_MAKE_SHOW_CITY_URI(city.id)} style={{color: city.name ? "#0d6efd" : "red"}}>{city.name || "No name"}</Link>
+            },
         },
         {
-            title: 'Latitude',
-            dataIndex: 'latitude',
-            key: 'latitude',
+            title: "Coordinate",
+            dataIndex: 'coordinate',
+            key: 'coordinate',
+            render: (_, sight) => (
+                <div>
+                    {sight.latitude || "-"}
+                    {" / "}
+                    {sight.longitude || "-"}
+                </div>
+            )
         },
         {
-            title: 'Longitude',
-            dataIndex: 'longitude',
-            key: 'longitude',
+            title: () => (
+                <div style={{display: "flex", gap: 10}}>
+                    Place type
+                    <Checkbox checked={withPlaceType} onChange={() => setWithPlaceType(!withPlaceType)} />
+                </div>
+            ),
+            dataIndex: 'place_type',
+            key: 'place_type',
+            render: place_type => <div>{PlaceTypeTranslate.getTranslateForType(place_type)}</div>,
+        },
+        {
+            title: 'Formatted address',
+            dataIndex: 'formatted_address',
+            key: 'formatted_address',
+        },
+        {
+            title: 'Website',
+            dataIndex: 'website',
+            key: 'website',
+        },
+        {
+            title: 'Phone number',
+            dataIndex: 'international_phone_number',
+            key: 'international_phone_number',
         },
         {
             title: 'Image count',
@@ -80,12 +115,23 @@ export default function SightTable({sightList, getSight}) {
               </Space>
             )
         },
-    ]), []);
+    ]), [withPlaceType]);
+
+    const getSightHandler = async (params) => {
+        await getSight({
+            ...(!withPlaceType && {isNull: 'place_type'}),
+            ...params,
+        })
+    }
+
+    useEffect(() => {
+        getSightHandler()
+    }, [withPlaceType])
 
     return (
       <Table data={sightList || []}
              columns={columns}
-             fetchingData={getSight}
+             fetchingData={getSightHandler}
              loader={!sightList}
       />
     )

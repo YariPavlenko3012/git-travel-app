@@ -33,6 +33,7 @@ export default function CreateCountryForm() {
 
         copyValues.country.landscape_image = copyValues.country.landscape_image?.id || null;
         copyValues.country.portrait_image = copyValues.country.portrait_image?.id || null;
+        copyValues.country.original_name = copyValues.country.country_name;
 
         const {id} = await CountryService.create(copyValues);
 
@@ -74,15 +75,15 @@ export default function CreateCountryForm() {
                                             required={true}/>
                             </div>
                             <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
-                                <FieldInput label="name"
+                                <FieldInput label="Name"
                                             name="country.country_name"
-                                            placeholder="Enter population"
+                                            placeholder="Enter name"
                                             required={true}/>
                             </div>
                             <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
-                                <FieldInput label="desc"
+                                <FieldInput label="Description"
                                             name="country.country_description"
-                                            placeholder="Enter population"
+                                            placeholder="Enter description"
                                             required={true}/>
                             </div>
                             <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>

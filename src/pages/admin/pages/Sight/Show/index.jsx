@@ -25,6 +25,10 @@ import {
  * styles
  */
 import styles from "../../../styles/show.module.scss";
+/**
+ * utils
+ */
+import PlaceTypeTranslate from "../../../../../utils/PlaceTypeTranslate";
 
 export default function SightShow() {
     const [sight, setSight] = useState(null);
@@ -95,6 +99,12 @@ export default function SightShow() {
                           Longitude:
                       </span>
                       {sight.longitude}
+                  </p>
+                  <p className={styles.show__item}>
+                      <span className={styles.show__item_key}>
+                          Place type:
+                      </span>
+                      {PlaceTypeTranslate.getTranslateForType(sight.place_type)}
                   </p>
                   <p className={styles.show__item} style={{width: "100%"}}>
                       <span className={styles.show__item_key}>

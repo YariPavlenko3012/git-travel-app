@@ -7,18 +7,35 @@ import React from "react";
  * components
  */
 import FieldSelectState from "../../../../../../components/Select/State";
-import UploadFiles from "../../../../../../components/UploadFiles";
+import FieldInput from "../../../../../../components/Form/FieldInput";
+import UploadOrientalFile from "../../../../../../components/UploadOrientalFile";
 import FormUI from "../../../../../../components/Form";
 /**
  * services
  */
 import CityService from "../../../../../../services/admin/city.service";
-import UploadOrientalFile from "../../../../../../components/UploadOrientalFile";
+/**
+ * enums
+ */
 import FileOrientationEnums from "../../../../../../enums/FileOrientation";
+/**
+ * utils
+ */
+import PlaceApi from "../../../../../../utils/PlaceApi";
 
 export default function UpdateCityForm({cityId, city, getCity}) {
     const updateCity = async (value) => {
         const copyValues = JSON.parse(JSON.stringify(value));
+
+        const equalCoordinate = city.latitude === copyValues.latitude && city.longitude === copyValues.longitude;
+        if(!equalCoordinate && copyValues.latitude && copyValues.longitude){
+            copyValues.geometry = await PlaceApi.getGeometryForCity(copyValues.latitude, copyValues.longitude)
+            if(!copyValues.geometry){
+                alert("Change coordinate. We have some error in google api")
+                return;
+            }
+        }
+
         copyValues.landscape_image = copyValues.landscape_image?.id || null;
         copyValues.portrait_image = copyValues.portrait_image?.id || null;
 
@@ -26,14 +43,28 @@ export default function UpdateCityForm({cityId, city, getCity}) {
         await getCity(cityId)
     };
 
+    const changeCoordinates = ( value, setValues ) => {
+        const coordinates = value.split(',');
+
+        if(coordinates.length === 2){
+            setTimeout(() => {
+                setValues("latitude", coordinates[0])
+                setValues("longitude", coordinates[1])
+            }, 0)
+        }
+    }
+
     return (
       <FormUI onSubmit={updateCity}
               initialValues={{
                   state_id: +city?.state?.id,
                   landscape_image: city.landscape_image,
                   portrait_image: city.portrait_image,
+                  latitude: city.latitude,
+                  longitude: city.longitude,
+                  original_name: city.original_name,
               }}
-              render={({handleSubmit, submitting}) => (
+              render={({handleSubmit, submitting, form}) => (
                 <Form onFinish={handleSubmit} layout="vertical">
                     <h5>General</h5>
                     <div style={{display: "flex", flexWrap: "wrap", alignItems: "flex-end"}}>
@@ -44,6 +75,29 @@ export default function UpdateCityForm({cityId, city, getCity}) {
                                                 select={{
                                                     showSearch: true,
                                                 }}/>
+                        </div>
+                        <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
+                            <FieldInput label="Latitude"
+                                        name={`latitude`}
+                                        onPaste={val => changeCoordinates(val, form.mutators.setValue)}
+                                        placeholder={`Enter latitude`}
+                                        required={true}/>
+
+                        </div>
+                        <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
+                            <FieldInput label="Longitude"
+                                        name={`longitude`}
+                                        onPaste={val => changeCoordinates(val, form.mutators.setValue)}
+                                        placeholder={`Enter longitude`}
+                                        required={true}/>
+
+                        </div>
+                        <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
+                            <FieldInput label="Original name"
+                                        name={`original_name`}
+                                        placeholder={`Enter original name`}
+                                        required={true}/>
+
                         </div>
                     </div>
                     <div style={{display: "flex", flexWrap: "wrap", alignItems: "flex-end"}}>

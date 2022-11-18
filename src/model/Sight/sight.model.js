@@ -10,7 +10,12 @@ export default class SightModel {
         this.number_of_views = data.number_of_views || 0;
         this.latitude = data.latitude;
         this.longitude = data.longitude;
+        this.original_name = data.original_name;
         this.city = data.city;
+        this.place_type = data.place_type;
+        this.formatted_address = data.formatted_address;
+        this.website = data.website;
+        this.international_phone_number = data.international_phone_number;
         this.languages = (data.languages || []).map( language => new SightLanguageModel(language));
         this.images = (data.images || []).map( image => new MediaModel(image));
     }

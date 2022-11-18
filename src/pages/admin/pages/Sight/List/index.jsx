@@ -23,12 +23,13 @@ export default function SightList() {
             }
         }
 
-        setSight(await SightService.list(copyParams))
+        setSight(await SightService.list({country_id: 1, copyParams}))
     };
 
     useEffect(() => {
-        getSight({country_id: 1});
+        getSight();
     }, []);
+
 
     if(!sight) {
         return <div>Loader...</div>

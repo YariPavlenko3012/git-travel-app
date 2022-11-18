@@ -42,6 +42,7 @@ export default function UpdateCountryForm({countryId, getCountry, country}) {
                   safety_index: country.safety_index,
                   happiness_rating: country.happiness_rating,
                   country_area: country.country_area,
+                  original_name: country.original_name,
                   highest_point: country.highest_point,
                   landscape_image: country.landscape_image,
                   portrait_image: country.portrait_image,
@@ -59,6 +60,12 @@ export default function UpdateCountryForm({countryId, getCountry, country}) {
                                                  select={{
                                                      showSearch: true,
                                                  }}/>
+                        </div>
+                        <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
+                            <FieldInput label="Original name"
+                                        name="original_name"
+                                        placeholder="Enter original name"
+                                        required={true}/>
                         </div>
                         <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
                             <FieldSelectLanguage name="official_language"

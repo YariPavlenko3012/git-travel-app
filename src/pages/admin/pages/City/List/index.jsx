@@ -1,7 +1,7 @@
 /**
  * external libs
  */
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Tabs} from "antd";
 /**
  * components
@@ -44,6 +44,7 @@ export default function CityList() {
     const getDoneCity = async (params = {}) => {
         return await getCity({...params, country_id: 1, work_status: CityWorkStatusEnum.done})
     }
+
 
     return (
         <div style={{padding: '10px 0'}}>

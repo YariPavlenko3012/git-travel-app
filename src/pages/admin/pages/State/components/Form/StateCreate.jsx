@@ -23,7 +23,10 @@ export default function CreateStateForm({countryId}) {
     const history = useHistory();
 
     const createState = async (value) => {
-        const {id} = await StateService.create(value);
+        const copyValues = JSON.parse(JSON.stringify(value));
+        copyValues.original_name = copyValues.state_name;
+
+        const {id} = await StateService.create(copyValues);
 
         return history.push(ADMIN_MAKE_SHOW_STATE_URI(id))
     };

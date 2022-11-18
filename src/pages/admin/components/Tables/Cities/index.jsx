@@ -1,9 +1,9 @@
 /**
  * external libs
  */
-import React, {useMemo} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Link, useHistory} from 'react-router-dom'
-import {Button, Space, Tooltip} from 'antd'
+import {Button, Space, Tooltip, Checkbox} from 'antd'
 import {EditOutlined, EyeOutlined} from '@ant-design/icons'
 /**
  * components
@@ -23,6 +23,7 @@ import PreviewFilesOriental from "../../../../../components/PreviewFilesOriental
 import FileOrientationEnums from "../../../../../enums/FileOrientation";
 
 export default function CityTable({cityList, getCity}) {
+    const [withCoordination, setWithCoordination] = useState(true);
     const history = useHistory();
     const columns = useMemo(() => ([
         {
@@ -66,6 +67,23 @@ export default function CityTable({cityList, getCity}) {
             render: (_, city) => <ChangeWorkStatus cityId={city.id}/>
         },
         {
+            dataIndex: 'coordinate',
+            key: 'coordinate',
+            title: () => (
+                <div style={{display: "flex", gap: 10}}>
+                    Coordinate
+                    <Checkbox checked={withCoordination} onChange={() => setWithCoordination(!withCoordination)} />
+                </div>
+            ),
+            render: (_, city) => (
+                <div>
+                    {city.latitude || "-"}
+                    {" / "}
+                    {city.longitude || "-"}
+                </div>
+            )
+        },
+        {
             title: 'Image count',
             dataIndex: 'images',
             key: 'images',
@@ -100,12 +118,23 @@ export default function CityTable({cityList, getCity}) {
               </Space>
             )
         },
-    ]), []);
+    ]), [withCoordination]);
+
+    const getCityHandler = async (params) => {
+        await getCity({
+            ...(!withCoordination && {isNull: 'latitude,longitude'}),
+            ...params,
+        })
+    }
+
+    useEffect(() => {
+        getCityHandler()
+    }, [withCoordination])
 
     return (
       <Table data={cityList || []}
              columns={columns}
-             fetchingData={getCity}
+             fetchingData={getCityHandler}
              loader={!cityList}
       />
     )

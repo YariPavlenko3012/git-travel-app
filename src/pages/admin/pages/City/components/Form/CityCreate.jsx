@@ -9,8 +9,8 @@ import {useHistory} from 'react-router-dom'
  */
 import FieldSelectState from "../../../../../../components/Select/State";
 import FieldInput from "../../../../../../components/Form/FieldInput";
-import UploadFiles from "../../../../../../components/UploadFiles";
 import FormUI from "../../../../../../components/Form";
+import UploadOrientalFile from "../../../../../../components/UploadOrientalFile";
 /**
  * services
  */
@@ -19,31 +19,58 @@ import CityService from "../../../../../../services/admin/city.service";
  * constants
  */
 import {ADMIN_MAKE_EDIT_CITY_URI, ADMIN_MAKE_SHOW_CITY_URI} from "../../../../../../constants/admin/uri.constant";
-import FieldTextarea from "../../../../../../components/Form/FieldTextarea";
-import UploadOrientalFile from "../../../../../../components/UploadOrientalFile";
+/**
+ * enums
+ */
 import FileOrientationEnums from "../../../../../../enums/FileOrientation";
+/**
+ * utils
+ */
+import PlaceApi from "../../../../../../utils/PlaceApi";
 
 export default function CreateCityForm({stateId}) {
     const history = useHistory();
 
     const createCity = async (value) => {
         const copyValues = JSON.parse(JSON.stringify(value));
+
+        if(value.city.latitude && value.city.longitude){
+            copyValues.geometry = await PlaceApi.getGeometryForCity(value.city.latitude, value.city.longitude)
+            if(!copyValues.geometry){
+                alert("Change coordinate. We have some error in google api")
+                return;
+            }
+        }
+
         copyValues.city.landscape_image = copyValues.city.landscape_image?.id || null;
         copyValues.city.portrait_image = copyValues.city.portrait_image?.id || null;
+        copyValues.city.original_name = copyValues.city.city_name;
 
         const {id} = await CityService.create(copyValues);
 
         return history.push(ADMIN_MAKE_SHOW_CITY_URI(id))
     };
 
+    const changeCoordinates = ( value, setValues ) => {
+        const coordinates = value.split(',');
+
+        if(coordinates.length === 2){
+            setTimeout(() => {
+                setValues("city.latitude", coordinates[0].trim())
+                setValues("city.longitude", coordinates[1].trim())
+            }, 0)
+        }
+    }
 
     return (
         <FormUI onSubmit={createCity}
                 initialValues={{
-                    city: {state_id: +stateId},
+                    city: {
+                        state_id: +stateId
+                    },
                     cabs: [],
                 }}
-                render={({handleSubmit, submitting}) => (
+                render={({handleSubmit, form, submitting}) => (
                     <Form onFinish={handleSubmit} layout="vertical">
                         <h5>General</h5>
                         <div>
@@ -60,6 +87,22 @@ export default function CreateCityForm({stateId}) {
                                     <FieldInput label="City name"
                                                 name={`city.city_name`}
                                                 placeholder={`Enter city name`}
+                                                required={true}/>
+
+                                </div>
+                                <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
+                                    <FieldInput label="Latitude"
+                                                name={`city.latitude`}
+                                                onPaste={val => changeCoordinates(val, form.mutators.setValue)}
+                                                placeholder={`Enter latitude`}
+                                                required={true}/>
+
+                                </div>
+                                <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
+                                    <FieldInput label="Longitude"
+                                                name={`city.longitude`}
+                                                onPaste={val => changeCoordinates(val, form.mutators.setValue)}
+                                                placeholder={`Enter longitude`}
                                                 required={true}/>
 
                                 </div>

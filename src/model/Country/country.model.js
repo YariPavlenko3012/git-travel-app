@@ -16,6 +16,7 @@ export default class CountryModel {
         this.languages = (data.languages || []).map( language => new CountryLanguageModel(language));
         this.description = data.description;
         this.ambulance_number = data.ambulance_number;
+        this.original_name = data.original_name;
         this.has_seas = data.has_seas;
         this.has_mountains = data.has_mountains;
         this.landscape_image =  data.landscape_image && new MediaModel(data.landscape_image);

@@ -12,6 +12,7 @@ export const AuthContext = createContext({});
 export function AuthContextProvider({children}) {
     const [user, setUser] = useState(null);
     const [isReady, setIsReady] = useState(false);
+
     AuthService.setUser = setUser;
 
     const getUser = useCallback(async () => {
