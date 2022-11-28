@@ -20,7 +20,9 @@ export default function Park({setPlaceTypes, placeTypes}) {
         <div className={styles.typeWrapper}>
             {PlaceTypeEnum.googleTypesList.map( type => (
                 <div className={`${styles.typeWrapper__type} ${placeTypes === type && styles.active}`} onClick={() => setPlaceTypes(type)}>
-                    {PlaceTypeTranslate.getTranslateForType(type)})}
+                    {PlaceTypeTranslate.getTranslateForType(type)}
+                    {"   "}
+                    {type}
                 </div>
             ))}
         </div>

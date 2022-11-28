@@ -7,6 +7,7 @@ export default class PlaceTypeEnum{
     static get lake(){ return "lake" }
     static get amusement_park(){ return "amusement_park" }
     static get aquarium(){ return "aquarium" }
+    static get restaurant(){ return "restaurant" }
     static get art_gallery(){ return "art_gallery" }
     static get bus_station(){ return "bus_station" }
     static get tourist_attraction(){ return "tourist_attraction" }
@@ -26,17 +27,42 @@ export default class PlaceTypeEnum{
             PlaceTypeEnum.aquarium,
             PlaceTypeEnum.art_gallery,
             PlaceTypeEnum.bus_station,
-            PlaceTypeEnum.tourist_attraction,
             PlaceTypeEnum.campground,
             PlaceTypeEnum.church,
             PlaceTypeEnum.city_hall,
             PlaceTypeEnum.mosque,
-            PlaceTypeEnum.embassy,
+            PlaceTypeEnum.embassy, //опсольство
+            PlaceTypeEnum.museum,
+            PlaceTypeEnum.park,
+            PlaceTypeEnum.stadium,
+            PlaceTypeEnum.subway_station,
+            PlaceTypeEnum.restaurant,
+        ]
+    }
+    static get googleTypesListManual(){
+        return [
+            PlaceTypeEnum.amusement_park,
+            PlaceTypeEnum.aquarium,
+            PlaceTypeEnum.art_gallery,
             PlaceTypeEnum.museum,
             PlaceTypeEnum.park,
             PlaceTypeEnum.parking,
+            PlaceTypeEnum.tourist_attraction,
             PlaceTypeEnum.stadium,
             PlaceTypeEnum.subway_station,
+            PlaceTypeEnum.restaurant,
+        ]
+    }
+    static get googleTypesListAutomatic(){
+        return [
+            PlaceTypeEnum.bus_station,
+            PlaceTypeEnum.campground,
+            PlaceTypeEnum.church,
+            PlaceTypeEnum.city_hall,
+            PlaceTypeEnum.mosque,
+            PlaceTypeEnum.parking,
+            PlaceTypeEnum.embassy,
+            PlaceTypeEnum.parking,
         ]
     }
     static get list(){

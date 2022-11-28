@@ -31,6 +31,7 @@ import {
  * enum
  */
 import FileOrientationEnums from "../../../../../enums/FileOrientation";
+import ChangeWorkStatus from "../../../components/Tables/Cities/components/ChangeWorkStatus";
 
 
 export default function CityShow() {
@@ -60,7 +61,10 @@ export default function CityShow() {
     return (
       <div>
           <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
-              {city.name}
+              <div style={{display: "flex"}}>
+                  <span style={{paddingRight: 10}}>{city.name}</span>
+                  <ChangeWorkStatus workStatus={city.work_status} cityId={city.id}/>
+              </div>
               <Link to={ADMIN_MAKE_EDIT_CITY_URI(cityId)}>
                   <Button type="primary" className={styles.show__btn}>
                       Edit City

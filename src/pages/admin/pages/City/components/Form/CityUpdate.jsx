@@ -28,9 +28,9 @@ export default function UpdateCityForm({cityId, city, getCity}) {
         const copyValues = JSON.parse(JSON.stringify(value));
 
         const equalCoordinate = city.latitude === copyValues.latitude && city.longitude === copyValues.longitude;
-        if(!equalCoordinate && copyValues.latitude && copyValues.longitude){
+        if (!equalCoordinate && copyValues.latitude && copyValues.longitude) {
             copyValues.geometry = await PlaceApi.getGeometryForCity(copyValues.latitude, copyValues.longitude)
-            if(!copyValues.geometry){
+            if (!copyValues.geometry) {
                 alert("Change coordinate. We have some error in google api")
                 return;
             }
@@ -43,10 +43,10 @@ export default function UpdateCityForm({cityId, city, getCity}) {
         await getCity(cityId)
     };
 
-    const changeCoordinates = ( value, setValues ) => {
+    const changeCoordinates = (value, setValues) => {
         const coordinates = value.split(',');
 
-        if(coordinates.length === 2){
+        if (coordinates.length === 2) {
             setTimeout(() => {
                 setValues("latitude", coordinates[0])
                 setValues("longitude", coordinates[1])
@@ -55,62 +55,61 @@ export default function UpdateCityForm({cityId, city, getCity}) {
     }
 
     return (
-      <FormUI onSubmit={updateCity}
-              initialValues={{
-                  state_id: +city?.state?.id,
-                  landscape_image: city.landscape_image,
-                  portrait_image: city.portrait_image,
-                  latitude: city.latitude,
-                  longitude: city.longitude,
-                  original_name: city.original_name,
-              }}
-              render={({handleSubmit, submitting, form}) => (
-                <Form onFinish={handleSubmit} layout="vertical">
-                    <h5>General</h5>
-                    <div style={{display: "flex", flexWrap: "wrap", alignItems: "flex-end"}}>
-                        <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
-                            <FieldSelectState name="state_id"
-                                                required={true}
-                                                disabled={true}
-                                                select={{
-                                                    showSearch: true,
-                                                }}/>
-                        </div>
-                        <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
-                            <FieldInput label="Latitude"
-                                        name={`latitude`}
-                                        onPaste={val => changeCoordinates(val, form.mutators.setValue)}
-                                        placeholder={`Enter latitude`}
-                                        required={true}/>
+        <FormUI onSubmit={updateCity}
+                initialValues={{
+                    state_id: +city?.state?.id,
+                    landscape_image: city.landscape_image,
+                    portrait_image: city.portrait_image,
+                    latitude: city.latitude,
+                    longitude: city.longitude,
+                    original_name: city.original_name,
+                }}
+                render={({handleSubmit, submitting, form}) => (
+                    <Form onFinish={handleSubmit} layout="vertical">
+                        <h5>General</h5>
+                        <div style={{display: "flex", flexWrap: "wrap", alignItems: "flex-end"}}>
+                            <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
+                                <FieldSelectState name="state_id"
+                                                  required={true}
+                                                  select={{
+                                                      showSearch: true,
+                                                  }}/>
+                            </div>
+                            <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
+                                <FieldInput label="Latitude"
+                                            name={`latitude`}
+                                            onPaste={val => changeCoordinates(val, form.mutators.setValue)}
+                                            placeholder={`Enter latitude`}
+                                            required={true}/>
 
-                        </div>
-                        <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
-                            <FieldInput label="Longitude"
-                                        name={`longitude`}
-                                        onPaste={val => changeCoordinates(val, form.mutators.setValue)}
-                                        placeholder={`Enter longitude`}
-                                        required={true}/>
+                            </div>
+                            <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
+                                <FieldInput label="Longitude"
+                                            name={`longitude`}
+                                            onPaste={val => changeCoordinates(val, form.mutators.setValue)}
+                                            placeholder={`Enter longitude`}
+                                            required={true}/>
 
-                        </div>
-                        <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
-                            <FieldInput label="Original name"
-                                        name={`original_name`}
-                                        placeholder={`Enter original name`}
-                                        required={true}/>
+                            </div>
+                            <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
+                                <FieldInput label="Original name"
+                                            name={`original_name`}
+                                            placeholder={`Enter original name`}
+                                            required={true}/>
 
+                            </div>
                         </div>
-                    </div>
-                    <div style={{display: "flex", flexWrap: "wrap", alignItems: "flex-end"}}>
-                        <div style={{marginRight: 10}}>
-                            <UploadOrientalFile oriental={FileOrientationEnums.landscape} name="landscape_image"/>
+                        <div style={{display: "flex", flexWrap: "wrap", alignItems: "flex-end"}}>
+                            <div style={{marginRight: 10}}>
+                                <UploadOrientalFile oriental={FileOrientationEnums.landscape} name="landscape_image"/>
+                            </div>
+                            <div style={{marginRight: 10}}>
+                                <UploadOrientalFile oriental={FileOrientationEnums.portrait} name="portrait_image"/>
+                            </div>
                         </div>
-                        <div style={{marginRight: 10}}>
-                            <UploadOrientalFile oriental={FileOrientationEnums.portrait} name="portrait_image"/>
-                        </div>
-                    </div>
-                    <Button variant="primary" htmlType="submit" disabled={submitting}>Update</Button>
-                </Form>
-              )}
-      />
+                        <Button variant="primary" htmlType="submit" disabled={submitting}>Update</Button>
+                    </Form>
+                )}
+        />
     )
 }

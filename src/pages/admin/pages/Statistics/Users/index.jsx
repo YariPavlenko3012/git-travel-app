@@ -113,26 +113,26 @@ export default function User(){
 
     return (
         <>
-            {/*<div style={{marginBottom: 20, display: "flex", alignItems: "center", justifyContent: "space-between"}}>*/}
-            {/*    <h3>Prices</h3>*/}
-            {/*    <div style={{display: "flex", alignItems: "center", justifyContent: "flex-end"}}>*/}
-            {/*        <RangePicker defaultValue={[moment(searchDate[0], 'YYYY-MM-DD'), moment(searchDate[1], 'YYYY-MM-DD')]}*/}
-            {/*                     allowClear={true}*/}
-            {/*                     onChange={(_, date) => setSearchDate(date)}/>*/}
-            {/*        <Button type="primary" onClick={() => getUser()}>*/}
-            {/*            Filter*/}
-            {/*        </Button>*/}
-            {/*    </div>*/}
-            {/*</div>*/}
-            {/*<Table data={users}*/}
-            {/*       columns={columns}*/}
-            {/*       fetchingData={getUser}*/}
-            {/*       loader={isReady}*/}
-            {/*/>*/}
-            <div style={{display: "flex", alignItems: "center"}}>
-                <Profile />
-                <Arrow />
+            <div style={{marginBottom: 20, display: "flex", alignItems: "center", justifyContent: "space-between"}}>
+                <h3>Prices</h3>
+                <div style={{display: "flex", alignItems: "center", justifyContent: "flex-end"}}>
+                    <RangePicker defaultValue={[moment(searchDate[0], 'YYYY-MM-DD'), moment(searchDate[1], 'YYYY-MM-DD')]}
+                                 allowClear={true}
+                                 onChange={(_, date) => setSearchDate(date)}/>
+                    <Button type="primary" onClick={() => getUser()}>
+                        Filter
+                    </Button>
+                </div>
             </div>
+            <Table data={users}
+                   columns={columns}
+                   fetchingData={getUser}
+                   loader={isReady}
+            />
+            {/*<div style={{display: "flex", alignItems: "center"}}>*/}
+            {/*    <Profile />*/}
+            {/*    <Arrow />*/}
+            {/*</div>*/}
         </>
     )
 }

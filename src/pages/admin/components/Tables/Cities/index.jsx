@@ -64,7 +64,7 @@ export default function CityTable({cityList, getCity}) {
             title: 'Work Status',
             dataIndex: 'work_status',
             key: 'work_status',
-            render: (_, city) => <ChangeWorkStatus cityId={city.id}/>
+            render: (_, city) => <ChangeWorkStatus workStatus={city.work_status} cityId={city.id}/>
         },
         {
             dataIndex: 'coordinate',

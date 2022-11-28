@@ -10,8 +10,8 @@ import { HashRouter } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'antd/dist/antd.css';
 import 'react-phone-input-2/lib/style.css'
-import 'react-date-range/dist/styles.css'; // main style file
-import 'react-date-range/dist/theme/default.css'; // theme css file
+import 'react-date-range/dist/styles.css'; // main style file.jpeg
+import 'react-date-range/dist/theme/default.css'; // theme css file.jpeg
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import './general.css';

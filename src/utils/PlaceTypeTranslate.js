@@ -24,6 +24,7 @@ export default class PlaceTypeTranslate {
             [PlaceTypeEnum.parking]: "Паркінг",
             [PlaceTypeEnum.stadium]: "Стадіон",
             [PlaceTypeEnum.subway_station]: "Станція метро",
+            [PlaceTypeEnum.restaurant]: "Ресторан",
         }
 
         return typeObj[type]
