@@ -11,10 +11,8 @@ import FieldSelectCurrency from "../../../../../../components/Select/Currency";
 import FieldSelectLanguage from "../../../../../../components/Select/Language";
 import FieldInput from "../../../../../../components/Form/FieldInput";
 import FieldCheckbox from "../../../../../../components/Form/FieldCheckbox";
-import UploadFiles from "../../../../../../components/UploadFiles";
 import UploadOrientalFile from "../../../../../../components/UploadOrientalFile";
 import FormUI from "../../../../../../components/Form";
-import FieldTextarea from "../../../../../../components/Form/FieldTextarea";
 /**
  * services
  */
@@ -24,12 +22,21 @@ import CountryService from "../../../../../../services/admin/country.service";
  */
 import {ADMIN_MAKE_EDIT_COUNTRY_URI, ADMIN_MAKE_SHOW_COUNTRY_URI} from "../../../../../../constants/admin/uri.constant";
 import FileOrientationEnums from "../../../../../../enums/FileOrientation";
+import PlaceApi from "../../../../../../utils/PlaceApi";
 
 export default function CreateCountryForm() {
     const history = useHistory();
 
     const createCountry = async (value) => {
         const copyValues = JSON.parse(JSON.stringify(value));
+
+        if(value.country.latitude && value.country.longitude){
+            copyValues.geometry = await PlaceApi.getGeometryForCountry(value.country.latitude, value.country.longitude)
+            if(!copyValues.geometry){
+                alert("Change coordinate. We have some error in google api")
+                return;
+            }
+        }
 
         copyValues.country.landscape_image = copyValues.country.landscape_image?.id || null;
         copyValues.country.portrait_image = copyValues.country.portrait_image?.id || null;

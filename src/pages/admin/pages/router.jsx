@@ -37,7 +37,7 @@ import {
     ADMIN_EDIT_STATE_URI,
     ADMIN_CREATE_STATE_URI,
     ADMIN_SHOW_STATE_URI,
-    ADMIN_GENERATE_PLACE_URI, ADMIN_ROUTE_URI
+    ADMIN_GENERATE_PLACE_URI, ADMIN_ROUTE_URI, ADMIN_EXCURSION_SHOW
 } from "../../../constants/admin/uri.constant";
 
 
@@ -168,11 +168,16 @@ export default function RouterPage() {
             path: ADMIN_STATISTICS_USERS_LIST,
             component: lazy(() => import('./Statistics/Users'))
         },
-        // {
-        //     layout: AuthRoute,
-        //     path: ADMIN_GENERATE_PLACE_URI,
-        //     component: lazy(() => import('./GeneratePlace'))
-        // },
+        {
+            layout: AuthRoute,
+            path: ADMIN_GENERATE_PLACE_URI,
+            component: lazy(() => import('./GeneratePlace'))
+        },
+        {
+            layout: AuthRoute,
+            path: ADMIN_EXCURSION_SHOW,
+            component: lazy(() => import('./Excursions'))
+        },
         {
             layout: AuthRoute,
             path: ADMIN_ROUTE_URI,

@@ -2,119 +2,123 @@
  * external libs
  */
 import React, {useEffect, useRef, useState} from 'react';
+import {io} from 'socket.io-client';
+import {useParams} from "react-router-dom";
 /**
  * components
  */
-import PlaceType from './components/Types'
+import AutomaticContent from './components/AutomaticContent'
+import ManualContent from './components/ManualContent'
+import CustomContent from './components/CustomContent'
+import RadioGenerationType from './components/RadioGenerationType'
 /**
  * enums
  */
 import PlaceTypeEnum from '../../../../enums/PlaceType'
+import GenerationTypeEnums from "../../../../enums/GenerationType";
 /**
  * utils
  */
 import PlaceTypeTranslate from "../../../../utils/PlaceTypeTranslate";
-import FilesService from "../../../../services/files.service";
+/**
+ * service
+ */
+import GenerationPlaceService from "../../../../services/admin/generationPlace.service";
+import SightService from "../../../../services/admin/sight.service";
+import CountryService from "../../../../services/admin/country.service";
+
+// const socket = io('http://localhost:3002', {
+//     extraHeaders: {
+//         Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTY2OTY2MDk4OX0.HNw9gf9X8nhVH5UUfQEyujpXMPb5YJpzAi5fYUz-UD0`
+//     }
+// });
+
+
+const typeColor = {
+    [GenerationTypeEnums.automatic]: {
+        [PlaceTypeEnum.campground]: "red",
+        [PlaceTypeEnum.church]: "gray",
+        [PlaceTypeEnum.city_hall]: "black",
+        [PlaceTypeEnum.mosque]: "blue",
+        [PlaceTypeEnum.embassy]: "#650abf",
+        [PlaceTypeEnum.art_gallery]: "green",
+        [PlaceTypeEnum.museum]: "#ff8600",
+    },
+    [GenerationTypeEnums.manual]: {
+        [PlaceTypeEnum.amusement_park]: "green",
+        [PlaceTypeEnum.aquarium]: "red",
+        [PlaceTypeEnum.tourist_attraction]: "gray",
+        [PlaceTypeEnum.zoo]: "black",
+        [PlaceTypeEnum.restaurant]: "blue",
+    }
+}
+
+const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
 export default function GeneratePlace() {
-    const [placeTypes, setPlaceTypes] = useState(PlaceTypeTranslate.getTranslateForType(PlaceTypeEnum.googleTypesList[0]))
+    const {countryId} = useParams();
+    const [generationType, setGenerationType] = useState(GenerationTypeEnums.automatic)
+    const [country, setCountry] = useState(null)
     const mapBlockRef = useRef(null);
     const mapRef = useRef(null);
     const key = "AIzaSyApPL4vfjbQ_iVFrfE-97KN-ncf8i1NDLU";
 
-    const mapInit = () => {
+    const mapInit = async (geometry = {}) => {
         const opt = {
             center: {lat: 51.514316, lng: -0.129761},
             zoom: 4,
             restriction: {
-                // latLngBounds: {
-                //     north: 50.590798, //noth lat up
-                //     east: 30.825941, //noth lng right
-                //     south: 50.213273, //south lat down
-                //     west: 30.2394401, //south lng left
-                // },
+                latLngBounds: {
+                    ...geometry
+                },
                 strictBounds: true
             },
         }
 
         mapRef.current = new window.google.maps.Map(mapBlockRef.current, opt)
-
-
-        //KIYV
-        new window.google.maps.Rectangle({
-            strokeColor: "#FF0000",
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: "#FF0000",
-            fillOpacity: 0.35,
-            map: mapRef.current,
-            bounds: {
-                north: 50.590798, //noth lat
-                south: 50.213273, //south lat
-                east: 30.825941, //noth lng
-                west: 30.2394401, //south lng
-            },
-        });
-
-
-        //LVIV
-        new window.google.maps.Rectangle({
-            strokeColor: "#FF0000",
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: "#FF0000",
-            fillOpacity: 0.35,
-            map: mapRef.current,
-            bounds: {
-                north: 49.897471, //noth lat
-                south: 49.7679071, //south lat
-                east: 24.118191, //noth lng
-                west: 23.9062801, //south lng
-            },
-        });
-
-
-        const marker = new window.google.maps.Marker({
-            position: {
-                lat: 51.4662711,
-                lng: 30.5134968
-            },
-            map: mapRef.current,
-        })
     }
 
+    const generateMarker = (color = "#ffffff") => {
+        const pinSVGFilled = "M 12,2 C 8.1340068,2 5,5.1340068 5,9 c 0,5.25 7,13 7,13 0,0 7,-7.75 7,-13 0,-3.8659932 -3.134007,-7 -7,-7 z";
+        const labelOriginFilled = new window.google.maps.Point(12, 9);
+
+
+        return {  // https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerLabel
+            path: pinSVGFilled,
+            anchor: new window.google.maps.Point(12, 17),
+            fillOpacity: 1,
+            fillColor: color,
+            strokeWeight: 2,
+            strokeColor: "white",
+            scale: 2,
+            labelOrigin: labelOriginFilled
+        };
+    }
 
     const getPhotos = async (photo_ref) => {
-        const proxyUrl = "https://cors-anywhere.herokuapp.com/";
-        await new Promise(resolve => setTimeout(resolve, 700))
-        const imageURLQuery = await fetch(proxyUrl + `https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&sensor=false&maxheight=800&photo_reference=${photo_ref}&key=${key}`)
-            .then(r => r.blob())
-            .catch(console.error);
-
-        const image = URL.createObjectURL(imageURLQuery); //declared earlier
-
-        const response = await fetch(image);
-        // here image is url/location of image
-        const blob = await response.blob();
-        const formData = new FormData;
-        formData.append("files[]", new File([blob], 'image.jpg', {type: blob.type}));
-
-        const [file] = await FilesService.upload(formData)
-
-        return file.id
+        try {
+            await new Promise(resolve => setTimeout(resolve, 400))
+            const [file] = await GenerationPlaceService.downloadImage(`https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&sensor=false&maxheight=800&photo_reference=${photo_ref}&key=${key}`)
+            console.log(file?.id, "file")
+            return file?.id || null
+        } catch (e) {
+            return null
+        }
     }
-
-    const getPlaces = async (bounds) => {
+    const getPlaces = async (bounds, cityId, placeTypes) => {
         const service = new window.google.maps.places.PlacesService(mapRef.current);
+        let lastType = null;
 
         const forLoop = async _ => {
-            for (let i = 0; i < PlaceTypeEnum.googleTypesList.length; i++) {
-                if(i !== 0){
-                    return;
+            for (let i = 0; i < placeTypes.length; i++) {
+                const geometry = {
+                    north: bounds.getNorthEast().lat(), //noth lat
+                    south: bounds.getSouthWest().lat(), //south lat
+                    east: bounds.getNorthEast().lng(), //noth lng
+                    west: bounds.getSouthWest().lng(), //south lng
                 }
-                console.log(i)
-                // const type = PlaceTypeEnum.googleTypesList[i]; // amusement_park
-                const type = PlaceTypeEnum.restaurant; // amusement_park
+                const type = placeTypes[i]; // amusement_park
+                lastType = type;
 
                 const requestNearbySearch = {
                     bounds,
@@ -122,10 +126,33 @@ export default function GeneratePlace() {
                 };
 
                 let placesToDB = [];
-                await new Promise(resolve => setTimeout(() => resolve(), 500))
+                await new Promise(resolve => setTimeout(() => resolve(), 1000))
+
+                const isGenerate = await GenerationPlaceService.generatedSquare({
+                    json: { geometry },
+                    eq: { type }
+                })
+
+                if(isGenerate.data.length){
+                    console.log("OK")
+
+                    continue
+                }
+
                 await new Promise((resolve, reject) => {
                     service.nearbySearch(requestNearbySearch, async (places, status, pagination) => {
-                        if(!places.length || status === "OVER_QUERY_LIMIT"){
+                        if (!["ZERO_RESULTS", "OK"].includes(status)) {
+                            reject({
+                                message: `Google status error: ${status}`,
+                            })
+                        }
+
+                        if(!places.length){
+                            await GenerationPlaceService.create({
+                                country_id: countryId,
+                                geometry,
+                                type
+                            });
                             resolve()
                         }
 
@@ -143,10 +170,8 @@ export default function GeneratePlace() {
                                         'photo',
                                         'formatted_address',
                                         'address_components',
-                                        'geometry',
                                         'name',
                                         'place_id',
-                                        'vicinity',
                                     ]
                                 };
                                 const placeDetailRes = (await fetch(`https://maps.googleapis.com/maps/api/place/details/json?place_id=${requestDetailPlace.placeId}&fields=${requestDetailPlace.fields.join(",")}&key=${key}`)).json()
@@ -154,18 +179,41 @@ export default function GeneratePlace() {
                                 const place = placeDetail ? placeDetail.result : currentPlace;
 
                                 if (!place) {
-                                    return null
+                                    continue
                                 }
 
                                 let placeToBd = {
-                                    website: place.website || null,
+                                    city_id: cityId,
+                                    country_id: countryId,
+                                    website: place.website && place.website.length < 255 ?  place.website : null,
                                     international_phone_number: place.international_phone_number || null,
-                                    name: place.name,
-                                    vicinity: place.vicinity,
-                                    opening_hours: place.opening_hours?.periods || null,
+                                    sight_name: place.name,
+                                    original_name: place.name,
                                     formatted_address: place.formatted_address,
                                     google_place_id: place.place_id,
-                                    types: place.types,
+                                    place_type: place.types.filter( type => PlaceTypeEnum.list.includes(type)),
+                                    opening_hours: place.opening_hours?.periods || null,
+                                }
+
+                                if(placeToBd.opening_hours){
+                                    if(placeToBd.opening_hours.length === 1 && placeToBd.opening_hours[0].close === undefined){
+                                        placeToBd.opening_hours = days.reduce((result, day ) => ({
+                                            ...result,
+                                            [day]: {
+                                                open: "00:00",
+                                                close: "00:00"
+                                            }
+                                        }), {})
+                                    }
+                                    else{
+                                        placeToBd.opening_hours = placeToBd.opening_hours.reduce( (result, openHour) => ({
+                                            ...result,
+                                            [days[openHour.open.day]]: {
+                                                open: `${openHour.open.time.slice(0, 2)}:${openHour.open.time.slice(2, 4)}`,
+                                                close: `${openHour.close.time.slice(0, 2)}:${openHour.close.time.slice(2, 4)}`,
+                                            }
+                                        }), {})
+                                    }
                                 }
 
                                 if (placeDetail) {
@@ -174,13 +222,16 @@ export default function GeneratePlace() {
                                         ...placeToBd,
                                         latitude: place.geometry.location.lat,
                                         longitude: place.geometry.location.lng,
-                                        photos: [],
+                                        files_ids: [],
                                     }
 
                                     if (photosList.length) {
                                         for (let i = 0; i < photosList.length; i++) {
                                             const photoReference = photosList[i].photo_reference;
-                                            placeToBd.photos = [...placeToBd.photos, await getPhotos(photoReference)]
+                                            const id = await getPhotos(photoReference)
+                                            if (id) {
+                                                placeToBd.files_ids = [...placeToBd.files_ids, id]
+                                            }
                                         }
                                     }
                                 }
@@ -190,8 +241,14 @@ export default function GeneratePlace() {
                                         ...placeToBd,
                                         latitude: place.geometry.location.lat(),
                                         longitude: place.geometry.location.lng(),
-                                        photos: [],
+                                        files_ids: [],
                                     }
+                                }
+
+
+                                const formattedTypeColor = {
+                                    ...typeColor[GenerationTypeEnums.automatic],
+                                    ...typeColor[GenerationTypeEnums.manual],
                                 }
 
                                 new window.google.maps.Marker({
@@ -199,169 +256,264 @@ export default function GeneratePlace() {
                                         lat: placeToBd.latitude,
                                         lng: placeToBd.longitude
                                     },
-                                    label: placeToBd.name,
+                                    icon: generateMarker(formattedTypeColor[type]),
                                     map: mapRef.current,
                                 })
+
+                                console.log(placeToBd)
 
                                 placesToDB = [...placesToDB, placeToBd]
 
                                 if (i + 1 === places.length) {
                                     if (pagination && pagination.hasNextPage) {
-                                        console.log("paginatoopn")
                                         pagination.nextPage()
-                                        return ;
+                                        return;
                                     }
 
-                                    console.log(placesToDB, "placesToDB")
-                                    placesToDB.forEach((_place, index) => {
-                                        console.log(`#${index}   Name: ${_place.name}   Types: ${JSON.stringify(_place.types)}`)
+                                    await SightService.createBatch(placesToDB)
+
+                                    await GenerationPlaceService.create({
+                                        country_id: countryId,
+                                        geometry,
+                                        type
                                     })
+
+                                    //WRITE TO BS ALL PLACE []
+                                    console.log(placesToDB, "placesToDB")
+
+                                    // socket.emit('pushLog', {
+                                    //     success: true,
+                                    //     cityId: cityId,
+                                    //     sights: placesToDB,
+                                    //     geometry_square: {
+                                    //         north: bounds.getNorthEast().lat(), //noth lat
+                                    //         south: bounds.getSouthWest().lat(), //south lat
+                                    //         east: bounds.getNorthEast().lng(), //noth lng
+                                    //         west: bounds.getSouthWest().lng(), //south lng
+                                    //     },
+                                    //     type,
+                                    // });
+
                                     resolve()
                                 }
-
-
-                                // service.getDetails(requestDetailPlace, (placeDetails, status) => {
-                                //     const place = placeDetails || currentPlace;
-                                //
-                                //     if(!place){
-                                //         return null
-                                //     }
-                                //
-                                //     console.log(place)
-                                //
-                                //     placesToDB = [...placesToDB, {
-                                //         photos: place.photos?.filter((_, index) => index < 5).map(photo => photo.getUrl()) || null,
-                                //         website: place.website || null,
-                                //         international_phone_number: place.international_phone_number || null,
-                                //         name: place.name,
-                                //         geometry: {
-                                //             location: {
-                                //                 latitude: place.geometry.location.lat(),
-                                //                 longitude: place.geometry.location.lng(),
-                                //             },
-                                //             viewport: {
-                                //                 northeast: {
-                                //                     latitude: place.geometry.viewport.getNorthEast().lat(),
-                                //                     longitude: place.geometry.viewport.getNorthEast().lng()
-                                //                 },
-                                //                 southwest: {
-                                //                     latitude: place.geometry.viewport.getSouthWest().lat(),
-                                //                     longitude: place.geometry.viewport.getSouthWest().lng()
-                                //                 },
-                                //             }
-                                //         },
-                                //         vicinity: place.vicinity,
-                                //         opening_hours: place.opening_hours?.periods || null,
-                                //         formatted_address: place.formatted_address,
-                                //         description: place.editorial_summary?.overview || "",
-                                //         google_place_id: place.place_id,
-                                //     }]
-                                //     // if (pagination && pagination.hasNextPage) {
-                                //     //     pagination.nextPage()
-                                //     // }
-                                //     console.log(index, "index")
-                                //     if(index + 1 === places.length){
-                                //         console.log(placesToDB, "placesToDB")
-                                //     }
-                                // });
-                            }
-                            catch (e){
-                                return reject("reject")
+                            } catch (error) {
+                                return reject({
+                                    message: error.message,
+                                })
                             }
                         }
                     });
                 })
             }
+
+            return {failed: false};
         }
 
-        await forLoop()
+        try {
+            return await forLoop()
+        }
+        catch (error) {
+            return {
+                failed: true,
+                message: error.message,
+                type: lastType
+            };
+        }
     }
-    const getRectangle = async (north, east, south, west) => {
-        const bounds = new window.google.maps.LatLngBounds();
+    const getRectangle = async ({geometry, cityId, placeTypes}) => {
+        try {
+            const {north, south, east, west} = geometry;
+            const bounds = new window.google.maps.LatLngBounds();
 
-        bounds.extend(new window.google.maps.LatLng(north, east));
-        bounds.extend(new window.google.maps.LatLng(south, west));
+            bounds.extend(new window.google.maps.LatLng(north, east));
+            bounds.extend(new window.google.maps.LatLng(south, west));
 
-        //
-        // console.log({
-        //     north: bounds.getNorthEast().lat(), //noth lat
-        //     south: bounds.getSouthWest().lat(), //south lat
-        //     east: bounds.getNorthEast().lng(), //noth lng
-        //     west: bounds.getSouthWest().lng(), //south lng
-        // })
+            //
+            // console.log({
+            //     north: bounds.getNorthEast().lat(), //noth lat
+            //     south: bounds.getSouthWest().lat(), //south lat
+            //     east: bounds.getNorthEast().lng(), //noth lng
+            //     west: bounds.getSouthWest().lng(), //south lng
+            // })
 
-        new window.google.maps.Rectangle({
-            strokeColor: "blue",
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: "blue",
-            fillOpacity: 0.35,
-            map: mapRef.current,
-            bounds: {
-                north: bounds.getNorthEast().lat(), //noth lat
-                south: bounds.getSouthWest().lat(), //south lat
-                east: bounds.getNorthEast().lng(), //noth lng
-                west: bounds.getSouthWest().lng(), //south lng
-            },
-        });
+            new window.google.maps.Rectangle({
+                strokeColor: "blue",
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: "blue",
+                fillOpacity: 0.35,
+                map: mapRef.current,
+                bounds: {
+                    north: bounds.getNorthEast().lat(), //noth lat
+                    south: bounds.getSouthWest().lat(), //south lat
+                    east: bounds.getNorthEast().lng(), //noth lng
+                    west: bounds.getSouthWest().lng(), //south lng
+                },
+            });
 
-        // await getPlaces(bounds)
-        await getPlaces(bounds)
+            return await getPlaces(bounds, cityId, placeTypes)
+        } catch (e) {
+            // socket.emit('pushLog', {
+            //     success: false,
+            //     cityId: cityId,
+            //     geometry_square: {
+            //         north: geometry.north, //noth lat
+            //         south: geometry.south, //south lat
+            //         east: geometry.east, //noth lng
+            //         west: geometry.west, //south lng
+            //     },
+            //     message: e.message,
+            //     type: null,
+            // });
+            return {
+                failed: true,
+                message: e.message,
+                type: null
+            }
+        }
+
     }
-    const generatePlacesByCity = (north, east, south, west) => {
+    const generatePlacesByCity = async (city, placeTypes = []) => {
+        if (!city.geometry || !placeTypes.length) {
+            return {failed: false};
+        }
+
         const countStep = 2;
 
-        const city = {
-            north, //noth lat up
-            east, //noth lng right
-            south, //south lat down
-            west, //south lng left
-        }
-
-        const placeHeightCoordinate = city.north - city.south;
-        const placeWidthCoordinate = city.east - city.west;
+        const placeHeightCoordinate = city.geometry.north - city.geometry.south;
+        const placeWidthCoordinate = city.geometry.east - city.geometry.west;
 
         const stepHorizontal = placeWidthCoordinate / countStep;
         const stepVertical = placeHeightCoordinate / countStep;
 
+        let currentI = 1;
+        let currentJ = 1;
+
         const forLoop = async _ => {
-            let currentI = 1;
-            let currentJ = 1;
-            try {
-                for (currentI; currentI <= countStep; currentI++) {
-                    currentJ = 1;
-                    for (currentJ; currentJ <= countStep; currentJ++) {
-                        console.log(`index: ${currentI}; jndex ${currentJ}`)
-                        await new Promise(resolve => setTimeout(resolve, 50))
-                        await getRectangle(city.south + (stepVertical * currentI), city.west + (stepHorizontal * currentJ), city.south + (stepVertical * (currentI - 1)), city.west + (stepHorizontal * (currentJ - 1)))
+            for (currentI; currentI <= countStep; currentI++) {
+                currentJ = 1;
+                for (currentJ; currentJ <= countStep; currentJ++) {
+                    console.log(`index: ${currentI}; jndex ${currentJ}`)
+                    await new Promise(resolve => setTimeout(resolve, 500))
+                    const {failed, message, type} = await getRectangle(
+                        {
+                            geometry: {
+                                north: city.geometry.south + (stepVertical * currentI),
+                                east: city.geometry.west + (stepHorizontal * currentJ),
+                                south: city.geometry.south + (stepVertical * (currentI - 1)),
+                                west: city.geometry.west + (stepHorizontal * (currentJ - 1)),
+                            },
+                            cityId: city.id,
+                            placeTypes,
+                        }
+                    )
+
+                    if (failed) {
+                        // socket.emit('pushLog', {
+                        //     success: false,
+                        //     cityId: city.id,
+                        //     geometry_square: {
+                        //         north: city.geometry.north, //noth lat
+                        //         south: city.geometry.south, //south lat
+                        //         east: city.geometry.east, //noth lng
+                        //         west: city.geometry.west, //south lng
+                        //     },
+                        //     indexI: currentI,
+                        //     indexJ: currentJ,
+                        //     message,
+                        //     type,
+                        // });
+
+                        return {failed: true}
                     }
                 }
             }
-            catch (e){
-                console.log("loop")
-                console.log(e, "1234")
-            }
+
+            return {failed: false}
         }
 
-        forLoop()
+        try {
+            return await forLoop()
+        } catch (e) {
+            // socket.emit('pushLog', {
+            //     success: false,
+            //     cityId: city.id,
+            //     geometry_square: {
+            //         north: city.geometry.north, //noth lat
+            //         south: city.geometry.south, //south lat
+            //         east: city.geometry.east, //noth lng
+            //         west: city.geometry.west, //south lng
+            //     },
+            //     message: e.message,
+            //     type: null,
+            //     indexI: currentI,
+            //     indexJ: currentJ,
+            // });
+            return {
+                failed: true,
+                city_id: city.id,
+                message: e.message,
+                type: null,
+                indexI: currentI,
+                indexJ: currentJ,
+            };
+        }
     }
 
+    const generationFinishCity = async (cityId, generationType, placeTypes) => {
+        await GenerationPlaceService.finish({
+            "city_id": cityId,
+            "generation_type": generationType,
+            "types": placeTypes
+        })
+
+    }
+
+    const getCountry = async () => {
+        const country = await CountryService.show(countryId)
+        setCountry(country)
+    }
 
     useEffect(() => {
-        // getGeometryForCity()
-        mapInit()
-        // generatePlacesByCityTEST(49.897471, 24.118191, 49.7679071, 23.9062801)
-        // getRectangle(49.897471 ,24.118191, 49.7679071, 23.9062801)
-        // getPlaceHandler2();
+        getCountry()
     }, [])
+
+    // useEffect(() => {
+    //     socket.on('connect', () => {
+    //         console.log(socket, "socket")
+    //         socket.on('logs', console.log)
+    //     });
+    // }, [])
+
+    useEffect(() => {
+        if(!generationType || !country?.geometry){
+            return;
+        }
+
+        mapInit(country.geometry)
+    }, [generationType, country?.geometry])
 
     return (
         <div>
-            <div onClick={generatePlacesByCity}>
-                Get place
+
+            <div style={{display: "flex", gap: 50}}>
+                <div ref={mapBlockRef} style={{width: "70%", height: 500}}/>
+                <div style={{width: "30%"}}>
+                    <RadioGenerationType generationType={generationType}
+                                         setGenerationType={setGenerationType}/>
+                        <div style={{paddingTop: 20}}>
+                            {generationType === GenerationTypeEnums.automatic && (
+                                <AutomaticContent typeColor={typeColor[GenerationTypeEnums.automatic]} generationFinishCity={generationFinishCity} generatePlacesByCity={generatePlacesByCity} countryId={countryId}/>
+                            )}
+                            {generationType === GenerationTypeEnums.manual && (
+                                <ManualContent typeColor={typeColor[GenerationTypeEnums.manual]} generationFinishCity={generationFinishCity} generatePlacesByCity={generatePlacesByCity} countryId={countryId} mapRef={mapRef}/>
+                            )}
+                            {generationType === GenerationTypeEnums.custom && (
+                                <CustomContent countryId={countryId} getRectangle={getRectangle} mapRef={mapRef}/>
+                            )}
+                        </div>
+                </div>
             </div>
-            <PlaceType setPlaceTypes={setPlaceTypes} placeTypes={placeTypes}/>
-            <div ref={mapBlockRef} style={{width: "100%", height: 500}}/>
         </div>
     )
 }

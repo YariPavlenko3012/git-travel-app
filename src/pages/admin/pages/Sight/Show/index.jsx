@@ -104,13 +104,37 @@ export default function SightShow() {
                       <span className={styles.show__item_key}>
                           Place type:
                       </span>
-                      {PlaceTypeTranslate.getTranslateForType(sight.place_type)}
+                      {sight.place_type.map( type => PlaceTypeTranslate.getTranslateForType(sight.place_type)).join(",")}
+                  </p>
+                  <p className={styles.show__item}>
+                      <span className={styles.show__item_key}>
+                          Website:
+                      </span>
+                      <span>{sight.website || "N/A"}</span>
+                  </p>
+                  <p className={styles.show__item}>
+                      <span className={styles.show__item_key}>
+                          Phone number:
+                      </span>
+                      <span>{sight.international_phone_number || "N/A"}</span>
+                  </p>
+                  <p className={styles.show__item}>
+                      <span className={styles.show__item_key}>
+                          Number of views:
+                      </span>
+                      <span>{sight.number_of_views}</span>
+                  </p>
+                  <p className={styles.show__item}>
+                      <span className={styles.show__item_key}>
+                          Address:
+                      </span>
+                      <span>{sight.formatted_address || "N/A"}</span>
                   </p>
                   <p className={styles.show__item} style={{width: "100%"}}>
                       <span className={styles.show__item_key}>
                           Description:
                       </span>
-                      <span style={{color: sight.description ? "black" : "red"}}>{sight.description || "No description"}</span>
+                      <span>{sight.description || "N/A"}</span>
                   </p>
               </div>
               <PreviewFiles previewFiles={sight.images}/>

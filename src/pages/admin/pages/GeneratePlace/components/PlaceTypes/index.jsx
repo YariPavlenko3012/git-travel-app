@@ -15,14 +15,12 @@ import PlaceTypeEnum from '../../../../../../enums/PlaceType'
  */
 import PlaceTypeTranslate from "../../../../../../utils/PlaceTypeTranslate";
 
-export default function Park({setPlaceTypes, placeTypes}) {
+export default function Park({setPlaceTypes, placeTypes, places}) {
     return (
         <div className={styles.typeWrapper}>
-            {PlaceTypeEnum.googleTypesList.map( type => (
+            {places.map( type => (
                 <div className={`${styles.typeWrapper__type} ${placeTypes === type && styles.active}`} onClick={() => setPlaceTypes(type)}>
                     {PlaceTypeTranslate.getTranslateForType(type)}
-                    {"   "}
-                    {type}
                 </div>
             ))}
         </div>

@@ -12,7 +12,8 @@ export default class SightModel {
         this.longitude = data.longitude;
         this.original_name = data.original_name;
         this.city = data.city;
-        this.place_type = data.place_type;
+        this.place_type = data.place_type || [];
+        this.opening_hours = data.opening_hours || null;
         this.formatted_address = data.formatted_address;
         this.website = data.website;
         this.international_phone_number = data.international_phone_number;

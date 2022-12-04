@@ -25,6 +25,8 @@ export const API_MAKE_ADMIN_STATE_TRANSLATE_EDIT = (countryId, translateId) => `
 const ADMIN_SIGHT = `${ADMIN}/sights`;
 export const API_ADMIN_SIGHT_LIST = `${ADMIN_SIGHT}`;
 export const API_ADMIN_SIGHT_CREATE = `${ADMIN_SIGHT}`;
+export const API_ADMIN_SIGHT_DOWNLOAD_IMAGE = `${ADMIN_SIGHT}/download-image`;
+export const API_ADMIN_SIGHT_CREATE_BATCH = `${ADMIN_SIGHT}/batch`;
 export const API_MAKE_ADMIN_SIGHT_UPDATE = sightId => `${ADMIN_SIGHT}/${sightId}`;
 export const API_MAKE_ADMIN_SIGHT_DELETE = sightId => `${ADMIN_SIGHT}/${sightId}`;
 export const API_MAKE_ADMIN_SIGHT_SHOW = sightId => `${ADMIN_SIGHT}/${sightId}`;
@@ -41,6 +43,13 @@ export const API_MAKE_ADMIN_CITY_TRANSLATE_CREATE = cityId =>`${ADMIN_CITY}/${ci
 export const API_MAKE_ADMIN_CITY_TRANSLATE_EDIT = (cityId, translateId) => `${ADMIN_CITY}/${cityId}/languages/${translateId}`;
 export const API_MAKE_ADMIN_CITY_TAXI_CREATE = cityId => `${ADMIN_CITY}/${cityId}/cabs`;
 export const API_MAKE_ADMIN_CITY_TAXI_EDIT = (cityId, cabId) => `${ADMIN_CITY}/${cityId}/cabs/${cabId}`;
+
+const ADMIN_GENERATE_PLACE = `${ADMIN}/generation`;
+export const ADMIN_CREATE_SQUARE_GENERATE_PLACE = `${ADMIN_GENERATE_PLACE}/place`;
+export const ADMIN_CREATE_FINISH_STATUS_BY_CITY_GENERATE_PLACE = `${ADMIN_GENERATE_PLACE}/finish`;
+export const ADMIN_GET_GENERATED_SQUARE_GENERATE_PLACE  = `${ADMIN_GENERATE_PLACE}/squares`;
+export const ADMIN_GET_CITY_WHITE_LIST_GENERATE_PLACE  = `${ADMIN_GENERATE_PLACE}/city-whiteList`;
+
 
 
 const ADMIN_LANGUAGE = `${ADMIN}/languages`;

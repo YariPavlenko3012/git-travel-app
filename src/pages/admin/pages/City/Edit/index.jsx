@@ -31,17 +31,6 @@ export default function CityUpdate() {
         setIsReady(true);
     };
 
-    const changeCoordinates = ( value, setValues ) => {
-        const coordinates = value.split(',');
-
-        if(coordinates.length === 2){
-            setTimeout(() => {
-                setValues("city.latitude", coordinates[0].trim())
-                setValues("city.longitude", coordinates[1].trim())
-            }, 0)
-        }
-    }
-
     useEffect(() => {
         getCity();
     }, []);

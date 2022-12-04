@@ -2,7 +2,7 @@
  * external libs
  */
 import {Button, Form} from "antd";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {useHistory} from 'react-router-dom'
 /**
  * components
@@ -15,10 +15,11 @@ import UploadOrientalFile from "../../../../../../components/UploadOrientalFile"
  * services
  */
 import CityService from "../../../../../../services/admin/city.service";
+import StateService from "../../../../../../services/admin/state.service";
 /**
  * constants
  */
-import {ADMIN_MAKE_EDIT_CITY_URI, ADMIN_MAKE_SHOW_CITY_URI} from "../../../../../../constants/admin/uri.constant";
+import {ADMIN_MAKE_SHOW_CITY_URI} from "../../../../../../constants/admin/uri.constant";
 /**
  * enums
  */
@@ -66,7 +67,7 @@ export default function CreateCityForm({stateId}) {
         <FormUI onSubmit={createCity}
                 initialValues={{
                     city: {
-                        state_id: +stateId
+                        state_id: +stateId,
                     },
                     cabs: [],
                 }}

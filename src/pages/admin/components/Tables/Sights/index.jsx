@@ -36,7 +36,7 @@ export default function SightTable({sightList, getSight}) {
             title: 'Description',
             dataIndex: 'description',
             key: 'description',
-            render: description => <div style={{color: description ? "black" : "red"}}>{description || "No description"}</div>
+            render: description => <div>{description || "N/A"}</div>
         },
         {
             title: 'City',
@@ -70,22 +70,25 @@ export default function SightTable({sightList, getSight}) {
             ),
             dataIndex: 'place_type',
             key: 'place_type',
-            render: place_type => <div>{PlaceTypeTranslate.getTranslateForType(place_type)}</div>,
+            render: place_type => <div>{place_type.map( type => PlaceTypeTranslate.getTranslateForType(type)).join(", ")}</div>,
         },
         {
             title: 'Formatted address',
             dataIndex: 'formatted_address',
             key: 'formatted_address',
+            render: formatted_address => <div>{formatted_address || "N/A"}</div>
         },
         {
             title: 'Website',
             dataIndex: 'website',
             key: 'website',
+            render: website => <div>{website || "N/A"}</div>
         },
         {
             title: 'Phone number',
             dataIndex: 'international_phone_number',
             key: 'international_phone_number',
+            render: international_phone_number => <div>{international_phone_number || "N/A"}</div>
         },
         {
             title: 'Image count',

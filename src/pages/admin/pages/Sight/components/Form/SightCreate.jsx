@@ -2,7 +2,7 @@
  * external libs
  */
 import {Button, Form} from "antd";
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {useHistory} from 'react-router-dom'
 /**
  * components
@@ -17,6 +17,7 @@ import TimePicker from "../TimePicker";
  * services
  */
 import SightService from "../../../../../../services/admin/sight.service";
+import StateService from "../../../../../../services/admin/state.service";
 /**
  * context
  */
@@ -25,8 +26,10 @@ import {AuthContext} from "../../../../../context/auth.context";
  * constants
  */
 import {ADMIN_MAKE_EDIT_SIGHT_URI} from "../../../../../../constants/admin/uri.constant";
+import CityService from "../../../../../../services/admin/city.service";
 
 export default function SightCreateForm({ cityId }) {
+    const [city, setCity] = useState(null);
     const {user} = useContext(AuthContext);
     const history = useHistory();
 
@@ -51,10 +54,23 @@ export default function SightCreateForm({ cityId }) {
         }
     }
 
+    const getCity = async () => {
+        setCity(await CityService.show(cityId))
+    }
+
+    useEffect(() => {
+        getCity()
+    }, [])
+
+    if(!city){
+        return null
+    }
+
     return (
       <FormUI onSubmit={createSight}
               initialValues={{
                   sight: {
+                      country_id: city.state.country.id,
                       city_id: +cityId,
                       user_id: user.id,
                       opening_hours: null

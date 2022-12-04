@@ -12,23 +12,50 @@ import FieldSelectLanguage from "../../../../../../components/Select/Language";
 import FieldSelectCity from "../../../../../../components/Select/City";
 import FieldInput from "../../../../../../components/Form/FieldInput";
 import FieldCheckbox from "../../../../../../components/Form/FieldCheckbox";
-import UploadFiles from "../../../../../../components/UploadFiles";
+import UploadOrientalFile from "../../../../../../components/UploadOrientalFile";
 /**
  * services
  */
 import CountryService from "../../../../../../services/admin/country.service";
-import UploadOrientalFile from "../../../../../../components/UploadOrientalFile";
+/**
+ * enums
+ */
 import FileOrientationEnums from "../../../../../../enums/FileOrientation";
+/**
+ * utils
+ */
+import PlaceApi from "../../../../../../utils/PlaceApi";
 
 export default function UpdateCountryForm({countryId, getCountry, country}) {
     const updateCountry = async (value) => {
         const copyValues = JSON.parse(JSON.stringify(value));
+
+        const equalCoordinate = country.latitude === copyValues.latitude && country.longitude === copyValues.longitude;
+        if (!equalCoordinate && copyValues.latitude && copyValues.longitude) {
+            copyValues.geometry = await PlaceApi.getGeometryForCountry(copyValues.latitude, copyValues.longitude)
+            if (!copyValues.geometry) {
+                alert("Change coordinate. We have some error in google api")
+                return;
+            }
+        }
+
         copyValues.landscape_image = copyValues.landscape_image?.id || null;
         copyValues.portrait_image = copyValues.portrait_image?.id || null;
 
         await CountryService.update(countryId, copyValues)
         await getCountry(countryId)
     };
+
+    const changeCoordinates = (value, setValues) => {
+        const coordinates = value.split(',');
+
+        if (coordinates.length === 2) {
+            setTimeout(() => {
+                setValues("latitude", coordinates[0])
+                setValues("longitude", coordinates[1])
+            }, 0)
+        }
+    }
 
     return (
       <FormUI onSubmit={updateCountry}
@@ -44,13 +71,15 @@ export default function UpdateCountryForm({countryId, getCountry, country}) {
                   country_area: country.country_area,
                   original_name: country.original_name,
                   highest_point: country.highest_point,
+                  latitude: country.latitude,
+                  longitude: country.longitude,
                   landscape_image: country.landscape_image,
                   portrait_image: country.portrait_image,
                   has_seas: Boolean(country.has_seas),
                   has_mountains: Boolean(country.has_mountains),
                   images: country.images
               }}
-              render={({handleSubmit,  submitting, submitErrors}) => (
+              render={({handleSubmit,  submitting,form}) => (
                 <Form onFinish={handleSubmit} layout="vertical">
                     <h5>General</h5>
                     <div style={{display: "flex", flexWrap: "wrap", alignItems: "flex-end"}}>
@@ -132,6 +161,22 @@ export default function UpdateCountryForm({countryId, getCountry, country}) {
                                         type="number"
                                         placeholder="Enter highest point"
                                         required={true}/>
+                        </div>
+                        <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
+                            <FieldInput label="Latitude"
+                                        name={`latitude`}
+                                        onPaste={val => changeCoordinates(val, form.mutators.setValue)}
+                                        placeholder={`Enter latitude`}
+                                        required={true}/>
+
+                        </div>
+                        <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
+                            <FieldInput label="Longitude"
+                                        name={`longitude`}
+                                        onPaste={val => changeCoordinates(val, form.mutators.setValue)}
+                                        placeholder={`Enter longitude`}
+                                        required={true}/>
+
                         </div>
                         <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10, display: "flex"}}>
                             <FieldCheckbox label='Has seas' name="has_seas"/>

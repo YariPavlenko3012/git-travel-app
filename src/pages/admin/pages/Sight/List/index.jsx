@@ -23,7 +23,8 @@ export default function SightList() {
             }
         }
 
-        setSight(await SightService.list({country_id: 1, ...params}))
+        // setSight(await SightService.list({country_id: 1, ...copyParams}))
+        setSight(await SightService.list({ ...copyParams}))
     };
 
     useEffect(() => {

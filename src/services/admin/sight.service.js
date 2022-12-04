@@ -6,7 +6,7 @@ import axios from 'axios'
  * const
  */
 import {
-    API_ADMIN_SIGHT_CREATE,
+    API_ADMIN_SIGHT_CREATE, API_ADMIN_SIGHT_CREATE_BATCH,
     API_ADMIN_SIGHT_LIST,
     API_MAKE_ADMIN_SIGHT_DELETE,
     API_MAKE_ADMIN_SIGHT_SHOW,
@@ -44,6 +44,10 @@ export default class SightService {
 
     static async create(data) {
         return new SightModel(await axios.post(API_ADMIN_SIGHT_CREATE, data));
+    }
+
+    static async createBatch(data) {
+        return new SightModel(await axios.post(API_ADMIN_SIGHT_CREATE_BATCH, data));
     }
 
     static async update(sightId, data) {

@@ -12,7 +12,7 @@ export default class PlaceTypeTranslate {
             [PlaceTypeEnum.amusement_park]: "Парк розваг",
             [PlaceTypeEnum.aquarium]: "Акваріум",
             [PlaceTypeEnum.art_gallery]: "Картинна галерея",
-            [PlaceTypeEnum.bus_station]: "Автобусна зупинка",
+            [PlaceTypeEnum.zoo]: "Зоопарк",
             [PlaceTypeEnum.tourist_attraction]: "Туристична пам'ятка",
             [PlaceTypeEnum.campground]: "Кемпінг",
             [PlaceTypeEnum.church]: "Церква",
@@ -21,9 +21,6 @@ export default class PlaceTypeTranslate {
             [PlaceTypeEnum.embassy]: "Посольство",
             [PlaceTypeEnum.museum]: "Музей",
             [PlaceTypeEnum.park]: "Парк",
-            [PlaceTypeEnum.parking]: "Паркінг",
-            [PlaceTypeEnum.stadium]: "Стадіон",
-            [PlaceTypeEnum.subway_station]: "Станція метро",
             [PlaceTypeEnum.restaurant]: "Ресторан",
         }
 
