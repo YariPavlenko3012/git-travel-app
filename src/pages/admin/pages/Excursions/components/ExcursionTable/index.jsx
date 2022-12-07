@@ -2,9 +2,14 @@
  * external libs
  */
 import React from 'react';
-import {Table} from "antd";
+import {Input, Table} from "antd";
+/**
+ * components
+ */
+import ChangePriorityInput from '../ChangePriorityInput'
 
-export default function ExcursionTable({ day }){
+
+export default function ExcursionTable({ day, changePriority }){
     const columns = [
         {
             title: 'Day',
@@ -18,8 +23,9 @@ export default function ExcursionTable({ day }){
         },
         {
             title: 'Priority',
-            dataIndex: 'place_priority',
-            key: 'place_priority',
+            dataIndex: 'priority',
+            key: 'priority',
+            render: (priority) => <ChangePriorityInput day={day} changePriority={changePriority} priority={priority}/>
         },
         {
             title: 'Description',

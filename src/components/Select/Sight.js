@@ -16,16 +16,16 @@ import Select from "../../utils/Select";
 import DictionaryService from "../../services/dictionary.service";
 
 
-export default function FieldSelectSight({label = true, name, select, options, onChange, searchParams = {}, disabled = false, data = null, ...rest}) {
+export default function FieldSelectSight({label = true, name, select, onChange, searchParams = {}, disabled = false, data = null, ...rest}) {
     const [sightOptions, setSightOptions] = useState([]);
 
     const getSightOptions = async () => {
-        setSightOptions(data || Select.optionsByRow(options.length ? options : await DictionaryService.sights(searchParams), "id", "original_name"))
+        setSightOptions(data || Select.optionsByRow(await DictionaryService.sights(searchParams), "id", "original_name"))
     };
 
     useEffect(() => {
         getSightOptions();
-    }, [options]);
+    }, [data]);
 
     return (
         <FieldSelect {...rest}

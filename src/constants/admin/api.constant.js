@@ -51,6 +51,12 @@ export const ADMIN_GET_GENERATED_SQUARE_GENERATE_PLACE  = `${ADMIN_GENERATE_PLAC
 export const ADMIN_GET_CITY_WHITE_LIST_GENERATE_PLACE  = `${ADMIN_GENERATE_PLACE}/city-whiteList`;
 
 
+const ADMIN_EXCURSION = `${ADMIN}/excursions`;
+export const ADMIN_EXCURSION_CREATE = `${ADMIN_EXCURSION}`;
+export const ADMIN_EXCURSION_LIST = `${ADMIN_EXCURSION}`;
+export const ADMIN_EXCURSION_MAKE_NEAR_ROADS_PLACE = (excursionId, itemId) => `${ADMIN_EXCURSION}/${excursionId}/items/${itemId}/routes/24/nearBy`;
+
+
 
 const ADMIN_LANGUAGE = `${ADMIN}/languages`;
 export const API_ADMIN_LANGUAGE_LIST = `${ADMIN_LANGUAGE}`;

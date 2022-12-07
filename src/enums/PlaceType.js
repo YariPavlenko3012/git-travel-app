@@ -1,14 +1,14 @@
 export default class PlaceTypeEnum{
     static get reserve(){ return "reserve" }
-    static get botanical_garden(){ return "botanical_garden" }
-    static get beach(){ return "beach" }
+    static get botanical_garden(){ return "botanical_garden" } // 1.5ч
+    static get beach(){ return "beach" }  // 30мин
     static get mountains(){ return "mountains" }
-    static get sea(){ return "sea" }
-    static get lake(){ return "lake" }
-    static get amusement_park(){ return "amusement_park" }
-    static get aquarium(){ return "aquarium" }
-    static get restaurant(){ return "restaurant" }
-    static get art_gallery(){ return "art_gallery" }
+    static get sea(){ return "sea" } // 30мин
+    static get lake(){ return "lake" } // 2ч
+    static get amusement_park(){ return "amusement_park" } // 2ч
+    static get aquarium(){ return "aquarium" } // 2ч
+    static get restaurant(){ return "restaurant" } // 2ч
+    static get art_gallery(){ return "art_gallery" } // 2ч
     static get tourist_attraction(){ return "tourist_attraction" }
     static get campground(){ return "campground" }
     static get church(){ return "church" }
