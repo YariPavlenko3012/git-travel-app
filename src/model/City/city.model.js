@@ -12,6 +12,7 @@ export default class CityModel {
         this.longitude = data.longitude;
         this.geometry = data.geometry;
         this.work_status = data.work_status;
+        this.generation_count_of_squares = data.generation_count_of_squares;
         this.original_name = data.original_name;
         this.languages = (data.languages || []).map( language => new CityLanguageModel(language));
         this.images = (data.images || []).map( image => new MediaModel(image));

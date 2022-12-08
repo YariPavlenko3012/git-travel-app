@@ -63,6 +63,7 @@ export default function UpdateCityForm({cityId, city, getCity}) {
                     latitude: city.latitude,
                     longitude: city.longitude,
                     original_name: city.original_name,
+                    generation_count_of_squares: city.generation_count_of_squares,
                 }}
                 render={({handleSubmit, submitting, form}) => (
                     <Form onFinish={handleSubmit} layout="vertical">

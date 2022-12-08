@@ -92,8 +92,8 @@ export default function LayoutUI({children}) {
             getItem('Sight', '3', PictureOutlined, ADMIN_SIGHT_LIST_URI),
             getItem('Currency', '4', DollarCircleOutlined, ADMIN_CURRENCY_LIST_URI),
             getItem('Language', '5', SortAscendingOutlined, ADMIN_LANGUAGE_LIST_URI),
-            getItem('GeneratePlace', '8', YuqueOutlined, ADMIN_MAKE_GENERATE_PLACE_URI(1)),
-            getItem('Excursion', '9',  RollbackOutlined, ADMIN_EXCURSION_MAKE_SHOW(1)),
+            // getItem('GeneratePlace', '8', YuqueOutlined, ADMIN_MAKE_GENERATE_PLACE_URI(1)),
+            // getItem('Excursion', '9',  RollbackOutlined, ADMIN_EXCURSION_MAKE_SHOW(1)),
             // getItem('User', 'sub1', UserOutlined, null, [
             //     getItemChild('List', 'sub1_1', ADMIN_USERS_CREATE),
             //     getItemChild('Create', 'sub1_2',  ADMIN_USERS_CREATE),
