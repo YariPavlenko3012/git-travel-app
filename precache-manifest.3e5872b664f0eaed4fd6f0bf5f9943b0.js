@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "9e0d41f4e25d877dbc66c3e59686e1bb",
+    "revision": "677227bb53e3004c4e0c23a5787329f0",
     "url": "/git-travel-app/index.html"
   },
   {
@@ -76,7 +76,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/git-travel-app/static/css/37.f5ba3a92.chunk.css"
   },
   {
-    "revision": "8163ee8f431017db6d9c",
+    "revision": "a06234b70e35622716da",
     "url": "/git-travel-app/static/css/main.41edb580.chunk.css"
   },
   {
@@ -352,12 +352,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/git-travel-app/static/js/9.efd22013.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "8163ee8f431017db6d9c",
-    "url": "/git-travel-app/static/js/main.902dcfc9.chunk.js"
+    "revision": "a06234b70e35622716da",
+    "url": "/git-travel-app/static/js/main.89ba1dde.chunk.js"
   },
   {
     "revision": "4e0e34f265fae8f33b01b27ae29d9d6f",
-    "url": "/git-travel-app/static/js/main.902dcfc9.chunk.js.LICENSE.txt"
+    "url": "/git-travel-app/static/js/main.89ba1dde.chunk.js.LICENSE.txt"
   },
   {
     "revision": "491b37a0f3ab8e592a35",
