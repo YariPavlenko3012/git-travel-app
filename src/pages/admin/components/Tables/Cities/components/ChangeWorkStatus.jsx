@@ -2,10 +2,11 @@ import {Select} from "antd";
 import React from "react";
 import CityService from "../../../../../../services/admin/city.service";
 
-export default function ChangeWorkStatus({ cityId, workStatus = null }){
+export default function ChangeWorkStatus({ cityId, getCity, workStatus = null }){
 
     const changeStatus = async (status) => {
         await CityService.updateWorkStatus(cityId, status)
+        await getCity()
     }
 
     return (

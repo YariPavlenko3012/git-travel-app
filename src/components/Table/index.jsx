@@ -1,17 +1,17 @@
 import {Table} from "antd";
 import React, {useState, useEffect, useRef} from "react";
 
-export default function TableUI({data, columns, fetchingData, ...props}) {
+export default function TableUI({data, columns, fetchingData, loader = false, ...props}) {
     const tableRef = useRef(null)
     const [pagination, setPagination] = useState({
         current: data.meta.current_page,
         pageSize: data.meta.per_page,
         total: data.meta.total
     });
-    const [loading, setLoading] = useState(false);
+    const [isReady, setIsReady] = useState(loader);
 
     const handleTableChange = async (pagination, filters, sorter) => {
-        setLoading(true);
+        setIsReady(true);
         window.scrollTo(0, tableRef.current.offsetTop);
 
         await fetchingData({
@@ -22,7 +22,7 @@ export default function TableUI({data, columns, fetchingData, ...props}) {
             filters,
         });
 
-        setLoading(false)
+        setIsReady(false)
     };
 
     useEffect(() => {
@@ -33,6 +33,10 @@ export default function TableUI({data, columns, fetchingData, ...props}) {
         })
     }, [data]);
 
+    useEffect(() => {
+        setIsReady(loader)
+    }, [loader]);
+
     const tableData = data.data || data;
 
     return (
@@ -41,7 +45,7 @@ export default function TableUI({data, columns, fetchingData, ...props}) {
             columns={columns}
             dataSource={tableData.map( (item, index) => ({key: index, ...item}))}
             pagination={pagination}
-            loading={loading}
+            loading={isReady}
             onChange={handleTableChange}
             {...props}
             scroll={{

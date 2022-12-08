@@ -23,6 +23,7 @@ import PreviewFilesOriental from "../../../../../components/PreviewFilesOriental
 import FileOrientationEnums from "../../../../../enums/FileOrientation";
 
 export default function CityTable({cityList, getCity}) {
+    const [isReady, setIsReady] = useState(false);
     const [withCoordination, setWithCoordination] = useState(true);
     const history = useHistory();
     const columns = useMemo(() => ([
@@ -64,7 +65,7 @@ export default function CityTable({cityList, getCity}) {
             title: 'Work Status',
             dataIndex: 'work_status',
             key: 'work_status',
-            render: (_, city) => <ChangeWorkStatus workStatus={city.work_status} cityId={city.id}/>
+            render: (_, city) => <ChangeWorkStatus workStatus={city.work_status} cityId={city.id} getCity={getCityHandler}/>
         },
         {
             dataIndex: 'coordinate',
@@ -121,10 +122,12 @@ export default function CityTable({cityList, getCity}) {
     ]), [withCoordination]);
 
     const getCityHandler = async (params) => {
+        setIsReady(false)
         await getCity({
             ...(!withCoordination && {isNull: 'latitude,longitude'}),
             ...params,
         })
+        setIsReady(true)
     }
 
     useEffect(() => {
@@ -135,7 +138,7 @@ export default function CityTable({cityList, getCity}) {
       <Table data={cityList || []}
              columns={columns}
              fetchingData={getCityHandler}
-             loader={!cityList}
+             loader={!isReady}
       />
     )
 }
