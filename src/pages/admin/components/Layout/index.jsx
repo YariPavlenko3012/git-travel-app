@@ -115,7 +115,7 @@ export default function LayoutUI({children}) {
             getItem('Logout', '6', LogoutOutlined, AUTH_PAGE_LOGOUT_URI)
         ];
 
-        if(user.role !== RolesEnums.super_admin){
+        if(user.role === RolesEnums.super_admin){
             return itemsAdmin
         }
 
