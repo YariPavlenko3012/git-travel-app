@@ -63,7 +63,7 @@ export default function CityShow() {
           <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
               <div style={{display: "flex"}}>
                   <span style={{paddingRight: 10}}>{city.name}</span>
-                  <ChangeWorkStatus workStatus={city.work_status} cityId={city.id}/>
+                  <ChangeWorkStatus getCity={getCity} workStatus={city.work_status} cityId={city.id}/>
               </div>
               <Link to={ADMIN_MAKE_EDIT_CITY_URI(cityId)}>
                   <Button type="primary" className={styles.show__btn}>
