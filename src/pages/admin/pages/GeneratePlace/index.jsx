@@ -26,6 +26,8 @@ import PlaceTypeTranslate from "../../../../utils/PlaceTypeTranslate";
 import GenerationPlaceService from "../../../../services/admin/generationPlace.service";
 import SightService from "../../../../services/admin/sight.service";
 import CountryService from "../../../../services/admin/country.service";
+import SightWorkStatusEnum from "../../../../enums/SightWorkStatus";
+import PlaceTypeSquareEnum from "../../../../enums/PlaceTypeSquare";
 
 // const socket = io('http://localhost:3002', {
 //     extraHeaders: {
@@ -37,9 +39,6 @@ import CountryService from "../../../../services/admin/country.service";
 const typeColor = {
     [GenerationTypeEnums.automatic]: {
         [PlaceTypeEnum.campground]: "red",
-        [PlaceTypeEnum.church]: "gray",
-        [PlaceTypeEnum.city_hall]: "black",
-        [PlaceTypeEnum.mosque]: "blue",
         [PlaceTypeEnum.embassy]: "#650abf",
         [PlaceTypeEnum.art_gallery]: "green",
         [PlaceTypeEnum.museum]: "#ff8600",
@@ -60,6 +59,7 @@ export default function GeneratePlace() {
     const [generationType, setGenerationType] = useState(GenerationTypeEnums.automatic)
     const [country, setCountry] = useState(null)
     const mapBlockRef = useRef(null);
+    const squareRef = useRef(null);
     const mapRef = useRef(null);
     const key = "AIzaSyApPL4vfjbQ_iVFrfE-97KN-ncf8i1NDLU";
 
@@ -105,206 +105,200 @@ export default function GeneratePlace() {
             return null
         }
     }
-    const getPlaces = async (bounds, cityId, placeTypes) => {
+    const getPlaces = async (bounds, cityId, type) => {
         const service = new window.google.maps.places.PlacesService(mapRef.current);
         let lastType = null;
 
         const forLoop = async _ => {
-            for (let i = 0; i < placeTypes.length; i++) {
-                const geometry = {
-                    north: bounds.getNorthEast().lat(), //noth lat
-                    south: bounds.getSouthWest().lat(), //south lat
-                    east: bounds.getNorthEast().lng(), //noth lng
-                    west: bounds.getSouthWest().lng(), //south lng
-                }
-                const type = placeTypes[i]; // amusement_park
-                lastType = type;
+            const geometry = {
+                north: bounds.getNorthEast().lat(), //noth lat
+                south: bounds.getSouthWest().lat(), //south lat
+                east: bounds.getNorthEast().lng(), //noth lng
+                west: bounds.getSouthWest().lng(), //south lng
+            }
+            lastType = type;
 
-                const requestNearbySearch = {
-                    bounds,
-                    types: [type],
-                };
+            const requestNearbySearch = {
+                bounds,
+                types: [type],
+            }
+            let placesToDB = [];
+            await new Promise(resolve => setTimeout(() => resolve(), 1000))
 
-                let placesToDB = [];
-                await new Promise(resolve => setTimeout(() => resolve(), 1000))
+            const isGenerate = await GenerationPlaceService.generatedSquare({
+                json: { geometry },
+                eq: { type }
+            })
 
-                const isGenerate = await GenerationPlaceService.generatedSquare({
-                    json: { geometry },
-                    eq: { type }
-                })
+            if(isGenerate.data.length){
+                return {failed: false};
+            }
 
-                if(isGenerate.data.length){
-                    console.log("OK")
+            await new Promise((resolve, reject) => {
+                service.nearbySearch(requestNearbySearch, async (places, status, pagination) => {
+                    if (!["ZERO_RESULTS", "OK"].includes(status)) {
+                        reject({
+                            message: `Google status error: ${status}`,
+                        })
+                    }
 
-                    continue
-                }
+                    if(!places.length){
+                        await GenerationPlaceService.create({
+                            country_id: countryId,
+                            geometry,
+                            type
+                        });
+                        resolve()
+                    }
 
-                await new Promise((resolve, reject) => {
-                    service.nearbySearch(requestNearbySearch, async (places, status, pagination) => {
-                        if (!["ZERO_RESULTS", "OK"].includes(status)) {
-                            reject({
-                                message: `Google status error: ${status}`,
-                            })
-                        }
+                    for (let i = 0; i < places.length; i++) {
+                        try {
+                            const currentPlace = places[i];
+                            const requestDetailPlace = {
+                                placeId: currentPlace.place_id,
+                                fields: [
+                                    'international_phone_number',
+                                    'opening_hours',
+                                    'website',
+                                    'geometry',
+                                    'type',
+                                    'photo',
+                                    'formatted_address',
+                                    'address_components',
+                                    'name',
+                                    'place_id',
+                                ]
+                            };
+                            const placeDetailRes = (await fetch(`https://maps.googleapis.com/maps/api/place/details/json?place_id=${requestDetailPlace.placeId}&fields=${requestDetailPlace.fields.join(",")}&key=${key}`)).json()
+                            const placeDetail = await placeDetailRes
+                            const place = placeDetail ? placeDetail.result : currentPlace;
 
-                        if(!places.length){
-                            await GenerationPlaceService.create({
+                            if (!place) {
+                                continue
+                            }
+
+                            let placeToBd = {
+                                city_id: cityId,
                                 country_id: countryId,
-                                geometry,
-                                type
-                            });
-                            resolve()
-                        }
+                                website: place.website && place.website.length < 255 ?  place.website : null,
+                                international_phone_number: place.international_phone_number || null,
+                                sight_name: place.name,
+                                original_name: place.name,
+                                formatted_address: place.formatted_address,
+                                google_place_id: place.place_id,
+                                place_type: place.types.filter( type => PlaceTypeEnum.list.includes(type)),
+                                opening_hours: place.opening_hours?.periods || null,
+                            }
 
-                        for (let i = 0; i < places.length; i++) {
-                            try {
-                                const currentPlace = places[i];
-                                const requestDetailPlace = {
-                                    placeId: currentPlace.place_id,
-                                    fields: [
-                                        'international_phone_number',
-                                        'opening_hours',
-                                        'website',
-                                        'geometry',
-                                        'type',
-                                        'photo',
-                                        'formatted_address',
-                                        'address_components',
-                                        'name',
-                                        'place_id',
-                                    ]
-                                };
-                                const placeDetailRes = (await fetch(`https://maps.googleapis.com/maps/api/place/details/json?place_id=${requestDetailPlace.placeId}&fields=${requestDetailPlace.fields.join(",")}&key=${key}`)).json()
-                                const placeDetail = await placeDetailRes
-                                const place = placeDetail ? placeDetail.result : currentPlace;
+                            if(placeToBd.opening_hours){
+                                if(placeToBd.opening_hours.length === 1 && placeToBd.opening_hours[0].close === undefined){
+                                    placeToBd.opening_hours = days.reduce((result, day ) => ({
+                                        ...result,
+                                        [day]: {
+                                            open: "00:00",
+                                            close: "00:00"
+                                        }
+                                    }), {})
+                                }
+                                else{
+                                    placeToBd.opening_hours = placeToBd.opening_hours.reduce( (result, openHour) => ({
+                                        ...result,
+                                        [days[openHour.open.day]]: {
+                                            open: `${openHour.open.time.slice(0, 2)}:${openHour.open.time.slice(2, 4)}`,
+                                            close: `${openHour.close.time.slice(0, 2)}:${openHour.close.time.slice(2, 4)}`,
+                                        }
+                                    }), {})
+                                }
+                            }
 
-                                if (!place) {
-                                    continue
+                            if (placeDetail) {
+                                const photosList = place.photos?.filter((_, index) => index < 3) || [];
+                                placeToBd = {
+                                    ...placeToBd,
+                                    latitude: place.geometry.location.lat,
+                                    longitude: place.geometry.location.lng,
+                                    files_ids: [],
                                 }
 
-                                let placeToBd = {
-                                    city_id: cityId,
-                                    country_id: countryId,
-                                    website: place.website && place.website.length < 255 ?  place.website : null,
-                                    international_phone_number: place.international_phone_number || null,
-                                    sight_name: place.name,
-                                    original_name: place.name,
-                                    formatted_address: place.formatted_address,
-                                    google_place_id: place.place_id,
-                                    place_type: place.types.filter( type => PlaceTypeEnum.list.includes(type)),
-                                    opening_hours: place.opening_hours?.periods || null,
-                                }
-
-                                if(placeToBd.opening_hours){
-                                    if(placeToBd.opening_hours.length === 1 && placeToBd.opening_hours[0].close === undefined){
-                                        placeToBd.opening_hours = days.reduce((result, day ) => ({
-                                            ...result,
-                                            [day]: {
-                                                open: "00:00",
-                                                close: "00:00"
-                                            }
-                                        }), {})
-                                    }
-                                    else{
-                                        placeToBd.opening_hours = placeToBd.opening_hours.reduce( (result, openHour) => ({
-                                            ...result,
-                                            [days[openHour.open.day]]: {
-                                                open: `${openHour.open.time.slice(0, 2)}:${openHour.open.time.slice(2, 4)}`,
-                                                close: `${openHour.close.time.slice(0, 2)}:${openHour.close.time.slice(2, 4)}`,
-                                            }
-                                        }), {})
-                                    }
-                                }
-
-                                if (placeDetail) {
-                                    const photosList = place.photos?.filter((_, index) => index < 3) || [];
-                                    placeToBd = {
-                                        ...placeToBd,
-                                        latitude: place.geometry.location.lat,
-                                        longitude: place.geometry.location.lng,
-                                        files_ids: [],
-                                    }
-
-                                    if (photosList.length) {
-                                        for (let i = 0; i < photosList.length; i++) {
-                                            const photoReference = photosList[i].photo_reference;
-                                            const id = await getPhotos(photoReference)
-                                            if (id) {
-                                                placeToBd.files_ids = [...placeToBd.files_ids, id]
-                                            }
+                                if (photosList.length) {
+                                    for (let i = 0; i < photosList.length; i++) {
+                                        const photoReference = photosList[i].photo_reference;
+                                        const id = await getPhotos(photoReference)
+                                        if (id) {
+                                            placeToBd.files_ids = [...placeToBd.files_ids, id]
                                         }
                                     }
                                 }
-
-                                if (!placeDetail) {
-                                    placeToBd = {
-                                        ...placeToBd,
-                                        latitude: place.geometry.location.lat(),
-                                        longitude: place.geometry.location.lng(),
-                                        files_ids: [],
-                                    }
-                                }
-
-
-                                const formattedTypeColor = {
-                                    ...typeColor[GenerationTypeEnums.automatic],
-                                    ...typeColor[GenerationTypeEnums.manual],
-                                }
-
-                                new window.google.maps.Marker({
-                                    position: {
-                                        lat: placeToBd.latitude,
-                                        lng: placeToBd.longitude
-                                    },
-                                    icon: generateMarker(formattedTypeColor[type]),
-                                    map: mapRef.current,
-                                })
-
-                                console.log(placeToBd)
-
-                                placesToDB = [...placesToDB, placeToBd]
-
-                                if (i + 1 === places.length) {
-                                    if (pagination && pagination.hasNextPage) {
-                                        pagination.nextPage()
-                                        return;
-                                    }
-
-                                    await SightService.createBatch(placesToDB)
-
-                                    await GenerationPlaceService.create({
-                                        country_id: countryId,
-                                        geometry,
-                                        type
-                                    })
-
-                                    //WRITE TO BS ALL PLACE []
-                                    console.log(placesToDB, "placesToDB")
-
-                                    // socket.emit('pushLog', {
-                                    //     success: true,
-                                    //     cityId: cityId,
-                                    //     sights: placesToDB,
-                                    //     geometry_square: {
-                                    //         north: bounds.getNorthEast().lat(), //noth lat
-                                    //         south: bounds.getSouthWest().lat(), //south lat
-                                    //         east: bounds.getNorthEast().lng(), //noth lng
-                                    //         west: bounds.getSouthWest().lng(), //south lng
-                                    //     },
-                                    //     type,
-                                    // });
-
-                                    resolve()
-                                }
-                            } catch (error) {
-                                return reject({
-                                    message: error.message,
-                                })
                             }
+
+                            if (!placeDetail) {
+                                placeToBd = {
+                                    ...placeToBd,
+                                    latitude: place.geometry.location.lat(),
+                                    longitude: place.geometry.location.lng(),
+                                    files_ids: [],
+                                }
+                            }
+
+
+                            const formattedTypeColor = {
+                                ...typeColor[GenerationTypeEnums.automatic],
+                                ...typeColor[GenerationTypeEnums.manual],
+                            }
+
+                            new window.google.maps.Marker({
+                                position: {
+                                    lat: placeToBd.latitude,
+                                    lng: placeToBd.longitude
+                                },
+                                icon: generateMarker(formattedTypeColor[type]),
+                                map: mapRef.current,
+                            })
+
+                            console.log(placeToBd)
+
+                            placesToDB = [...placesToDB, placeToBd]
+
+                            if (i + 1 === places.length) {
+                                if (pagination && pagination.hasNextPage) {
+                                    pagination.nextPage()
+                                    return;
+                                }
+
+                                await SightService.createBatch(placesToDB)
+
+                                await GenerationPlaceService.create({
+                                    country_id: countryId,
+                                    geometry,
+                                    type
+                                })
+
+                                //WRITE TO BS ALL PLACE []
+                                console.log(placesToDB, "placesToDB")
+
+                                // socket.emit('pushLog', {
+                                //     success: true,
+                                //     cityId: cityId,
+                                //     sights: placesToDB,
+                                //     geometry_square: {
+                                //         north: bounds.getNorthEast().lat(), //noth lat
+                                //         south: bounds.getSouthWest().lat(), //south lat
+                                //         east: bounds.getNorthEast().lng(), //noth lng
+                                //         west: bounds.getSouthWest().lng(), //south lng
+                                //     },
+                                //     type,
+                                // });
+
+                                resolve()
+                            }
+                        } catch (error) {
+                            return reject({
+                                message: error.message,
+                            })
                         }
-                    });
-                })
-            }
+                    }
+                });
+            })
 
             return {failed: false};
         }
@@ -320,7 +314,7 @@ export default function GeneratePlace() {
             };
         }
     }
-    const getRectangle = async ({geometry, cityId, placeTypes}) => {
+    const getRectangle = async ({geometry, cityId, type}) => {
         try {
             const {north, south, east, west} = geometry;
             const bounds = new window.google.maps.LatLngBounds();
@@ -336,7 +330,11 @@ export default function GeneratePlace() {
             //     west: bounds.getSouthWest().lng(), //south lng
             // })
 
-            new window.google.maps.Rectangle({
+            if(squareRef.current){
+                squareRef.current.setMap(null)
+            }
+
+            squareRef.current =  new window.google.maps.Rectangle({
                 strokeColor: "blue",
                 strokeOpacity: 0.8,
                 strokeWeight: 2,
@@ -351,7 +349,7 @@ export default function GeneratePlace() {
                 },
             });
 
-            return await getPlaces(bounds, cityId, placeTypes)
+            return await getPlaces(bounds, cityId, type)
         } catch (e) {
             // socket.emit('pushLog', {
             //     success: false,
@@ -378,55 +376,64 @@ export default function GeneratePlace() {
             return {failed: false};
         }
 
-        const countStep = 2;
-
-        const placeHeightCoordinate = city.geometry.north - city.geometry.south;
-        const placeWidthCoordinate = city.geometry.east - city.geometry.west;
-
-        const stepHorizontal = placeWidthCoordinate / countStep;
-        const stepVertical = placeHeightCoordinate / countStep;
-
         let currentI = 1;
         let currentJ = 1;
 
         const forLoop = async _ => {
-            for (currentI; currentI <= countStep; currentI++) {
-                currentJ = 1;
-                for (currentJ; currentJ <= countStep; currentJ++) {
-                    console.log(`index: ${currentI}; jndex ${currentJ}`)
-                    await new Promise(resolve => setTimeout(resolve, 500))
-                    const {failed, message, type} = await getRectangle(
-                        {
-                            geometry: {
-                                north: city.geometry.south + (stepVertical * currentI),
-                                east: city.geometry.west + (stepHorizontal * currentJ),
-                                south: city.geometry.south + (stepVertical * (currentI - 1)),
-                                west: city.geometry.west + (stepHorizontal * (currentJ - 1)),
-                            },
-                            cityId: city.id,
-                            placeTypes,
+            for(let i = 0; i < placeTypes.length; i++){
+                const currentType = placeTypes[i];
+
+                const countStep = PlaceTypeSquareEnum[currentType] || city.generation_count_of_squares;
+
+                const placeHeightCoordinate = city.geometry.north - city.geometry.south;
+                const placeWidthCoordinate = city.geometry.east - city.geometry.west;
+
+                const stepHorizontal = placeWidthCoordinate / countStep;
+                const stepVertical = placeHeightCoordinate / countStep;
+
+                currentI = 1;
+                for (currentI; currentI <= countStep; currentI++) {
+                    currentJ = 1;
+                    for (currentJ; currentJ <= countStep; currentJ++) {
+                        console.log(`index: ${currentI}; jndex ${currentJ}`)
+                        await new Promise(resolve => setTimeout(resolve, 500))
+                        const {failed, message, type} = await getRectangle(
+                            {
+                                geometry: {
+                                    north: city.geometry.south + (stepVertical * currentI),
+                                    east: city.geometry.west + (stepHorizontal * currentJ),
+                                    south: city.geometry.south + (stepVertical * (currentI - 1)),
+                                    west: city.geometry.west + (stepHorizontal * (currentJ - 1)),
+                                },
+                                cityId: city.id,
+                                type: currentType,
+                            }
+                        )
+
+                        if (failed) {
+                            // socket.emit('pushLog', {
+                            //     success: false,
+                            //     cityId: city.id,
+                            //     geometry_square: {
+                            //         north: city.geometry.north, //noth lat
+                            //         south: city.geometry.south, //south lat
+                            //         east: city.geometry.east, //noth lng
+                            //         west: city.geometry.west, //south lng
+                            //     },
+                            //     indexI: currentI,
+                            //     indexJ: currentJ,
+                            //     message,
+                            //     type,
+                            // });
+
+                            return {failed: true}
                         }
-                    )
-
-                    if (failed) {
-                        // socket.emit('pushLog', {
-                        //     success: false,
-                        //     cityId: city.id,
-                        //     geometry_square: {
-                        //         north: city.geometry.north, //noth lat
-                        //         south: city.geometry.south, //south lat
-                        //         east: city.geometry.east, //noth lng
-                        //         west: city.geometry.west, //south lng
-                        //     },
-                        //     indexI: currentI,
-                        //     indexJ: currentJ,
-                        //     message,
-                        //     type,
-                        // });
-
-                        return {failed: true}
                     }
                 }
+            }
+
+            if(squareRef.current){
+                squareRef.current.setMap(null)
             }
 
             return {failed: false}
@@ -449,6 +456,10 @@ export default function GeneratePlace() {
             //     indexI: currentI,
             //     indexJ: currentJ,
             // });
+            if(squareRef.current){
+                squareRef.current.setMap(null)
+            }
+
             return {
                 failed: true,
                 city_id: city.id,
@@ -466,7 +477,6 @@ export default function GeneratePlace() {
             "generation_type": generationType,
             "types": placeTypes
         })
-
     }
 
     const getCountry = async () => {

@@ -55,7 +55,7 @@ export default function AutomaticContent({ getRectangle, countryId, mapRef }){
         //     {
         //         geometry,
         //         cityId: null,
-        //         placeTypes: [placeTypes]
+        //         placeTypes: placeTypes
         //     }
         // )
         //

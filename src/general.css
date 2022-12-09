@@ -219,3 +219,7 @@ div.arrow_box img{
     display: none;
 }
 
+
+.ant-menu .ant-menu-item:not(.ant-menu-item-selected) a, .ant-menu-submenu-popup .ant-menu-item:not(.ant-menu-item-selected) a{
+    background: 0 0 !important;
+}

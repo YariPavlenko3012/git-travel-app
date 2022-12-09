@@ -30,19 +30,19 @@ export default function CityList() {
             }
         }
 
-        return await CityService.list(copyParams)
+        return await CityService.list({country_id: 1, ...copyParams})
     };
 
     const getPendingCity = async (params = {}) => {
-        return await getCity({...params, country_id: 1, work_status: CityWorkStatusEnum.pending})
+        return await getCity({...params, work_status: CityWorkStatusEnum.pending})
     }
 
     const getInProgressCity = async (params = {}) => {
-        return await getCity({...params, country_id: 1, work_status: CityWorkStatusEnum.inProgress})
+        return await getCity({...params, work_status: CityWorkStatusEnum.inProgress})
     }
 
     const getDoneCity = async (params = {}) => {
-        return await getCity({...params, country_id: 1, work_status: CityWorkStatusEnum.done})
+        return await getCity({...params, work_status: CityWorkStatusEnum.done})
     }
 
 

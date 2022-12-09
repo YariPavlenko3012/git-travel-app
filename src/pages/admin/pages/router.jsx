@@ -37,7 +37,7 @@ import {
     ADMIN_EDIT_STATE_URI,
     ADMIN_CREATE_STATE_URI,
     ADMIN_SHOW_STATE_URI,
-    ADMIN_GENERATE_PLACE_URI, ADMIN_ROUTE_URI, ADMIN_EXCURSION_SHOW
+    ADMIN_GENERATE_PLACE_URI, ADMIN_ROUTE_URI, ADMIN_EXCURSION_SHOW, ADMIN_SIGHT_LIST_NEED_REVIEW_URI
 } from "../../../constants/admin/uri.constant";
 
 
@@ -102,6 +102,11 @@ export default function RouterPage() {
             layout: AuthRoute,
             path: ADMIN_CREATE_CITY_URI,
             component: lazy(() => import('./City/Create'))
+        },
+        {
+            layout: AuthRoute,
+            path: ADMIN_SIGHT_LIST_NEED_REVIEW_URI,
+            component: lazy(() => import('./Sight/NeedReview'))
         },
         {
             layout: AuthRoute,

@@ -54,6 +54,8 @@ export default function UpdateCityForm({cityId, city, getCity}) {
         }
     }
 
+    console.log(city, "city")
+
     return (
         <FormUI onSubmit={updateCity}
                 initialValues={{
@@ -96,6 +98,18 @@ export default function UpdateCityForm({cityId, city, getCity}) {
                                 <FieldInput label="Original name"
                                             name={`original_name`}
                                             placeholder={`Enter original name`}
+                                            required={true}/>
+
+                            </div>
+                            <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
+                                <FieldInput label="Count of squares"
+                                            type="number"
+                                            name={`generation_count_of_squares`}
+                                            placeholder={`Enter count of squares`}
+                                            input={{
+                                                min: 1,
+                                                max: 2
+                                            }}
                                             required={true}/>
 
                             </div>

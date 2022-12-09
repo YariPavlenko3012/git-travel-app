@@ -25,7 +25,7 @@ export default function AutomaticContent({ generatePlacesByCity, typeColor, coun
             per_page: 1000000
         })
 
-        const dataSort = data.filter(({id}) => 527 === id)
+        const dataSort = data.filter(({id}) => 264 === id)
         console.log(dataSort)
 
         for (let i = 0; i < dataSort.length; i++) {
@@ -38,6 +38,7 @@ export default function AutomaticContent({ generatePlacesByCity, typeColor, coun
                 return;
             }
 
+            console.log('FINISH')
             await generationFinishCity(city.id, GenerationTypeEnums.automatic, PlaceTypeEnum.googleTypesListAutomatic)
         }
 
@@ -53,12 +54,14 @@ export default function AutomaticContent({ generatePlacesByCity, typeColor, coun
 
             </div>
             <div style={{display: "flex", flexDirection: "column", gap: 15, marginTop: 10}}>
-                {Object.keys(typeColor).map(type => (
-                    <div style={{display: "flex", alignItems: "center"}}>
-                        <div style={{width: 10, height: 10, backgroundColor: typeColor[type]}}/>
-                        <span> :{PlaceTypeTranslate.getTranslateForType(type)}</span>
-                    </div>
-                ))}
+                {Object.keys(typeColor).map(type => {
+                    return (
+                        <div style={{display: "flex", alignItems: "center"}}>
+                            <div style={{width: 10, height: 10, backgroundColor: typeColor[type]}}/>
+                            <span> :{PlaceTypeTranslate.getTranslateForType(type)}</span>
+                        </div>
+                    )
+                })}
             </div>
         </div>
     )

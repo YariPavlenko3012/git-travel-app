@@ -3,7 +3,7 @@
  */
 import {Field} from "react-final-form";
 import React from "react";
-import {Input} from 'antd'
+import {Input, InputNumber} from 'antd'
 /**
  * components
  */
@@ -12,7 +12,7 @@ import FormItem from './components/FormItem'
 const identity = value => (value);
 
 export default function FieldInput({label = "", name, placeholder = "", type = "text", disabled = false, onBlur, onChange, onPaste, input, ...rest}) {
-    const Components = type === 'password' ? Input.Password : Input;
+    const Components = type === 'password' ? Input.Password :  type === 'number' ? InputNumber : Input;
 
     return (
         <Field name={name} parse={identity}>
@@ -44,6 +44,7 @@ export default function FieldInput({label = "", name, placeholder = "", type = "
                                     type={type}
                                     value={props.input.value}
                                     size="large"
+                                    style={{width: "100%"}}
                                     {...input}
                                     {...props} />
                     </React.Fragment>

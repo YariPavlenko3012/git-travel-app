@@ -37,6 +37,7 @@ export default function SightCreateForm({ cityId }) {
         const copyValues = JSON.parse(JSON.stringify(value));
         copyValues.files_ids = (copyValues.sight.images || []).map(({id}) => id);
         copyValues.sight.original_name = copyValues.sight.sight_name;
+        copyValues.sight.work_status = "pending";
 
         const {id} = await SightService.create(copyValues);
 
@@ -123,6 +124,7 @@ export default function SightCreateForm({ cityId }) {
                                                  required={true}
                                                  label="Place type"
                                                  select={{
+                                                     mode: "multiple",
                                                      showSearch: true,
                                                  }}/>
                             </div>

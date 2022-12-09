@@ -35,6 +35,7 @@ export const ADMIN_MAKE_EDIT_CITY_URI = cityId => `${ADMIN_CITY}/edit/${cityId}`
 //SIGHT
 const ADMIN_SIGHT = `${ADMIN}/sight`;
 export const ADMIN_SIGHT_LIST_URI = `${ADMIN_SIGHT}`;
+export const ADMIN_SIGHT_LIST_NEED_REVIEW_URI = `${ADMIN_SIGHT}/need-review`;
 export const ADMIN_CREATE_SIGHT_URI = `${ADMIN_SIGHT}/create/:cityId`;
 export const ADMIN_MAKE_CREATE_SIGHT_URI = (cityId) => `${ADMIN_SIGHT}/create/${cityId}`;
 export const ADMIN_SHOW_SIGHT_URI = `${ADMIN_SIGHT}/:sightId`;

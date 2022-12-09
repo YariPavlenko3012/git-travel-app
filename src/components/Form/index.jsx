@@ -10,18 +10,19 @@ export default function FormUI({render, onSubmit = () => {} , onError = () => {}
         try {
             await onSubmit(values);
         } catch (e) {
+            console.log(e, "1")
             setAlertError(e.message);
-        
+
             if(!e.errors){
                 return console.error(e.message)
             }
             onError();
-        
-        
+
+
             return Object.keys(e.errors).reduce((newError, keys) => {
                 const splitKey = keys.split('.');
                 const error = typeof e.errors[keys] === 'string' ? e.errors[keys] : e.errors[keys][0];
-            
+
                 let helpString = 'newError';
                 splitKey.forEach( key => {
                     helpString += `['${key}']`;
@@ -29,9 +30,9 @@ export default function FormUI({render, onSubmit = () => {} , onError = () => {}
                         eval(`${helpString} = {}`);
                     }
                 });
-            
+
                 eval(`${helpString} = "${error}"`);
-            
+
                 return newError
             }, {});
         }

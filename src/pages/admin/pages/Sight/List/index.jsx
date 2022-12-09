@@ -1,19 +1,22 @@
 /**
  * external libs
  */
-import React, {useEffect, useState} from 'react';
+import React from 'react';
+import {Tabs} from "antd";
 /**
  * components
  */
-import TableSights from '../../../components/Tables/Sights';
+import SightTab from './components/Tab';
 /**
  * services
  */
 import SightService from "../../../../../services/admin/sight.service";
+/**
+ * enums
+ */
+import SightWorkStatusEnum from "../../../../../enums/SightWorkStatus";
 
 export default function SightList() {
-    const [sight, setSight] = useState(null);
-
     const getSight = async (params = {}) => {
         const copyParams = JSON.parse(JSON.stringify(params));
 
@@ -23,25 +26,30 @@ export default function SightList() {
             }
         }
 
-        // setSight(await SightService.list({country_id: 1, ...copyParams}))
-        setSight(await SightService.list({ ...copyParams}))
+        return await SightService.list({country_id: 1, ...copyParams})
     };
 
-    useEffect(() => {
-        getSight();
-    }, []);
+    const getPendingSight = async (params = {}) => {
+        return await getSight({...params, country_id: 1, eq: {work_status: SightWorkStatusEnum.pending}})
+    }
 
-
-    if(!sight) {
-        return <div>Loader...</div>
+    const getDoneSight = async (params = {}) => {
+        return await getSight({...params, country_id: 1, eq: {work_status: SightWorkStatusEnum.done}})
     }
 
     return (
       <div>
-          <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
-              Sight
-          </h3>
-          <TableSights sightList={sight} getSight={getSight}/>
+          <div style={{padding: '10px 0'}}>
+              <h3 style={{marginBottom: 20}}>Sight</h3>
+              <Tabs type="card">
+                  <Tabs.TabPane tab="Pending" key="1">
+                      <SightTab getSights={getPendingSight}/>
+                  </Tabs.TabPane>
+                  <Tabs.TabPane tab="Done" key="2">
+                      <SightTab getSights={getDoneSight}/>
+                  </Tabs.TabPane>
+              </Tabs>
+          </div>
       </div>
     )
 }

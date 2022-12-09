@@ -34,6 +34,8 @@ export default function UpdateSightForm({sight, sightId, getSight}) {
         await getSight(sightId)
     };
 
+    console.log(sight, "sight")
+
     return (
       <FormUI onSubmit={updateSight}
               initialValues={{

@@ -1,9 +1,9 @@
 /**
  * external libs
  */
-import React, {useMemo, useState, useEffect} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import {Link, useParams} from 'react-router-dom'
-import {Button} from "antd";
+import {Button, Popconfirm, Tooltip} from "antd";
 /**
  * components
  */
@@ -19,7 +19,7 @@ import {
     ADMIN_MAKE_EDIT_SIGHT_URI,
     ADMIN_MAKE_SHOW_CITY_URI,
     ADMIN_MAKE_SHOW_COUNTRY_URI,
-    ADMIN_MAKE_SHOW_STATE_URI,
+    ADMIN_MAKE_SHOW_STATE_URI, ADMIN_SIGHT_LIST_URI,
 } from "../../../../../constants/admin/uri.constant";
 /**
  * styles
@@ -29,14 +29,26 @@ import styles from "../../../styles/show.module.scss";
  * utils
  */
 import PlaceTypeTranslate from "../../../../../utils/PlaceTypeTranslate";
+import RolesEnum from "../../../../../enums/RolesEnum";
+import {DeleteOutlined} from "@ant-design/icons";
+import UserCan from "../../../../../components/UserCan";
+import {AlertContext} from "../../../../context/alert.context";
+import ChangeWorkStatus from "../../../components/Tables/Sights/components/ChangeWorkStatus";
 
-export default function SightShow() {
+export default function SightShow({ history }) {
+    const {setAlertSuccess} = useContext(AlertContext)
     const [sight, setSight] = useState(null);
     const {sightId} = useParams();
 
     const getSight = async () => {
         setSight(await SightService.show(sightId))
     };
+
+    const deleteSight = async (sightId) => {
+        await SightService.delete(sightId)
+        setAlertSuccess("Sight successfully deleted")
+        return history.push(ADMIN_SIGHT_LIST_URI)
+    }
 
     useEffect(() => {
         getSight();
@@ -49,12 +61,29 @@ export default function SightShow() {
     return (
       <div>
           <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
-              {sight.name}
-              <Link to={ADMIN_MAKE_EDIT_SIGHT_URI(sightId)}>
-                  <Button type="primary" className={styles.show__btn}>
-                      Edit sight
-                  </Button>
-              </Link>
+              <div style={{display: "flex"}}>
+                  <span style={{paddingRight: 10}}>{sight.name}</span>
+                  <ChangeWorkStatus getSight={getSight} workStatus={sight.work_status} sightId={sight.id}/>
+              </div>
+              <div style={{display: "flex", alignItems: "flex-end", gap: 10}}>
+                  <Link to={ADMIN_MAKE_EDIT_SIGHT_URI(sightId)}>
+                      <Button type="primary" className={styles.show__btn}>
+                          Edit
+                      </Button>
+                  </Link>
+                  <UserCan checkRole={RolesEnum.super_admin}>
+                      <Popconfirm
+                          title="Are you sure to delete this sight?"
+                          onConfirm={() => deleteSight(sightId)}
+                          okText="Yes"
+                          cancelText="No"
+                      >
+                          <Tooltip title="Delete sight">
+                              <Button type="danger" icon={<DeleteOutlined />} size={20} />
+                          </Tooltip>
+                      </Popconfirm>
+                  </UserCan>
+              </div>
           </h3>
           <div className={styles.show}>
               <div className={styles.show__wrapper}>

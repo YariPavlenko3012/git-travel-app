@@ -41,8 +41,6 @@ export default function UploadFiles({name, oriental, keyFiles}) {
             })
     }
 
-    console.log(submitErrors, "submitErrors")
-
     return (
         <Field name="file">
             {props => (

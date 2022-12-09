@@ -7,7 +7,7 @@ import axios from 'axios'
  */
 import {
     API_ADMIN_CITY_CREATE,
-    API_MAKE_ADMIN_CITY_TRANSLATE_CREATE,
+    API_MAKE_ADMIN_CITY_DELETE,
     API_ADMIN_CITY_LIST,
     API_MAKE_ADMIN_CITY_TAXI_CREATE,
     API_MAKE_ADMIN_CITY_SHOW,
@@ -45,6 +45,10 @@ export default class CityService {
 
     static async create(data) {
         return new CityModel(await axios.post(API_ADMIN_CITY_CREATE, data));
+    }
+
+    static async delete(cityId) {
+        return await axios.delete(API_MAKE_ADMIN_CITY_DELETE(cityId))
     }
 
     static async update(cityId, data) {

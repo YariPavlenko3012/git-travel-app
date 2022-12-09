@@ -1,15 +1,22 @@
 /**
  * external libs
  */
-import React, {useMemo, useEffect, useState} from 'react';
+import React, {useMemo, useEffect, useContext, useState} from 'react';
 import {Link, useHistory} from 'react-router-dom'
-import {Button, Checkbox, Space, Tooltip} from 'antd'
-import {EditOutlined, EyeOutlined} from '@ant-design/icons'
+import {Button, Checkbox, Popconfirm, Space, Tooltip} from 'antd'
+import {DeleteOutlined, EditOutlined, EyeOutlined} from '@ant-design/icons'
 /**
  * components
  */
 import Table from '../../../../../components/Table'
 import SearchInputForTable from '../../../../../components/Table/utils/search'
+import UserCan from "../../../../../components/UserCan";
+import ChangeWorkStatus from "../../../components/Tables/Sights/components/ChangeWorkStatus";
+
+/**
+ * service
+ */
+import SightService from "../../../../../services/admin/sight.service";
 /**
  * constant
  */
@@ -18,12 +25,41 @@ import {
     ADMIN_MAKE_SHOW_CITY_URI,
     ADMIN_MAKE_SHOW_SIGHT_URI
 } from "../../../../../constants/admin/uri.constant";
+/**
+ * utils
+ */
 import PlaceTypeTranslate from "../../../../../utils/PlaceTypeTranslate";
+/**
+ * enums
+ */
+import RolesEnum from "../../../../../enums/RolesEnum";
+/**
+ * context
+ */
+import {AlertContext} from "../../../../context/alert.context";
 
 export default function SightTable({sightList, getSight}) {
+    const {setAlertSuccess} = useContext(AlertContext)
     const [withPlaceType, setWithPlaceType] = useState(true);
     const history = useHistory();
     const columns = useMemo(() => ([
+        {
+            title: 'ID',
+            dataIndex: 'id',
+            key: 'id',
+        },
+        {
+            title: 'Images',
+            dataIndex: 'images',
+            key: 'images',
+            render: (images) => (
+                <div style={{display: "flex", alignItems: "center", flexDirection: "column", gap: 5, minWidth: "max-content"}}>
+                    {images.map(({path}) => (
+                        <img src={path} style={{height: 70, minWidth: "max-content"}} alt="photo"/>
+                    ))}
+                </div>
+            ),
+        },
         {
             title: 'Name',
             dataIndex: 'name',
@@ -39,14 +75,21 @@ export default function SightTable({sightList, getSight}) {
             render: description => <div>{description || "N/A"}</div>
         },
         {
+            title: 'Work Status',
+            dataIndex: 'work_status',
+            key: 'work_status',
+            render: (_, sight) => <ChangeWorkStatus workStatus={sight.work_status} sightId={sight.id} getSight={getSightHandler}/>
+        },
+        {
             title: 'City',
             dataIndex: 'city',
             key: 'city',
             render: city => {
-                if(!city){
+                if (!city) {
                     return null
                 }
-                return <Link to={ADMIN_MAKE_SHOW_CITY_URI(city.id)} style={{color: city.name ? "#0d6efd" : "red"}}>{city.name || "No name"}</Link>
+                return <Link to={ADMIN_MAKE_SHOW_CITY_URI(city.id)}
+                             style={{color: city.name ? "#0d6efd" : "red"}}>{city.name || "No name"}</Link>
             },
         },
         {
@@ -65,12 +108,13 @@ export default function SightTable({sightList, getSight}) {
             title: () => (
                 <div style={{display: "flex", gap: 10}}>
                     Place type
-                    <Checkbox checked={withPlaceType} onChange={() => setWithPlaceType(!withPlaceType)} />
+                    <Checkbox checked={withPlaceType} onChange={() => setWithPlaceType(!withPlaceType)}/>
                 </div>
             ),
             dataIndex: 'place_type',
             key: 'place_type',
-            render: place_type => <div>{place_type.map( type => PlaceTypeTranslate.getTranslateForType(type)).join(", ")}</div>,
+            render: place_type =>
+                <div>{place_type.map(type => PlaceTypeTranslate.getTranslateForType(type)).join(", ")}</div>,
         },
         {
             title: 'Formatted address',
@@ -106,19 +150,37 @@ export default function SightTable({sightList, getSight}) {
             dataIndex: 'action',
             key: 'action',
             render: (_, row) => (
-              <Space size={10}>
-                  <Tooltip title="Edit sight">
-                      <Button type="primary" onClick={() => history.push(ADMIN_MAKE_EDIT_SIGHT_URI(row.id))}
-                              icon={<EditOutlined/>} size={20}/>
-                  </Tooltip>
-                  <Tooltip title="View sight">
-                      <Button type="primary" onClick={() => history.push(ADMIN_MAKE_SHOW_SIGHT_URI(row.id))}
-                              icon={<EyeOutlined/>} size={20}/>
-                  </Tooltip>
-              </Space>
+                <Space size={10}>
+                    <Tooltip title="Edit sight">
+                        <Button type="primary" onClick={() => history.push(ADMIN_MAKE_EDIT_SIGHT_URI(row.id))}
+                                icon={<EditOutlined/>} size={20}/>
+                    </Tooltip>
+                    <Tooltip title="View sight">
+                        <Button type="primary" onClick={() => history.push(ADMIN_MAKE_SHOW_SIGHT_URI(row.id))}
+                                icon={<EyeOutlined/>} size={20}/>
+                    </Tooltip>
+                    <UserCan checkRole={RolesEnum.super_admin}>
+                        <Popconfirm
+                            title="Are you sure to delete this sight?"
+                            onConfirm={() => deleteSight(row.id)}
+                            okText="Yes"
+                            cancelText="No"
+                        >
+                            <Tooltip title="Delete sight">
+                                <Button type="danger" icon={<DeleteOutlined/>} size={20}/>
+                            </Tooltip>
+                        </Popconfirm>
+                    </UserCan>
+                </Space>
             )
         },
     ]), [withPlaceType]);
+
+    const deleteSight = async (sightId) => {
+        await SightService.delete(sightId)
+        await getSightHandler();
+        setAlertSuccess("Sight successfully deleted")
+    }
 
     const getSightHandler = async (params) => {
         await getSight({
@@ -132,10 +194,10 @@ export default function SightTable({sightList, getSight}) {
     }, [withPlaceType])
 
     return (
-      <Table data={sightList || []}
-             columns={columns}
-             fetchingData={getSightHandler}
-             loader={!sightList}
-      />
+        <Table data={sightList || []}
+               columns={columns}
+               fetchingData={getSightHandler}
+               loader={!sightList}
+        />
     )
 }

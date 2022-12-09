@@ -8,7 +8,10 @@ import axios from 'axios'
 import {
     API_ADMIN_SIGHT_CREATE, API_ADMIN_SIGHT_CREATE_BATCH,
     API_ADMIN_SIGHT_LIST,
+    API_MAKE_ADMIN_SIGHT_CHANGE_STATUS,
     API_MAKE_ADMIN_SIGHT_DELETE,
+    API_MAKE_ADMIN_SIGHT_GET_CITIES,
+    API_MAKE_ADMIN_SIGHT_NEED_REVIEW,
     API_MAKE_ADMIN_SIGHT_SHOW,
     API_MAKE_ADMIN_SIGHT_TRANSLATE_CREATE,
     API_MAKE_ADMIN_SIGHT_TRANSLATE_EDIT,
@@ -64,6 +67,18 @@ export default class SightService {
 
     static async updateTranslate(sightId, translateId, data) {
         return await axios.put(API_MAKE_ADMIN_SIGHT_TRANSLATE_EDIT(sightId, translateId), data);
+    }
+
+    static async updateWorkStatus(sightId, workStatus) {
+        return await axios.put(API_MAKE_ADMIN_SIGHT_CHANGE_STATUS(sightId), {work_status: workStatus});
+    }
+
+    static async needReview(sightId, data) {
+        return await axios.put(API_MAKE_ADMIN_SIGHT_NEED_REVIEW(sightId), data);
+    }
+
+    static async getCitiesBySight(sightId) {
+        return await axios.get(API_MAKE_ADMIN_SIGHT_GET_CITIES(sightId));
     }
 }
 

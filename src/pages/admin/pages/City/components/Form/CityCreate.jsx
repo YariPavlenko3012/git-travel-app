@@ -68,6 +68,7 @@ export default function CreateCityForm({stateId}) {
                 initialValues={{
                     city: {
                         state_id: +stateId,
+                        generation_count_of_squares: 1,
                     },
                     cabs: [],
                 }}

@@ -1,16 +1,21 @@
 /**
  * external libs
  */
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useContext, useState} from 'react';
 import {Link, useHistory} from 'react-router-dom'
-import {Button, Space, Tooltip, Checkbox} from 'antd'
-import {EditOutlined, EyeOutlined} from '@ant-design/icons'
+import {Button, Space, Tooltip, Popconfirm, Checkbox} from 'antd'
+import {EditOutlined, EyeOutlined, DeleteOutlined} from '@ant-design/icons'
 /**
  * components
  */
 import Table from '../../../../../components/Table'
+import UserCan from '../../../../../components/UserCan'
 import SearchInputForTable from '../../../../../components/Table/utils/search'
 import ChangeWorkStatus from "./components/ChangeWorkStatus";
+/**
+ * services
+ */
+import CityService from "../../../../../services/admin/city.service";
 /**
  * constant
  */
@@ -20,9 +25,18 @@ import {
     ADMIN_MAKE_SHOW_COUNTRY_URI
 } from "../../../../../constants/admin/uri.constant";
 import PreviewFilesOriental from "../../../../../components/PreviewFilesOriental";
+/**
+ * enums
+ */
 import FileOrientationEnums from "../../../../../enums/FileOrientation";
+import RolesEnum from "../../../../../enums/RolesEnum";
+/**
+ * context
+ */
+import {AlertContext} from "../../../../context/alert.context";
 
 export default function CityTable({cityList, getCity}) {
+    const {setAlertSuccess} = useContext(AlertContext)
     const [isReady, setIsReady] = useState(false);
     const [withCoordination, setWithCoordination] = useState(true);
     const history = useHistory();
@@ -116,10 +130,28 @@ export default function CityTable({cityList, getCity}) {
                       <Button type="primary" onClick={() => history.push(ADMIN_MAKE_SHOW_CITY_URI(row.id))}
                               icon={<EyeOutlined/>} size={20}/>
                   </Tooltip>
+                  <UserCan checkRole={RolesEnum.super_admin}>
+                      <Popconfirm
+                          title="Are you sure to delete this city?"
+                          onConfirm={() => deleteCity(row.id)}
+                          okText="Yes"
+                          cancelText="No"
+                      >
+                          <Tooltip title="Delete city">
+                              <Button type="danger" icon={<DeleteOutlined />} size={20} />
+                          </Tooltip>
+                      </Popconfirm>
+                  </UserCan>
               </Space>
             )
         },
     ]), [withCoordination]);
+
+    const deleteCity = async (cityId) => {
+        await CityService.delete(cityId)
+        await getCityHandler();
+        setAlertSuccess("City successfully deleted")
+    }
 
     const getCityHandler = async (params) => {
         setIsReady(false)

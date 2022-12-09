@@ -1,14 +1,17 @@
 /**
  * external libs
  */
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import {Link, useParams} from "react-router-dom";
-import {Button} from "antd";
+import {Button, Popconfirm, Tooltip} from "antd";
+import {DeleteOutlined} from "@ant-design/icons";
 /**
  * components
  */
 import SightTable from '../../../components/Tables/Sights';
+import ChangeWorkStatus from "../../../components/Tables/Cities/components/ChangeWorkStatus";
 import PreviewFilesOriental from "../../../../../components/PreviewFilesOriental";
+import UserCan from "../../../../../components/UserCan";
 /**
  * services
  */
@@ -31,15 +34,30 @@ import {
  * enum
  */
 import FileOrientationEnums from "../../../../../enums/FileOrientation";
-import ChangeWorkStatus from "../../../components/Tables/Cities/components/ChangeWorkStatus";
+import RolesEnum from "../../../../../enums/RolesEnum";
+/**
+ * context
+ */
+import {AlertContext} from "../../../../context/alert.context";
 
 
 export default function CityShow() {
+    const {setAlertSuccess} = useContext(AlertContext)
     const [sight, setSight] = useState(null);
     const [city, setCity] = useState(null);
     const {cityId} = useParams();
 
+    const deleteCity = async (cityId) => {
+        await CityService.delete(cityId)
+        await getCity();
+        setAlertSuccess("City successfully deleted")
+    }
     const getSight = async (params = {}) => {
+        const {filters} = params;
+        if(filters?.name?.[0]){
+            params.sight_name = filters.name[0]
+        }
+
         setSight(await SightService.list({
             ...params,
             city_id: cityId
@@ -65,11 +83,25 @@ export default function CityShow() {
                   <span style={{paddingRight: 10}}>{city.name}</span>
                   <ChangeWorkStatus getCity={getCity} workStatus={city.work_status} cityId={city.id}/>
               </div>
-              <Link to={ADMIN_MAKE_EDIT_CITY_URI(cityId)}>
-                  <Button type="primary" className={styles.show__btn}>
-                      Edit City
-                  </Button>
-              </Link>
+              <div style={{display: "flex", alignItems: "flex-end", gap: 10}}>
+                  <Link to={ADMIN_MAKE_EDIT_CITY_URI(cityId)}>
+                      <Button type="primary" className={styles.show__btn}>
+                          Edit City
+                      </Button>
+                  </Link>
+                  <UserCan checkRole={RolesEnum.super_admin}>
+                      <Popconfirm
+                          title="Are you sure to delete this city?"
+                          onConfirm={() => deleteCity(cityId)}
+                          okText="Yes"
+                          cancelText="No"
+                      >
+                          <Tooltip title="Delete city">
+                              <Button type="danger" icon={<DeleteOutlined />} size={20} />
+                          </Tooltip>
+                      </Popconfirm>
+                  </UserCan>
+              </div>
           </h3>
           <div className={styles.show}>
               <div className={styles.show__wrapper}>
@@ -117,7 +149,7 @@ export default function CityShow() {
               </div>
           </div>
           {sight &&
-              <>
+              <React.Fragment>
                   <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
                       Sight of {city.name}
                       <Link to={ADMIN_MAKE_CREATE_SIGHT_URI(cityId)}>
@@ -127,8 +159,10 @@ export default function CityShow() {
                       </Link>
                   </h3>
                   <SightTable sightList={sight} getSight={getSight}/>
-              </>
+              </React.Fragment>
           }
       </div>
     )
 }
+
+

@@ -28,7 +28,7 @@ import {
     ADMIN_SIGHT_LIST_URI,
     ADMIN_STATE_LIST_URI,
     ADMIN_STATISTICS_PRICE,
-    ADMIN_STATISTICS_USERS_LIST, ADMIN_EXCURSION_MAKE_SHOW,
+    ADMIN_STATISTICS_USERS_LIST, ADMIN_EXCURSION_MAKE_SHOW, ADMIN_SIGHT_LIST_NEED_REVIEW_URI,
 } from "../../../../constants/admin/uri.constant";
 import {AUTH_PAGE_LOGOUT_URI,AUTH_PAGE_LOGIN_URI} from "../../../../constants/uri.constant";
 /**
@@ -89,11 +89,14 @@ export default function LayoutUI({children}) {
             getItem('Country', '1', BankOutlined, ADMIN_MAKE_SHOW_COUNTRY_URI(1)),
             getItem('State', '7', GoldOutlined, ADMIN_STATE_LIST_URI),
             getItem('City', '2', HomeOutlined, ADMIN_CITY_LIST_URI),
-            getItem('Sight', '3', PictureOutlined, ADMIN_SIGHT_LIST_URI),
+            getItem('Sight', 'sub1', PictureOutlined, null, [
+                getItemChild("List", 'sub1_1', ADMIN_SIGHT_LIST_URI ),
+                getItemChild('Need review', 'sub1_2', ADMIN_SIGHT_LIST_NEED_REVIEW_URI ),
+            ]),
             getItem('Currency', '4', DollarCircleOutlined, ADMIN_CURRENCY_LIST_URI),
             getItem('Language', '5', SortAscendingOutlined, ADMIN_LANGUAGE_LIST_URI),
-            // getItem('GeneratePlace', '8', YuqueOutlined, ADMIN_MAKE_GENERATE_PLACE_URI(1)),
-            // getItem('Excursion', '9',  RollbackOutlined, ADMIN_EXCURSION_MAKE_SHOW(1)),
+            getItem('GeneratePlace', '8', YuqueOutlined, ADMIN_MAKE_GENERATE_PLACE_URI(1)),
+            getItem('Excursion', '9',  RollbackOutlined, ADMIN_EXCURSION_MAKE_SHOW(1)),
             // getItem('User', 'sub1', UserOutlined, null, [
             //     getItemChild('List', 'sub1_1', ADMIN_USERS_CREATE),
             //     getItemChild('Create', 'sub1_2',  ADMIN_USERS_CREATE),
