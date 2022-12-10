@@ -42,7 +42,7 @@ export default function CityList() {
     }
 
     const getDoneCity = async (params = {}) => {
-        return await getCity({...params, work_status: CityWorkStatusEnum.done})
+        return await getCity({...params, work_status: CityWorkStatusEnum.done, per_page: 100})
     }
 
 
