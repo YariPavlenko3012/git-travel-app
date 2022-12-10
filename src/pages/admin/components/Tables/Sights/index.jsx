@@ -33,13 +33,18 @@ import PlaceTypeTranslate from "../../../../../utils/PlaceTypeTranslate";
  * enums
  */
 import RolesEnum from "../../../../../enums/RolesEnum";
+import TablesKeyEnum from "../../../../../enums/TablesKey";
 /**
  * context
  */
 import {AlertContext} from "../../../../context/alert.context";
+import {SettingsContext} from "../../../../context/settings.context";
 
-export default function SightTable({sightList, getSight}) {
+export default function SightTable({searchParams}) {
+    const [sights, setSights] = useState(null);
+    const [isReady, setIsReady] = useState(false);
     const {setAlertSuccess} = useContext(AlertContext)
+    const {settings} = useContext(SettingsContext)
     const [withPlaceType, setWithPlaceType] = useState(true);
     const history = useHistory();
     const columns = useMemo(() => ([
@@ -176,6 +181,18 @@ export default function SightTable({sightList, getSight}) {
         },
     ]), [withPlaceType]);
 
+    const getSight = async (params = {}) => {
+        const copyParams = JSON.parse(JSON.stringify(params));
+
+        if(copyParams.filters) {
+            if(copyParams.filters?.name) {
+                copyParams.sight_name = copyParams.filters.name[0];
+            }
+        }
+
+        return await SightService.list(copyParams)
+    };
+
     const deleteSight = async (sightId) => {
         await SightService.delete(sightId)
         await getSightHandler();
@@ -183,21 +200,30 @@ export default function SightTable({sightList, getSight}) {
     }
 
     const getSightHandler = async (params) => {
-        await getSight({
+        setIsReady(false);
+        setSights(await getSight({
+            ...settings.table[TablesKeyEnum.sight],
             ...(!withPlaceType && {isNull: 'place_type'}),
+            ...searchParams,
             ...params,
-        })
+        }))
+        setIsReady(true);
     }
 
     useEffect(() => {
         getSightHandler()
     }, [withPlaceType])
 
+    if(!sights){
+        return <div>Loading...</div>
+    }
+
     return (
-        <Table data={sightList || []}
+        <Table data={sights}
                columns={columns}
+               tableKey={TablesKeyEnum.sight}
                fetchingData={getSightHandler}
-               loader={!sightList}
+               loader={!isReady}
         />
     )
 }

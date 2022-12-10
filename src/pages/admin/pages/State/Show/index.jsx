@@ -12,9 +12,7 @@ import SightTable from "../../../components/Tables/Sights";
 /**
  * services
  */
-import CityService from "../../../../../services/admin/city.service";
 import StateService from "../../../../../services/admin/state.service";
-import SightService from "../../../../../services/admin/sight.service";
 /**
  * constants
  */
@@ -29,44 +27,14 @@ import {
 import styles from '../../../styles/show.module.scss'
 
 export default function StateShow() {
-    const [sight, setSight] = useState(null);
-    const [city, setCity] = useState(null);
     const [state, setState] = useState(null);
     const {stateId} = useParams();
-
-    const getCity = async (params = {}) => {
-        const copyParams = JSON.parse(JSON.stringify(params))
-
-        if(copyParams.filters) {
-            if(copyParams.filters.country) {
-                copyParams.country_name = copyParams.filters.country[0];
-            }
-
-            if(copyParams.filters.name) {
-                copyParams.city_name = copyParams.filters.name[0];
-            }
-        }
-
-        setCity(await CityService.list({
-            ...copyParams,
-            state_id: stateId
-        }))
-    };
-
-    const getSight = async (params = {}) => {
-        setSight(await SightService.list({
-            ...params,
-            state_id: stateId
-        }))
-    };
 
     const getState = async () => {
         setState(await StateService.show(stateId))
     };
 
     useEffect(() => {
-        getCity();
-        getSight();
         getState();
     }, []);
 
@@ -102,38 +70,22 @@ export default function StateShow() {
               </div>
           </div>
           <Tabs type="card">
-              <Tabs.TabPane tab={(
-                  <span>
-                        City ({city?.meta.total})
-                    </span>
-              )} key="1">
-                  {city && (
-                      <>
-                          <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
-                              City of {state.name}
-                              <Link to={ADMIN_MAKE_CREATE_CITY_URI(stateId)}>
-                                  <Button type="primary" className={styles.show__btn}>
-                                      Create City
-                                  </Button>
-                              </Link>
-                          </h3>
-                          <CitiesTable cityList={city} getCity={getCity}/>
-                      </>
-                  )}
+              <Tabs.TabPane tab="City" key="1">
+                  <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
+                      City of {state.name}
+                      <Link to={ADMIN_MAKE_CREATE_CITY_URI(stateId)}>
+                          <Button type="primary" className={styles.show__btn}>
+                              Create City
+                          </Button>
+                      </Link>
+                  </h3>
+                  <CitiesTable searchParams={{state_id: stateId}}/>
               </Tabs.TabPane>
-              <Tabs.TabPane tab={(
-                  <span>
-                        Sight ({sight?.meta.total})
-                    </span>
-              )} key="2">
-                  {sight && (
-                      <>
-                          <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
-                              Sights of {state.name}
-                          </h3>
-                          <SightTable sightList={sight} getCity={getSight}/>
-                      </>
-                  )}
+              <Tabs.TabPane tab="Sight" key="2">
+                  <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
+                      Sights of {state.name}
+                  </h3>
+                  <SightTable searchParams={{state_id: stateId}}/>
               </Tabs.TabPane>
           </Tabs>
       </div>

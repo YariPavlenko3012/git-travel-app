@@ -43,7 +43,6 @@ import {AlertContext} from "../../../../context/alert.context";
 
 export default function CityShow() {
     const {setAlertSuccess} = useContext(AlertContext)
-    const [sight, setSight] = useState(null);
     const [city, setCity] = useState(null);
     const {cityId} = useParams();
 
@@ -52,23 +51,12 @@ export default function CityShow() {
         await getCity();
         setAlertSuccess("City successfully deleted")
     }
-    const getSight = async (params = {}) => {
-        const {filters} = params;
-        if(filters?.name?.[0]){
-            params.sight_name = filters.name[0]
-        }
 
-        setSight(await SightService.list({
-            ...params,
-            city_id: cityId
-        }))
-    };
     const getCity = async () => {
         setCity(await CityService.show(cityId))
     };
 
     useEffect(() => {
-        getSight();
         getCity();
     }, []);
 
@@ -148,19 +136,15 @@ export default function CityShow() {
                   <PreviewFilesOriental oriental={FileOrientationEnums.portrait} image={city.portrait_image?.path} height={100}/>
               </div>
           </div>
-          {sight &&
-              <React.Fragment>
-                  <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
-                      Sight of {city.name}
-                      <Link to={ADMIN_MAKE_CREATE_SIGHT_URI(cityId)}>
-                          <Button type="primary" className={styles.show__btn}>
-                              Create sight
-                          </Button>
-                      </Link>
-                  </h3>
-                  <SightTable sightList={sight} getSight={getSight}/>
-              </React.Fragment>
-          }
+          <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
+              Sight of {city.name}
+              <Link to={ADMIN_MAKE_CREATE_SIGHT_URI(cityId)}>
+                  <Button type="primary" className={styles.show__btn}>
+                      Create sight
+                  </Button>
+              </Link>
+          </h3>
+          <SightTable searchParams={{city_id: cityId}} />
       </div>
     )
 }

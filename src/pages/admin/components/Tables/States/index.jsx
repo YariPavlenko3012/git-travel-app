@@ -1,7 +1,7 @@
 /**
  * external libs
  */
-import React, {useMemo} from 'react';
+import React, {useMemo, useState, useEffect} from 'react';
 import {Link, useHistory} from 'react-router-dom'
 import {Button, Space, Tooltip} from 'antd'
 import {EditOutlined, EyeOutlined} from '@ant-design/icons'
@@ -17,8 +17,11 @@ import {
     ADMIN_MAKE_EDIT_STATE_URI, ADMIN_MAKE_SHOW_COUNTRY_URI,
     ADMIN_MAKE_SHOW_STATE_URI,
 } from "../../../../../constants/admin/uri.constant";
+import StateService from "../../../../../services/admin/state.service";
 
-export default function StatesTable({stateList, getState}) {
+export default function StatesTable({searchParams}) {
+    const [states, setStates] = useState(null);
+    const [isReady, setIsReady] = useState(false);
     const history = useHistory();
     const columns = useMemo(() => ([
         {
@@ -56,11 +59,32 @@ export default function StatesTable({stateList, getState}) {
         },
     ]), []);
 
+    const getState = async (params = {}) => {
+        setStates(await StateService.list(params))
+    };
+
+    const getStateHandler = async (params) => {
+        setIsReady(false)
+        await getState(await getState({
+            ...searchParams,
+            ...params,
+        }))
+        setIsReady(true)
+    }
+
+    useEffect(() => {
+        getStateHandler()
+    }, [])
+
+    if(!states){
+        return <div>Loading...</div>
+    }
+
     return (
-      <Table data={stateList || []}
+      <Table data={states}
              columns={columns}
              fetchingData={getState}
-             loader={!stateList}
+             loader={!isReady}
       />
     )
 }

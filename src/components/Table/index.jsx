@@ -1,7 +1,19 @@
-import {Table} from "antd";
-import React, {useState, useEffect, useRef} from "react";
 
-export default function TableUI({data, columns, fetchingData, loader = false, ...props}) {
+/**
+ * external libs
+ */import {Table} from "antd";
+import React, {useState, useEffect, useRef, useContext} from "react";
+/**
+ * services
+ */
+import StorageService from "../../services/storage.service";
+/**
+ * context
+ */
+import {SettingsContext} from "../../pages/context/settings.context";
+
+export default function TableUI({data, columns, fetchingData, loader = false, tableKey, ...props}) {
+    const {settings} = useContext(SettingsContext);
     const tableRef = useRef(null)
     const [pagination, setPagination] = useState({
         current: data.meta.current_page,
@@ -13,6 +25,14 @@ export default function TableUI({data, columns, fetchingData, loader = false, ..
     const handleTableChange = async (pagination, filters, sorter) => {
         setIsReady(true);
         window.scrollTo(0, tableRef.current.offsetTop);
+
+        if(tableKey){
+            const newSettings = {...settings}
+
+            newSettings.table[tableKey].per_page = pagination.pageSize
+
+            StorageService.settings = newSettings
+        }
 
         await fetchingData({
             sort_column: sorter.field,

@@ -1,7 +1,7 @@
 /**
  * external libs
  */
-import React, {useMemo} from 'react';
+import React, {useMemo, useState, useEffect} from 'react';
 import {Link, useHistory} from 'react-router-dom'
 import {Button, Space, Tooltip} from 'antd'
 import {EditOutlined, EyeOutlined} from '@ant-design/icons'
@@ -20,8 +20,11 @@ import {
     ADMIN_MAKE_SHOW_CURRENCY_URI,
     ADMIN_MAKE_SHOW_LANGUAGE_URI
 } from "../../../../../constants/admin/uri.constant";
+import CountryService from "../../../../../services/admin/country.service";
 
-export default function CountryTable({countryList, getCountry}) {
+export default function CountryTable({searchParams}) {
+    const [countries, setCountries] = useState(null);
+    const [isReady, setIsReady] = useState(false);
     const history = useHistory();
     const columns = useMemo(() => ([
         {
@@ -139,11 +142,44 @@ export default function CountryTable({countryList, getCountry}) {
         },
     ]), []);
 
+    const getCountry = async (params = {}) => {
+        const copyParams = JSON.parse(JSON.stringify(params));
+
+        if(copyParams.filters) {
+            if(copyParams.filters.name) {
+                copyParams.country_name = copyParams.filters.name[0];
+            }
+
+            if(copyParams.filters.capital) {
+                copyParams.city_name = copyParams.filters.capital[0];
+            }
+        }
+
+        return await CountryService.list(copyParams)
+    };
+
+    const getCountryHandler = async (params) => {
+        setIsReady(false)
+        setCountries(await getCountry({
+            ...searchParams,
+            ...params,
+        }))
+        setIsReady(true)
+    }
+
+    useEffect(() => {
+        getCountryHandler()
+    }, [])
+
+    if(!countries){
+        return <div>Loader...</div>
+    }
+
     return (
-      <Table data={countryList || []}
+      <Table data={countries}
              columns={columns}
-             fetchingData={getCountry}
-             loader={!countryList}
+             fetchingData={getCountryHandler}
+             loader={!isReady}
       />
     )
 }

@@ -37,44 +37,8 @@ import styles from '../../../styles/show.module.scss'
 import FileOrientationEnums from '../../../../../enums/FileOrientation'
 
 export default function CountryShow() {
-    const [sight, setSight] = useState(null);
-    const [state, setState] = useState(null);
-    const [city, setCity] = useState(null);
     const [country, setCountry] = useState(null);
     const {countryId} = useParams();
-
-    const getCity = async (params = {}) => {
-        const copyParams = JSON.parse(JSON.stringify(params))
-
-        if (copyParams.filters) {
-            if (copyParams.filters.country) {
-                copyParams.country_name = copyParams.filters.country[0];
-            }
-
-            if (copyParams.filters.name) {
-                copyParams.city_name = copyParams.filters.name[0];
-            }
-        }
-
-        setCity(await CityService.list({
-            ...copyParams,
-            country_id: countryId
-        }))
-    };
-
-    const getState = async (params = {}) => {
-        setState(await StateService.list({
-            ...params,
-            country_id: countryId
-        }))
-    };
-
-    const getSight = async (params = {}) => {
-        setSight(await SightService.list({
-            ...params,
-            country_id: countryId
-        }))
-    };
 
     const getCountry = async () => {
         setCountry(await CountryService.show(countryId))
@@ -160,9 +124,6 @@ export default function CountryShow() {
     }
 
     useEffect(() => {
-        getCity();
-        getSight();
-        getState();
         getCountry();
     }, []);
 
@@ -287,52 +248,28 @@ export default function CountryShow() {
             </div>
 
             <Tabs type="card">
-                <Tabs.TabPane tab={(
-                    <span>
-                        State ({state?.meta.total})
-                    </span>
-                )} key="1">
-                    {state && (
-                        <>
-                            <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
-                                State of {country.name}
-                                <Link to={ADMIN_MAKE_CREATE_STATE_URI(countryId)}>
-                                    <Button type="primary" className={styles.show__btn}>
-                                        Create state
-                                    </Button>
-                                </Link>
-                            </h3>
-                            <StatesTable stateList={state} getState={getState}/>
-                        </>
-                    )}
+                <Tabs.TabPane tab="State" key="1">
+                    <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
+                        State of {country.name}
+                        <Link to={ADMIN_MAKE_CREATE_STATE_URI(countryId)}>
+                            <Button type="primary" className={styles.show__btn}>
+                                Create state
+                            </Button>
+                        </Link>
+                    </h3>
+                    <StatesTable searchParams={{country_id: countryId}}/>
                 </Tabs.TabPane>
-                <Tabs.TabPane tab={(
-                    <span>
-                        City ({city?.meta.total})
-                    </span>
-                )} key="2">
-                    {city && (
-                        <>
-                            <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
-                                City of {country.name}
-                            </h3>
-                            <CitiesTable cityList={city} getCity={getCity}/>
-                        </>
-                    )}
+                <Tabs.TabPane tab="City" key="2">
+                    <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
+                        City of {country.name}
+                    </h3>
+                    <CitiesTable searchParams={{country_id: countryId}}/>
                 </Tabs.TabPane>
-                <Tabs.TabPane tab={(
-                    <span>
-                        Sight ({sight?.meta.total})
-                    </span>
-                )} key="3">
-                    {sight && (
-                        <>
-                            <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
-                                Sights of {country.name}
-                            </h3>
-                            <SightTable sightList={sight} getCity={getSight}/>
-                        </>
-                    )}
+                <Tabs.TabPane tab="Sight" key="3">
+                    <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
+                        Sights of {country.name}
+                    </h3>
+                    <SightTable searchParams={{country_id: countryId}}/>
                 </Tabs.TabPane>
             </Tabs>
         </div>

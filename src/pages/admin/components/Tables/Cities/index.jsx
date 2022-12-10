@@ -30,13 +30,17 @@ import PreviewFilesOriental from "../../../../../components/PreviewFilesOriental
  */
 import FileOrientationEnums from "../../../../../enums/FileOrientation";
 import RolesEnum from "../../../../../enums/RolesEnum";
+import TablesKeyEnum from "../../../../../enums/TablesKey";
 /**
  * context
  */
 import {AlertContext} from "../../../../context/alert.context";
+import {SettingsContext} from "../../../../context/settings.context";
 
-export default function CityTable({cityList, getCity}) {
+export default function CityTable({ searchParams }) {
+    const [cities, setCities] = useState(null);
     const {setAlertSuccess} = useContext(AlertContext)
+    const {settings} = useContext(SettingsContext)
     const [isReady, setIsReady] = useState(false);
     const [withCoordination, setWithCoordination] = useState(true);
     const history = useHistory();
@@ -147,6 +151,22 @@ export default function CityTable({cityList, getCity}) {
         },
     ]), [withCoordination]);
 
+    const getCity = async (params = {}) => {
+        const copyParams = JSON.parse(JSON.stringify(params));
+
+        if (copyParams.filters) {
+            if (copyParams.filters.country) {
+                copyParams.country_name = copyParams.filters.country[0];
+            }
+
+            if (copyParams.filters.name) {
+                copyParams.city_name = copyParams.filters.name[0];
+            }
+        }
+
+        return await CityService.list(copyParams)
+    };
+
     const deleteCity = async (cityId) => {
         await CityService.delete(cityId)
         await getCityHandler();
@@ -155,10 +175,12 @@ export default function CityTable({cityList, getCity}) {
 
     const getCityHandler = async (params) => {
         setIsReady(false)
-        await getCity({
+        setCities(await getCity({
+            ...settings.table[TablesKeyEnum.city],
             ...(!withCoordination && {isNull: 'latitude,longitude'}),
+            ...searchParams,
             ...params,
-        })
+        }))
         setIsReady(true)
     }
 
@@ -166,8 +188,13 @@ export default function CityTable({cityList, getCity}) {
         getCityHandler()
     }, [withCoordination])
 
+    if(!cities){
+        return <div>Loader...</div>
+    }
+
     return (
-      <Table data={cityList || []}
+      <Table data={cities}
+             tableKey={TablesKeyEnum.city}
              columns={columns}
              fetchingData={getCityHandler}
              loader={!isReady}
