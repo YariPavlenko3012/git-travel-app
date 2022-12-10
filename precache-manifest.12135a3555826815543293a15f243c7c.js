@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "8e85f47f932f805caf8d8b769e0618e6",
+    "revision": "2d5a8a52095437a0abf950f285342445",
     "url": "/git-travel-app/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/git-travel-app/static/css/13.9b292bfc.chunk.css"
   },
   {
-    "revision": "6cafaef4482beb9cccfd",
+    "revision": "923a39decda3090bd817",
     "url": "/git-travel-app/static/css/14.49675e23.chunk.css"
   },
   {
@@ -120,12 +120,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/git-travel-app/static/js/13.5c75db23.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "6cafaef4482beb9cccfd",
-    "url": "/git-travel-app/static/js/14.4dca9093.chunk.js"
+    "revision": "923a39decda3090bd817",
+    "url": "/git-travel-app/static/js/14.d8d25b6e.chunk.js"
   },
   {
     "revision": "a20b5ca5f6b566f3bed745a302077aff",
-    "url": "/git-travel-app/static/js/14.4dca9093.chunk.js.LICENSE.txt"
+    "url": "/git-travel-app/static/js/14.d8d25b6e.chunk.js.LICENSE.txt"
   },
   {
     "revision": "9969ef809e744a7bf79a",
@@ -160,12 +160,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/git-travel-app/static/js/18.4c03c5b7.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "a61c859df48dd4305f25",
-    "url": "/git-travel-app/static/js/19.cc1b2a6d.chunk.js"
+    "revision": "2c583e5fec06191d68b5",
+    "url": "/git-travel-app/static/js/19.36ab212f.chunk.js"
   },
   {
     "revision": "4e0e34f265fae8f33b01b27ae29d9d6f",
-    "url": "/git-travel-app/static/js/19.cc1b2a6d.chunk.js.LICENSE.txt"
+    "url": "/git-travel-app/static/js/19.36ab212f.chunk.js.LICENSE.txt"
   },
   {
     "revision": "d7191b2ca59d7fa935fb",
@@ -372,8 +372,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/git-travel-app/static/js/main.bbbcf3bc.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "c5d3794626af8cdfe1d6",
-    "url": "/git-travel-app/static/js/runtime-main.ae794a33.js"
+    "revision": "e6784937fb460206e6f7",
+    "url": "/git-travel-app/static/js/runtime-main.1e7c697c.js"
   },
   {
     "revision": "b7c9e1e479de3b53f1e4e30ebac2403a",
