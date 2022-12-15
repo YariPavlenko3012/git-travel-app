@@ -4,7 +4,7 @@
 import React, {useEffect, useMemo, useContext, useState} from 'react';
 import {Link, useHistory} from 'react-router-dom'
 import {Button, Space, Tooltip, Popconfirm, Checkbox} from 'antd'
-import {EditOutlined, EyeOutlined, DeleteOutlined} from '@ant-design/icons'
+import {EditOutlined, EyeOutlined, DeleteOutlined, RollbackOutlined} from '@ant-design/icons'
 /**
  * components
  */
@@ -20,7 +20,7 @@ import CityService from "../../../../../services/admin/city.service";
  * constant
  */
 import {
-    ADMIN_MAKE_EDIT_CITY_URI,
+    ADMIN_MAKE_EDIT_CITY_URI, ADMIN_MAKE_EXCURSION_CREATE,
     ADMIN_MAKE_SHOW_CITY_URI,
     ADMIN_MAKE_SHOW_COUNTRY_URI
 } from "../../../../../constants/admin/uri.constant";
@@ -126,13 +126,17 @@ export default function CityTable({ searchParams }) {
             key: 'action',
             render: (_, row) => (
               <Space size={10}>
+                  <Tooltip title="View city">
+                      <Button type="primary" onClick={() => history.push(ADMIN_MAKE_SHOW_CITY_URI(row.id))}
+                              icon={<EyeOutlined/>} size={20}/>
+                  </Tooltip>
                   <Tooltip title="Edit city">
                       <Button type="primary" onClick={() => history.push(ADMIN_MAKE_EDIT_CITY_URI(row.id))}
                               icon={<EditOutlined/>} size={20}/>
                   </Tooltip>
-                  <Tooltip title="View city">
-                      <Button type="primary" onClick={() => history.push(ADMIN_MAKE_SHOW_CITY_URI(row.id))}
-                              icon={<EyeOutlined/>} size={20}/>
+                  <Tooltip title="Create excursion">
+                      <Button type="primary" onClick={() => history.push(ADMIN_MAKE_EXCURSION_CREATE(row.state.country.id, row.id))}
+                              icon={<RollbackOutlined/>} size={20}/>
                   </Tooltip>
                   <UserCan checkRole={RolesEnum.super_admin}>
                       <Popconfirm

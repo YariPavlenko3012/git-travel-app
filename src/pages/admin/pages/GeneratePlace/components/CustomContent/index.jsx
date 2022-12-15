@@ -1,13 +1,11 @@
 /**
  * external libs
  */
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useContext, useRef, useState} from 'react';
 import {Button, Form, Radio} from 'antd';
 /**
  * components
  */
-import FormUI from "../../../../../../components/Form";
-import FieldSelectCity from "../../../../../../components/Select/City";
 import PlaceType from "../PlaceTypes";
 /**
  * utils
@@ -16,8 +14,15 @@ import PlaceTypeTranslate from "../../../../../../utils/PlaceTypeTranslate";
 /**
  * enums
  */
-import PlaceTypeEnum from "../../../../../../enums/PlaceType";
 import GenerationPlaceService from "../../../../../../services/admin/generationPlace.service";
+/**
+ * enums
+ */
+import PlaceTypeEnum from "../../../../../../enums/PlaceType";
+/**
+ * context
+ */
+import {DictionaryContext} from "../../../../../context/dictionary.context";
 
 const typeColor = {
     [PlaceTypeEnum.amusement_park]: "green",
@@ -28,6 +33,7 @@ const typeColor = {
 }
 
 export default function AutomaticContent({ getRectangle, countryId, mapRef }){
+    const {dictionary} = useContext(DictionaryContext)
     const [placeTypes, setPlaceTypes] = useState(null)
     const [geometry, setGeometry] = useState(null)
     const rectangle = useRef(null)
@@ -78,7 +84,6 @@ export default function AutomaticContent({ getRectangle, countryId, mapRef }){
         //     draggable: false,
         // })
     }
-
 
     const  drawRec = () => {
         const center =  mapRef.current.getCenter();
@@ -197,7 +202,7 @@ export default function AutomaticContent({ getRectangle, countryId, mapRef }){
                 <Button type="primary" onClick={drawRec} style={{width: "100%"}}>Draw</Button>
                 <Button type="primary" onClick={close} style={{width: "100%"}}>close</Button>
             </div>
-            <PlaceType places={PlaceTypeEnum.googleTypesList}
+            <PlaceType places={dictionary.place_types.list.map(({value}) => value)}
                        setPlaceTypes={setPlaceTypes}
                        placeTypes={placeTypes}
             />

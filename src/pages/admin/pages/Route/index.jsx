@@ -7,13 +7,8 @@ import React, {useEffect, useRef, useState} from 'react';
  */
 import PlaceType from './components/Types'
 /**
- * styles
+ * services
  */
-import styles from "./index.module.scss";
-/**
- * enums
- */
-import PlaceTypeEnum from '../../../../enums/PlaceType'
 import SightService from "../../../../services/admin/sight.service";
 
 export default function Route() {

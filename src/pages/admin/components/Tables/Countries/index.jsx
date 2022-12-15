@@ -4,7 +4,7 @@
 import React, {useMemo, useState, useEffect} from 'react';
 import {Link, useHistory} from 'react-router-dom'
 import {Button, Space, Tooltip} from 'antd'
-import {EditOutlined, EyeOutlined} from '@ant-design/icons'
+import {EditOutlined, EyeOutlined, RollbackOutlined} from '@ant-design/icons'
 /**
  * components
  */
@@ -14,7 +14,7 @@ import SearchInputForTable from '../../../../../components/Table/utils/search'
  * constant
  */
 import {
-    ADMIN_MAKE_EDIT_COUNTRY_URI,
+    ADMIN_MAKE_EDIT_COUNTRY_URI, ADMIN_MAKE_EXCURSION_CREATE,
     ADMIN_MAKE_SHOW_CITY_URI,
     ADMIN_MAKE_SHOW_COUNTRY_URI,
     ADMIN_MAKE_SHOW_CURRENCY_URI,
@@ -129,13 +129,17 @@ export default function CountryTable({searchParams}) {
             key: 'action',
             render: (_, row) => (
               <Space size={10}>
+                  <Tooltip title="View country">
+                      <Button type="primary" onClick={() => history.push(ADMIN_MAKE_SHOW_COUNTRY_URI(row.id))}
+                              icon={<EyeOutlined/>} size={20}/>
+                  </Tooltip>
                   <Tooltip title="Edit country">
                       <Button type="primary" onClick={() => history.push(ADMIN_MAKE_EDIT_COUNTRY_URI(row.id))}
                               icon={<EditOutlined/>} size={20}/>
                   </Tooltip>
-                  <Tooltip title="View country">
-                      <Button type="primary" onClick={() => history.push(ADMIN_MAKE_SHOW_COUNTRY_URI(row.id))}
-                              icon={<EyeOutlined/>} size={20}/>
+                  <Tooltip title="Create excursion">
+                      <Button type="primary" onClick={() => history.push(ADMIN_MAKE_EXCURSION_CREATE(row.id))}
+                              icon={<RollbackOutlined/>} size={20}/>
                   </Tooltip>
               </Space>
             )

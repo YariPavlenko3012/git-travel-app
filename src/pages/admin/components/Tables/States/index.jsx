@@ -46,13 +46,13 @@ export default function StatesTable({searchParams}) {
             key: 'action',
             render: (_, row) => (
               <Space size={10}>
-                  <Tooltip title="Edit state">
-                      <Button type="primary" onClick={() => history.push(ADMIN_MAKE_EDIT_STATE_URI(row.id))}
-                              icon={<EditOutlined/>} size={20}/>
-                  </Tooltip>
                   <Tooltip title="View state">
                       <Button type="primary" onClick={() => history.push(ADMIN_MAKE_SHOW_STATE_URI(row.id))}
                               icon={<EyeOutlined/>} size={20}/>
+                  </Tooltip>
+                  <Tooltip title="Edit state">
+                      <Button type="primary" onClick={() => history.push(ADMIN_MAKE_EDIT_STATE_URI(row.id))}
+                              icon={<EditOutlined/>} size={20}/>
                   </Tooltip>
               </Space>
             )

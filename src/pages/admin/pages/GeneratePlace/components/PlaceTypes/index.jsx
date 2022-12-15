@@ -7,10 +7,6 @@ import React, {useEffect, useRef, useState} from 'react';
  */
 import styles from "./index.module.scss";
 /**
- * enums
- */
-import PlaceTypeEnum from '../../../../../../enums/PlaceType'
-/**
  * utils
  */
 import PlaceTypeTranslate from "../../../../../../utils/PlaceTypeTranslate";

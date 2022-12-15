@@ -16,8 +16,8 @@ import ExcursionPageTypeEnum from "../../../../../enums/ExcursionPageType";
 import ExcursionService from "../../../../../services/admin/excursion.service";
 
 
-export default function ExcursionsCreate() {
-    const createExcursion = async (excursionFormData) => {
+export default function ExcursionsEdit() {
+    const updateExcursion = async (excursionFormData) => {
         const requestExcursionFormData = JSON.parse(JSON.stringify(excursionFormData))
 
         requestExcursionFormData.items = excursionFormData.items.reduce((itemResult, day) => ([
@@ -26,10 +26,10 @@ export default function ExcursionsCreate() {
         ]), [])
 
 
-        await ExcursionService.create(requestExcursionFormData)
+        // await ExcursionService.create(requestExcursionFormData)
     }
 
     return (
-        <ExcursionPage pageType={ExcursionPageTypeEnum.create} handler={createExcursion}/>
+        <ExcursionPage pageType={ExcursionPageTypeEnum.edit} handler={updateExcursion}/>
     )
 }

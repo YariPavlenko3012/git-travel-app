@@ -1,9 +1,19 @@
+/**
+ * external libs
+ */
 import {Select} from "antd";
-import React from "react";
-import SightWorkStatusEnum from "../../../../../../enums/SightWorkStatus";
+import React, {useContext} from "react";
+/**
+ * context
+ */
+import {DictionaryContext} from "../../../../../context/dictionary.context";
+/**
+ * services
+ */
 import SightService from "../../../../../../services/admin/sight.service";
 
 export default function ChangeWorkStatus({ sightId, getSight, workStatus = null }){
+    const {dictionary} = useContext(DictionaryContext)
 
     const changeStatus = async (status) => {
         await SightService.updateWorkStatus(sightId, status)
@@ -15,7 +25,7 @@ export default function ChangeWorkStatus({ sightId, getSight, workStatus = null 
             size="large"
             value={workStatus}
             style={{width: 150}}
-            options={[{value: SightWorkStatusEnum.pending, label: "Pending"}, {value: SightWorkStatusEnum.done, label: "Done"}]}
+            options={dictionary.work_statuses.sight}
             onChange={changeStatus}
         />
     )

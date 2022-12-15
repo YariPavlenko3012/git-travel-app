@@ -18,9 +18,12 @@ import {
     ADMIN_CURRENCY_LIST_URI,
     ADMIN_EDIT_COUNTRY_URI,
     ADMIN_EDIT_CITY_URI,
+    ADMIN_SIGHT_CHECK_COORDINATE_URI,
     ADMIN_EDIT_LANGUAGE_URI,
     ADMIN_EDIT_CURRENCY_URI,
     ADMIN_CREATE_COUNTRY_URI,
+    ADMIN_EXCURSION_LIST,
+    ADMIN_EXCURSION_CREATE,
     ADMIN_SHOW_COUNTRY_URI,
     ADMIN_CREATE_CITY_URI,
     ADMIN_SHOW_CITY_URI,
@@ -37,7 +40,11 @@ import {
     ADMIN_EDIT_STATE_URI,
     ADMIN_CREATE_STATE_URI,
     ADMIN_SHOW_STATE_URI,
-    ADMIN_GENERATE_PLACE_URI, ADMIN_ROUTE_URI, ADMIN_EXCURSION_SHOW, ADMIN_SIGHT_LIST_NEED_REVIEW_URI
+    ADMIN_GENERATE_PLACE_URI,
+    ADMIN_ROUTE_URI,
+    ADMIN_EXCURSION_SHOW,
+    ADMIN_SIGHT_LIST_NEED_REVIEW_URI,
+    ADMIN_EXCURSION_EDIT, ADMIN_SIGHT_LIST_CHECK_COORDINATE_URI
 } from "../../../constants/admin/uri.constant";
 
 
@@ -120,6 +127,16 @@ export default function RouterPage() {
         },
         {
             layout: AuthRoute,
+            path: ADMIN_SIGHT_LIST_CHECK_COORDINATE_URI,
+            component: lazy(() => import('./Sight/CheckCoordinate/List'))
+        },
+        {
+            layout: AuthRoute,
+            path: ADMIN_SIGHT_CHECK_COORDINATE_URI,
+            component: lazy(() => import('./Sight/CheckCoordinate/Show'))
+        },
+        {
+            layout: AuthRoute,
             path: ADMIN_SHOW_SIGHT_URI,
             component: lazy(() => import('./Sight/Show'))
         },
@@ -180,8 +197,23 @@ export default function RouterPage() {
         },
         {
             layout: AuthRoute,
+            path: ADMIN_EXCURSION_LIST,
+            component: lazy(() => import('./Excursions/List'))
+        },
+        {
+            layout: AuthRoute,
+            path: ADMIN_EXCURSION_CREATE,
+            component: lazy(() => import('./Excursions/Create'))
+        },
+        {
+            layout: AuthRoute,
+            path: ADMIN_EXCURSION_EDIT,
+            component: lazy(() => import('./Excursions/Edit'))
+        },
+        {
+            layout: AuthRoute,
             path: ADMIN_EXCURSION_SHOW,
-            component: lazy(() => import('./Excursions'))
+            component: lazy(() => import('./Excursions/Show'))
         },
         {
             layout: AuthRoute,

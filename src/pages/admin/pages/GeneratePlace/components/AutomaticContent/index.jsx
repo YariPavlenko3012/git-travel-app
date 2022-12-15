@@ -1,22 +1,28 @@
 /**
  * external libs
  */
-import React from 'react';
+import React, {useContext} from 'react';
 import {Button} from 'antd';
 /**
- * enums
+ * services
  */
-import PlaceTypeEnum from "../../../../../../enums/PlaceType";
+import GenerationPlaceService from "../../../../../../services/admin/generationPlace.service";
 /**
  * enums
  */
-import CityService from "../../../../../../services/admin/city.service";
 import GenerationTypeEnums from "../../../../../../enums/GenerationType";
-import GenerationPlaceService from "../../../../../../services/admin/generationPlace.service";
+/**
+ * utils
+ */
 import PlaceTypeTranslate from "../../../../../../utils/PlaceTypeTranslate";
+/**
+ * context
+ */
+import {DictionaryContext} from "../../../../../context/dictionary.context";
 
 
 export default function AutomaticContent({ generatePlacesByCity, typeColor, countryId, generationFinishCity }){
+    const {dictionary} = useContext(DictionaryContext)
 
     const startAutomaticGenerate = async () => {
         const {data} = await GenerationPlaceService.cityWhiteList({
@@ -25,13 +31,13 @@ export default function AutomaticContent({ generatePlacesByCity, typeColor, coun
             per_page: 1000000
         })
 
-        const dataSort = data.filter(({id}) => 264 === id)
+        const dataSort = data.filter(({id}) => 224 === id)
         console.log(dataSort)
 
         for (let i = 0; i < dataSort.length; i++) {
             const city = dataSort[i];
 
-            const {failed} = await generatePlacesByCity(city, PlaceTypeEnum.googleTypesListAutomatic)
+            const {failed} = await generatePlacesByCity(city, dictionary.place_types.automatic.map(({value}) => value))
 
             if (failed) {
                 console.log('failed END')
@@ -39,7 +45,7 @@ export default function AutomaticContent({ generatePlacesByCity, typeColor, coun
             }
 
             console.log('FINISH')
-            await generationFinishCity(city.id, GenerationTypeEnums.automatic, PlaceTypeEnum.googleTypesListAutomatic)
+            await generationFinishCity(city.id, GenerationTypeEnums.automatic, dictionary.place_types.automatic.map(({value}) => value))
         }
 
         console.log("END")

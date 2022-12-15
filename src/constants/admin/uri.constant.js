@@ -36,6 +36,9 @@ export const ADMIN_MAKE_EDIT_CITY_URI = cityId => `${ADMIN_CITY}/edit/${cityId}`
 const ADMIN_SIGHT = `${ADMIN}/sight`;
 export const ADMIN_SIGHT_LIST_URI = `${ADMIN_SIGHT}`;
 export const ADMIN_SIGHT_LIST_NEED_REVIEW_URI = `${ADMIN_SIGHT}/need-review`;
+export const ADMIN_SIGHT_LIST_CHECK_COORDINATE_URI = `${ADMIN_SIGHT}/check-coordinate`;
+export const ADMIN_SIGHT_CHECK_COORDINATE_URI = `${ADMIN_SIGHT}/check-coordinate/:sightId`;
+export const ADMIN_MAKE_SIGHT_CHECK_COORDINATE_URI = (sightId) => `${ADMIN_SIGHT}/check-coordinate/${sightId}`;
 export const ADMIN_CREATE_SIGHT_URI = `${ADMIN_SIGHT}/create/:cityId`;
 export const ADMIN_MAKE_CREATE_SIGHT_URI = (cityId) => `${ADMIN_SIGHT}/create/${cityId}`;
 export const ADMIN_SHOW_SIGHT_URI = `${ADMIN_SIGHT}/:sightId`;
@@ -90,5 +93,10 @@ export const ADMIN_STATISTICS_PRICE = `${ADMIN_STATISTICS}/price`;
 
 //ADMIN_EXCURSION
 const ADMIN_EXCURSION = `${ADMIN}/excursion`;
-export const ADMIN_EXCURSION_SHOW = `${ADMIN_EXCURSION}/:countryId`;
-export const ADMIN_EXCURSION_MAKE_SHOW = countryId => `${ADMIN_EXCURSION}/${countryId}`;
+export const ADMIN_EXCURSION_SHOW = `${ADMIN_EXCURSION}/:excursionId`;
+export const ADMIN_MAKE_EXCURSION_SHOW = excursionId => `${ADMIN_EXCURSION}/${excursionId}`;
+export const ADMIN_EXCURSION_LIST = `${ADMIN_EXCURSION}`;
+export const ADMIN_EXCURSION_CREATE = `${ADMIN_EXCURSION}/create/:countryId/:cityId?`;
+export const ADMIN_MAKE_EXCURSION_CREATE = (countryId, cityId = "") => `${ADMIN_EXCURSION}/create/${countryId}/${cityId}`;
+export const ADMIN_EXCURSION_EDIT = `${ADMIN_EXCURSION}/edit/:excursionId`;
+export const ADMIN_MAKE_EXCURSION_EDIT = excursionId => `${ADMIN_EXCURSION}/edit/${excursionId}`;

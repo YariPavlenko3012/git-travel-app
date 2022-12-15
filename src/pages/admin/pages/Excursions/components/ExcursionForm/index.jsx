@@ -1,17 +1,16 @@
 /**
  * external libs
  */
-import React, {useEffect, useMemo, useState, useRef} from 'react';
+import React from 'react';
 import {Button, Form} from "antd";
-import FieldSelectState from "../../../../../../components/Select/State";
+/**
+ * components
+ */
 import FieldInput from "../../../../../../components/Form/FieldInput";
-import FieldTextarea from "../../../../../../components/Form/FieldTextarea";
-import UploadOrientalFile from "../../../../../../components/UploadOrientalFile";
-import FileOrientationEnums from "../../../../../../enums/FileOrientation";
 import FormUI from "../../../../../../components/Form";
 
 
-export default function ExcursionItemForm({excursionFormData, setExcursionFormData}){
+export default function ExcursionForm({excursionFormData, setExcursionFormData}){
 
     const createExcursion = (values) => {
         setExcursionFormData({

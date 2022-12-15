@@ -1,24 +1,26 @@
 /**
  * external libs
  */
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useContext} from 'react';
 /**
  * styles
  */
 import styles from "./index.module.scss";
 /**
- * enums
- */
-import PlaceTypeEnum from '../../../../../../enums/PlaceType'
-/**
  * utils
  */
 import PlaceTypeTranslate from "../../../../../../utils/PlaceTypeTranslate";
+/**
+ * context
+ */
+import {DictionaryContext} from "../../../../../context/dictionary.context";
 
-export default function Park({setPlaceTypes, placeTypes}) {
+export default function GoogleTypes({setPlaceTypes, placeTypes}) {
+    const {dictionary} = useContext(DictionaryContext)
+
     return (
         <div className={styles.typeWrapper}>
-            {PlaceTypeEnum.googleTypesList.map( type => (
+            {dictionary.place_types.google_list.map( type => (
                 <div className={`${styles.typeWrapper__type} ${placeTypes.includes(type) && styles.active}`} onClick={() => setPlaceTypes(type)}>
                     {PlaceTypeTranslate.getTranslateForType(type)}
                 </div>

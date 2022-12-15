@@ -58,6 +58,7 @@ export const ADMIN_GET_CITY_WHITE_LIST_GENERATE_PLACE  = `${ADMIN_GENERATE_PLACE
 const ADMIN_EXCURSION = `${ADMIN}/excursions`;
 export const ADMIN_EXCURSION_CREATE = `${ADMIN_EXCURSION}`;
 export const ADMIN_EXCURSION_LIST = `${ADMIN_EXCURSION}`;
+export const ADMIN_MAKE_EXCURSION_SHOW = excursionId => `${ADMIN_EXCURSION}/${excursionId}`;
 export const ADMIN_EXCURSION_MAKE_NEAR_ROADS_PLACE = (excursionId, itemId) => `${ADMIN_EXCURSION}/${excursionId}/items/${itemId}/routes/24/nearBy`;
 
 
@@ -78,6 +79,7 @@ export const API_MAKE_ADMIN_CURRENCY_UPDATE = currencyId => `${ADMIN_CURRENCY}/$
 
 //DICTIONARY
 const DICTIONARY = `${ADMIN}/dictionary`;
+export const API_DICTIONARY_ENUMS_URL = `${DICTIONARY}/enums`;
 export const API_DICTIONARY_COUNTRIES_URL = `${DICTIONARY}/countries`;
 export const API_DICTIONARY_CITIES_URL = `${DICTIONARY}/cities`;
 export const API_DICTIONARY_LANGUAGES_URL = `${DICTIONARY}/languages`;

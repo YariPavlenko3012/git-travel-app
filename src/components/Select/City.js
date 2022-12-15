@@ -15,16 +15,20 @@ import DictionaryService from "../../services/dictionary.service";
  */
 import Select from "../../utils/Select";
 
-export default function FieldSelectCity({label = true, name, select, onChange, searchParams = {}, disabled = false, data = null, ...rest}) {
+export default function FieldSelectCity({label = "City", name, select, onChange, searchParams, disabled = false, data = null, ...rest}) {
     const [cityOptions, setCityOptions] = useState([]);
 
     const getCityOptions = async () => {
-        setCityOptions(data || Select.optionsByRow(await DictionaryService.cities(searchParams), "id", "name"))
+        console.log('1')
+        setCityOptions(data || Select.optionsByRow(await DictionaryService.cities(searchParams || {}), "id", "name"))
     };
 
+
+
     useEffect(() => {
+        console.log(searchParams, "searchParams")
         getCityOptions();
-    }, []);
+    }, [searchParams]);
 
     return (
         <FieldSelect {...rest}

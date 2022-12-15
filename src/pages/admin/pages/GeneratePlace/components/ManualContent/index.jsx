@@ -1,29 +1,30 @@
 /**
  * external libs
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {Button, Select} from 'antd';
-/**
- * components
- */
-import FormUI from "../../../../../../components/Form";
-import FieldSelectCity from "../../../../../../components/Select/City";
-import PlaceType from "../PlaceTypes";
 /**
  * utils
  */
 import PlaceTypeTranslate from "../../../../../../utils/PlaceTypeTranslate";
 /**
+ * services
+ */
+import CityService from "../../../../../../services/admin/city.service";
+import GenerationPlaceService from "../../../../../../services/admin/generationPlace.service";
+/**
  * enums
  */
-import PlaceTypeEnum from "../../../../../../enums/PlaceType";
-import CityService from "../../../../../../services/admin/city.service";
 import GenerationTypeEnums from "../../../../../../enums/GenerationType";
-import GenerationPlaceService from "../../../../../../services/admin/generationPlace.service";
+/**
+ * context
+ */
+import {DictionaryContext} from "../../../../../context/dictionary.context";
 
 export default function ManualContent({ generatePlacesByCity, countryId, typeColor, generationFinishCity, mapRef }){
     const [city, setCity] = useState(null)
     const [cityList, setCityList] = useState(null)
+    const {dictionary} = useContext(DictionaryContext)
 
     const getCity = async (cityId) => {
         setCity(await CityService.show(cityId))
@@ -44,14 +45,14 @@ export default function ManualContent({ generatePlacesByCity, countryId, typeCol
             return;
         }
 
-        const {failed} = await generatePlacesByCity(city, PlaceTypeEnum.googleTypesListManual)
+        const {failed} = await generatePlacesByCity(city, dictionary.place_types.manual.map(({value}) => value))
 
         if (failed) {
             console.log('failed END')
             return;
         }
 
-        await generationFinishCity(city.id, GenerationTypeEnums.manual, PlaceTypeEnum.googleTypesListManual)
+        await generationFinishCity(city.id, GenerationTypeEnums.manual, dictionary.place_types.manual.map(({value}) => value))
     }
 
     useEffect(() => {

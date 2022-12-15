@@ -11,6 +11,7 @@ import WebRouter from './pages/router'
  */
 import {PriceContextProvider} from "../context/price.context";
 import {SettingsContextProvider} from "../context/settings.context";
+import {DictionaryContextProvider} from "../context/dictionary.context";
 /**
  * styles
  */
@@ -21,9 +22,11 @@ export default function () {
     return (
         <PriceContextProvider>
             <SettingsContextProvider>
-                <Suspense fallback={null}>
-                    <WebRouter/>
-                </Suspense>
+                <DictionaryContextProvider>
+                    <Suspense fallback={null}>
+                        <WebRouter/>
+                    </Suspense>
+                </DictionaryContextProvider>
             </SettingsContextProvider>
         </PriceContextProvider>
     );

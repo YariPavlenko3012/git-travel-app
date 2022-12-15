@@ -20,18 +20,30 @@ import SightService from "../../../../../../services/admin/sight.service";
  */
 import {AuthContext} from "../../../../../context/auth.context";
 import TimePicker from "../TimePicker";
+import {AlertContext} from "../../../../../context/alert.context";
 
 export default function UpdateSightForm({sight, sightId, getSight}) {
     const {user} = useContext(AuthContext);
+    const {setAlertSuccess} = useContext(AlertContext)
 
+    console.log(sight)
+    console.log(sightId)
 
     const updateSight = async (value) => {
         console.log(value)
         const copyValues = JSON.parse(JSON.stringify(value));
         copyValues.files_ids = (copyValues.images || []).map(({id}) => id);
 
+
+        //Delete after finish check coordinate
+        if(!getSight){
+            copyValues.check_coordinates = true;
+        }
         await SightService.update(sightId, copyValues)
-        await getSight(sightId)
+        setAlertSuccess("Sight successfully updated")
+        if(getSight){
+            await getSight(sightId)
+        }
     };
 
     console.log(sight, "sight")

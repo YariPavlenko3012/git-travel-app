@@ -22,7 +22,6 @@ import {EditOutlined} from "@ant-design/icons";
 
 export default function NeedReview(){
     const [sights, setSights] = useState(null)
-    const [currentCountryId, setCurrentCountryId] = useState(1)
     const [isReady, setIsReady] = useState(false)
     const [cityList, setCityList] = useState([])
     const [currentSight, setCurrentSight] = useState(null)
@@ -158,7 +157,7 @@ export default function NeedReview(){
 
     const getSightWithNeedReview = async (params) => {
         setIsReady(false)
-        setSights(await SightService.list({ ...params, country_id: currentCountryId, per_page: 5, eq: {need_review: 1}  }))
+        setSights(await SightService.list({ ...params, per_page: 5, eq: {need_review: 1}  }))
         setIsReady(true)
     }
 
@@ -178,24 +177,15 @@ export default function NeedReview(){
     }
 
     useEffect(() => {
+        getSightWithNeedReview()
         mapInit()
     }, [])
 
-    useEffect(() => {
-        if(!currentCountryId){
-            return;
-        }
-
-        getSightWithNeedReview()
-    }, [currentCountryId])
 
     return (
         <div>
             <div style={{display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20}}>
                 <h3>Need Review Sights</h3>
-                <div>
-                    <SelectCountry currentCountryId={currentCountryId} setCurrentCountryId={setCurrentCountryId}/>
-                </div>
             </div>
             <div ref={mapBlockRef} style={{width: "100%", height: 500}}/>
             {sights && (

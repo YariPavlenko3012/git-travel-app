@@ -1,9 +1,19 @@
+/**
+ * external libs
+ */
 import {Select} from "antd";
-import React from "react";
+import React, {useContext} from "react";
+/**
+ * services
+ */
 import CityService from "../../../../../../services/admin/city.service";
-import CityWorkStatusEnum from "../../../../../../enums/CityWorkStatus";
+/**
+ * context
+ */
+import {DictionaryContext} from "../../../../../context/dictionary.context";
 
 export default function ChangeWorkStatus({cityId, getCity, workStatus = null}) {
+    const {dictionary} = useContext(DictionaryContext)
 
     const changeStatus = async (status) => {
         await CityService.updateWorkStatus(cityId, status)
@@ -15,11 +25,7 @@ export default function ChangeWorkStatus({cityId, getCity, workStatus = null}) {
             size="large"
             value={workStatus}
             style={{width: 150}}
-            options={[
-                {value: CityWorkStatusEnum.pending, label: "Pending"},
-                {value: CityWorkStatusEnum.inProgress, label: "In progress"},
-                {value: CityWorkStatusEnum.done, label: "Done"}
-            ]}
+            options={dictionary.work_statuses.city}
             onChange={changeStatus}
         />
     )

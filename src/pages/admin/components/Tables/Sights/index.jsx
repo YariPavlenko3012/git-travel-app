@@ -4,7 +4,7 @@
 import React, {useMemo, useEffect, useContext, useState} from 'react';
 import {Link, useHistory} from 'react-router-dom'
 import {Button, Checkbox, Popconfirm, Space, Tooltip} from 'antd'
-import {DeleteOutlined, EditOutlined, EyeOutlined} from '@ant-design/icons'
+import {DeleteOutlined, EditOutlined, ShrinkOutlined, EyeOutlined} from '@ant-design/icons'
 /**
  * components
  */
@@ -23,6 +23,7 @@ import SightService from "../../../../../services/admin/sight.service";
 import {
     ADMIN_MAKE_EDIT_SIGHT_URI,
     ADMIN_MAKE_SHOW_CITY_URI,
+    ADMIN_MAKE_SIGHT_CHECK_COORDINATE_URI,
     ADMIN_MAKE_SHOW_SIGHT_URI
 } from "../../../../../constants/admin/uri.constant";
 /**
@@ -156,14 +157,27 @@ export default function SightTable({searchParams}) {
             key: 'action',
             render: (_, row) => (
                 <Space size={10}>
-                    <Tooltip title="Edit sight">
-                        <Button type="primary" onClick={() => history.push(ADMIN_MAKE_EDIT_SIGHT_URI(row.id))}
-                                icon={<EditOutlined/>} size={20}/>
-                    </Tooltip>
                     <Tooltip title="View sight">
-                        <Button type="primary" onClick={() => history.push(ADMIN_MAKE_SHOW_SIGHT_URI(row.id))}
-                                icon={<EyeOutlined/>} size={20}/>
+                        <Link to={ADMIN_MAKE_SHOW_SIGHT_URI(row.id)} >
+                            <Button type="primary"
+                                    icon={<EyeOutlined/>} size={20}/>
+                        </Link>
                     </Tooltip>
+                    <Tooltip title="Edit sight">
+                        <Link to={ADMIN_MAKE_EDIT_SIGHT_URI(row.id)} >
+                            <Button type="primary"
+                                    icon={<EditOutlined/>} size={20}/>
+                        </Link>
+                    </Tooltip>
+                    {!row.check_coordinates && (
+                        <Tooltip title="Check coordinate">
+                            <Link to={ADMIN_MAKE_SIGHT_CHECK_COORDINATE_URI(row.id)} target="_blank" rel="noopener noreferrer" >
+                                <Button type="primary"
+                                        icon={<ShrinkOutlined />}
+                                        size={20}/>
+                            </Link>
+                        </Tooltip>
+                    )}
                     <UserCan checkRole={RolesEnum.super_admin}>
                         <Popconfirm
                             title="Are you sure to delete this sight?"

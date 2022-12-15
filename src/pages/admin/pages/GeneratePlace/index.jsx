@@ -1,8 +1,7 @@
 /**
  * external libs
  */
-import React, {useEffect, useRef, useState} from 'react';
-import {io} from 'socket.io-client';
+import React, {useEffect, useRef, useContext, useState} from 'react';
 import {useParams} from "react-router-dom";
 /**
  * components
@@ -16,18 +15,17 @@ import RadioGenerationType from './components/RadioGenerationType'
  */
 import PlaceTypeEnum from '../../../../enums/PlaceType'
 import GenerationTypeEnums from "../../../../enums/GenerationType";
-/**
- * utils
- */
-import PlaceTypeTranslate from "../../../../utils/PlaceTypeTranslate";
+import PlaceTypeSquareEnum from "../../../../enums/PlaceTypeSquare";
 /**
  * service
  */
 import GenerationPlaceService from "../../../../services/admin/generationPlace.service";
 import SightService from "../../../../services/admin/sight.service";
 import CountryService from "../../../../services/admin/country.service";
-import SightWorkStatusEnum from "../../../../enums/SightWorkStatus";
-import PlaceTypeSquareEnum from "../../../../enums/PlaceTypeSquare";
+/**
+ * context
+ */
+import {DictionaryContext} from "../../../context/dictionary.context";
 
 // const socket = io('http://localhost:3002', {
 //     extraHeaders: {
@@ -55,6 +53,7 @@ const typeColor = {
 const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
 export default function GeneratePlace() {
+    const {dictionary} = useContext(DictionaryContext)
     const {countryId} = useParams();
     const [generationType, setGenerationType] = useState(GenerationTypeEnums.automatic)
     const [country, setCountry] = useState(null)
@@ -74,6 +73,8 @@ export default function GeneratePlace() {
                 strictBounds: true
             },
         }
+
+
 
         mapRef.current = new window.google.maps.Map(mapBlockRef.current, opt)
     }
@@ -186,7 +187,11 @@ export default function GeneratePlace() {
                                 original_name: place.name,
                                 formatted_address: place.formatted_address,
                                 google_place_id: place.place_id,
-                                place_type: place.types.filter( type => PlaceTypeEnum.list.includes(type)),
+                                place_type: place.types.filter( type => {
+                                    return dictionary.place_types.list
+                                        .map(({value}) => value)
+                                        .includes(type)
+                                }),
                                 opening_hours: place.opening_hours?.periods || null,
                             }
 

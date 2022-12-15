@@ -17,6 +17,7 @@ export default class PlaceTypeEnum{
     static get museum(){ return "museum" }
     static get park(){ return "park" }
     static get zoo(){ return "zoo" }
+
     static get googleTypesListManual(){
         return [
             PlaceTypeEnum.amusement_park,
@@ -40,7 +41,7 @@ export default class PlaceTypeEnum{
             ...PlaceTypeEnum.googleTypesListAutomatic,
         ]
     }
-    static get list(){
+    static get customTypesList(){
         return [
             PlaceTypeEnum.park,
             PlaceTypeEnum.reserve,
@@ -51,6 +52,12 @@ export default class PlaceTypeEnum{
             PlaceTypeEnum.church,
             PlaceTypeEnum.mosque,
             PlaceTypeEnum.lake,
+        ]
+    }
+
+    static get list(){
+        return [
+            ...PlaceTypeEnum.customTypesList,
             ...PlaceTypeEnum.googleTypesList,
         ]
     }
