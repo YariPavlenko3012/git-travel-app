@@ -20,6 +20,7 @@ import GenerationTypeEnums from "../../../../../../enums/GenerationType";
  * context
  */
 import {DictionaryContext} from "../../../../../context/dictionary.context";
+import GoogleClient from "../../../../../../utils/GoogleClient";
 
 export default function ManualContent({ generatePlacesByCity, countryId, typeColor, generationFinishCity, mapRef }){
     const [city, setCity] = useState(null)
@@ -60,20 +61,17 @@ export default function ManualContent({ generatePlacesByCity, countryId, typeCol
             return
         }
 
-        new window.google.maps.Rectangle({
-            strokeColor: "#001529",
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: "#001529",
-            fillOpacity: 0.35,
-            map: mapRef.current,
-            bounds: {
+
+        GoogleClient.getRectangle(
+            mapRef.current,
+            {
                 north: city.geometry.north, //noth lat
                 south: city.geometry.south, //south lat
                 east: city.geometry.east, //noth lng
                 west: city.geometry.west, //south lng
             },
-        });
+            "#001529"
+        )
     }, [city])
 
     useEffect(() => {

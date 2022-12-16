@@ -20,9 +20,15 @@ import CountryService from "../../../../../../services/admin/country.service";
 /**
  * constants
  */
-import {ADMIN_MAKE_EDIT_COUNTRY_URI, ADMIN_MAKE_SHOW_COUNTRY_URI} from "../../../../../../constants/admin/uri.constant";
+import {ADMIN_MAKE_SHOW_COUNTRY_URI} from "../../../../../../constants/admin/uri.constant";
+/**
+ * enums
+ */
 import FileOrientationEnums from "../../../../../../enums/FileOrientation";
-import PlaceApi from "../../../../../../utils/PlaceApi";
+/**
+ * utils
+ */
+import GoogleClient from "../../../../../../utils/GoogleClient";
 
 export default function CreateCountryForm() {
     const history = useHistory();
@@ -31,7 +37,7 @@ export default function CreateCountryForm() {
         const copyValues = JSON.parse(JSON.stringify(value));
 
         if(value.country.latitude && value.country.longitude){
-            copyValues.geometry = await PlaceApi.getGeometryForCountry(value.country.latitude, value.country.longitude)
+            copyValues.geometry = await GoogleClient.getGeometryForCountry(value.country.latitude, value.country.longitude)
             if(!copyValues.geometry){
                 alert("Change coordinate. We have some error in google api")
                 return;

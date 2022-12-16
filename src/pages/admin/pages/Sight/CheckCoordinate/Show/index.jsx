@@ -15,6 +15,7 @@ import {DictionaryContext} from "../../../../../context/dictionary.context";
  * services
  */
 import SightService from "../../../../../../services/admin/sight.service";
+import GoogleClient from "../../../../../../utils/GoogleClient";
 
 const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
@@ -154,11 +155,15 @@ export default function CheckCoordinate() {
 
         mapRef.current = new window.google.maps.Map(mapBlockRef.current, opt)
 
-        new window.google.maps.Marker({
-            position: {lat, lng},
-            icon: generateMarker(),
-            map: mapRef.current,
-        })
+        GoogleClient.getMarker(
+            mapRef.current,
+
+        )
+        GoogleClient.getMarker(
+            mapRef.current,
+            {lat, lng},
+            GoogleClient.generateCustomMarker()
+        )
     }
 
     const init = async () => {
@@ -210,11 +215,11 @@ export default function CheckCoordinate() {
             }
 
             placesList.forEach( place => {
-                const marker = new window.google.maps.Marker({
-                    position: {lat: place.latitude, lng: place.longitude},
-                    icon: generateMarker("red"),
-                    map: mapRef.current,
-                })
+                const marker = GoogleClient.getMarker(
+                    mapRef.current,
+                    {lat: place.latitude, lng: place.longitude},
+                    generateMarker("red")
+                )
 
                 marker.addListener("click", () => {
                     setCurrentSight(place)

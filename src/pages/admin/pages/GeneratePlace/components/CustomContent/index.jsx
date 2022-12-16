@@ -11,8 +11,9 @@ import PlaceType from "../PlaceTypes";
  * utils
  */
 import PlaceTypeTranslate from "../../../../../../utils/PlaceTypeTranslate";
+import GoogleClient from "../../../../../../utils/GoogleClient";
 /**
- * enums
+ * services
  */
 import GenerationPlaceService from "../../../../../../services/admin/generationPlace.service";
 /**
@@ -42,20 +43,15 @@ export default function AutomaticContent({ getRectangle, countryId, mapRef }){
 
     const generateSquareByGeometry = async () => {
         //KIYV
-        new window.google.maps.Rectangle({
-            strokeColor: "blue",
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: "blue",
-            fillOpacity: 0.35,
-            map: mapRef.current,
-            bounds: {
+        GoogleClient.getRectangle(
+            mapRef.current,
+            {
                 north: 50.590798, //noth lat
                 south: 50.213273, //south lat
                 east: 30.825941, //noth lng
                 west: 30.2394401, //south lng
-            },
-        });
+            }
+        )
 
         // const {failed, message, type} = await getRectangle(
         //     {
@@ -97,29 +93,25 @@ export default function AutomaticContent({ getRectangle, countryId, mapRef }){
             west: center.lng() - maxVerticalDif / 2, //south lng = 0.05
         };
 
-        rectangle.current = new window.google.maps.Rectangle({
-            bounds: squareSize,
-            draggable: true,
-            editable: true,
-            map: mapRef.current,
-        });
+        rectangle.current = GoogleClient.getRectangle(
+            mapRef.current,
+            squareSize,
+            "blue",
+            {
+                draggable: true,
+                editable: true,
+            }
+        )
 
         rectangle.current.addListener("bounds_changed", () => {
             clearTimeout(timeOutId.current);
             timeOutId.current = setTimeout(() => {
                 const bounds = rectangle.current.getBounds()
-                const ne = bounds.getNorthEast();
-                const sw = bounds.getSouthWest();
                 const center = bounds.getCenter();
                 const centerHorizontalLat = center.lat();
                 const centerVerticalLng = center.lng();
 
-                let newGeometry = {
-                    north: ne.lat(),
-                    south: sw.lat(),
-                    east: ne.lng(),
-                    west: sw.lng(),
-                }
+                let newGeometry = GoogleClient.parseBounds(bounds)
 
                 if(geometry && geometry.north === newGeometry.north && geometry.east === newGeometry.east && geometry.west === newGeometry.west && geometry.south === newGeometry.south){
                     return;
@@ -179,15 +171,10 @@ export default function AutomaticContent({ getRectangle, countryId, mapRef }){
 
 
         allGeneratedSquare.current = data.map(({geometry}) => (
-            new window.google.maps.Rectangle({
-                strokeColor: "blue",
-                strokeOpacity: 0.8,
-                strokeWeight: 2,
-                fillColor: "blue",
-                fillOpacity: 0.35,
-                map: mapRef.current,
-                bounds: geometry,
-            })
+            GoogleClient.getRectangle(
+                mapRef.current,
+                geometry
+            )
         ))
     }
 

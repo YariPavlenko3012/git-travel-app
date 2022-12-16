@@ -27,7 +27,7 @@ import FileOrientationEnums from "../../../../../../enums/FileOrientation";
 /**
  * utils
  */
-import PlaceApi from "../../../../../../utils/PlaceApi";
+import GoogleClient from "../../../../../../utils/GoogleClient";
 
 export default function CreateCityForm({stateId}) {
     const history = useHistory();
@@ -36,7 +36,7 @@ export default function CreateCityForm({stateId}) {
         const copyValues = JSON.parse(JSON.stringify(value));
 
         if(value.city.latitude && value.city.longitude){
-            copyValues.geometry = await PlaceApi.getGeometryForCity(value.city.latitude, value.city.longitude)
+            copyValues.geometry = await GoogleClient.getGeometryForCity(value.city.latitude, value.city.longitude)
             if(!copyValues.geometry){
                 alert("Change coordinate. We have some error in google api")
                 return;

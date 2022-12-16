@@ -19,6 +19,7 @@ import SelectCountry from "./components/SelectCountry";
 import Select from "../../../../../utils/Select";
 import {ADMIN_MAKE_EDIT_SIGHT_URI} from "../../../../../constants/admin/uri.constant";
 import {EditOutlined} from "@ant-design/icons";
+import GoogleClient from "../../../../../utils/GoogleClient";
 
 export default function NeedReview(){
     const [sights, setSights] = useState(null)
@@ -110,13 +111,13 @@ export default function NeedReview(){
 
         await getCityListBySight(newCurrentSight.id)
 
-        markerRef.current = new window.google.maps.Marker({
-            position: {
+        markerRef.current = GoogleClient.getMarker(
+            mapRef.current,
+            {
                 lat: newCurrentSight.latitude,
                 lng: newCurrentSight.longitude
             },
-            map: mapRef.current,
-        })
+        )
 
         mapRef.current.setCenter(markerRef.current.getPosition())
         mapRef.current.setZoom(11)
@@ -129,28 +130,10 @@ export default function NeedReview(){
         const cities = await SightService.getCitiesBySight(sightId);
 
         squareRef.current.map( square => square.setMap(null))
-        squareRef.current = cities.map( city => {
-            const {north, south, east, west} = city.geometry;
-            const bounds = new window.google.maps.LatLngBounds();
-
-            bounds.extend(new window.google.maps.LatLng(north, east));
-            bounds.extend(new window.google.maps.LatLng(south, west));
-
-            return new window.google.maps.Rectangle({
-                strokeColor: "blue",
-                strokeOpacity: 0.8,
-                strokeWeight: 2,
-                fillColor: "blue",
-                fillOpacity: 0.35,
-                map: mapRef.current,
-                bounds: {
-                    north: bounds.getNorthEast().lat(), //noth lat
-                    south: bounds.getSouthWest().lat(), //south lat
-                    east: bounds.getNorthEast().lng(), //noth lng
-                    west: bounds.getSouthWest().lng(), //south lng
-                },
-            });
-        })
+        squareRef.current = cities.map( city => GoogleClient.getRectangle(
+            mapRef.current,
+            city.geometry
+        ))
 
         setCityList(cities)
     }

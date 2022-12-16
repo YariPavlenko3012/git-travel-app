@@ -26,12 +26,7 @@ import CountryService from "../../../../services/admin/country.service";
  * context
  */
 import {DictionaryContext} from "../../../context/dictionary.context";
-
-// const socket = io('http://localhost:3002', {
-//     extraHeaders: {
-//         Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTY2OTY2MDk4OX0.HNw9gf9X8nhVH5UUfQEyujpXMPb5YJpzAi5fYUz-UD0`
-//     }
-// });
+import GoogleClient from "../../../../utils/GoogleClient";
 
 
 const typeColor = {
@@ -50,8 +45,6 @@ const typeColor = {
     }
 }
 
-const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-
 export default function GeneratePlace() {
     const {dictionary} = useContext(DictionaryContext)
     const {countryId} = useParams();
@@ -60,7 +53,6 @@ export default function GeneratePlace() {
     const mapBlockRef = useRef(null);
     const squareRef = useRef(null);
     const mapRef = useRef(null);
-    const key = "AIzaSyApPL4vfjbQ_iVFrfE-97KN-ncf8i1NDLU";
 
     const mapInit = async (geometry = {}) => {
         const opt = {
@@ -75,67 +67,136 @@ export default function GeneratePlace() {
         }
 
 
-
         mapRef.current = new window.google.maps.Map(mapBlockRef.current, opt)
     }
 
-    const generateMarker = (color = "#ffffff") => {
-        const pinSVGFilled = "M 12,2 C 8.1340068,2 5,5.1340068 5,9 c 0,5.25 7,13 7,13 0,0 7,-7.75 7,-13 0,-3.8659932 -3.134007,-7 -7,-7 z";
-        const labelOriginFilled = new window.google.maps.Point(12, 9);
+    const generatePlacesByCity = async (city, placeTypes = []) => {
+        if (!city.geometry || !placeTypes.length) {
+            return {failed: false};
+        }
 
+        let currentI = 1;
+        let currentJ = 1;
 
-        return {  // https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerLabel
-            path: pinSVGFilled,
-            anchor: new window.google.maps.Point(12, 17),
-            fillOpacity: 1,
-            fillColor: color,
-            strokeWeight: 2,
-            strokeColor: "white",
-            scale: 2,
-            labelOrigin: labelOriginFilled
-        };
-    }
+        const forLoop = async _ => {
+            for (let i = 0; i < placeTypes.length; i++) {
+                const currentType = placeTypes[i];
 
-    const getPhotos = async (photo_ref) => {
+                //Берем колл-во квадратов по которым ходим. Есть значения захардкодженые, а есть с базы
+                const countStep = PlaceTypeSquareEnum[currentType] || city.generation_count_of_squares;
+
+                //Ширина и Высота квадрата по которому идем (сити геометрия)
+                const placeHeightCoordinate = city.geometry.north - city.geometry.south;
+                const placeWidthCoordinate = city.geometry.east - city.geometry.west;
+
+                //Делим этот квадрат (сити геометрию) на колл-во шагов
+                const stepHorizontal = placeWidthCoordinate / countStep;
+                const stepVertical = placeHeightCoordinate / countStep;
+
+                currentI = 1;
+                for (currentI; currentI <= countStep; currentI++) {
+                    currentJ = 1;
+                    for (currentJ; currentJ <= countStep; currentJ++) {
+                        console.log(`index: ${currentI}; jndex ${currentJ}`)
+
+                        await new Promise(resolve => setTimeout(resolve, 500))
+
+                        //Берем один текузий квадрат
+                        const {failed, message, type} = await getRectangle(
+                            {
+                                geometry: {
+                                    north: city.geometry.south + (stepVertical * currentI),
+                                    east: city.geometry.west + (stepHorizontal * currentJ),
+                                    south: city.geometry.south + (stepVertical * (currentI - 1)),
+                                    west: city.geometry.west + (stepHorizontal * (currentJ - 1)),
+                                },
+                                cityId: city.id,
+                                type: currentType,
+                            }
+                        )
+
+                        if (failed) {
+                            return {failed: true}
+                        }
+                    }
+                }
+            }
+
+            if (squareRef.current) {
+                squareRef.current.setMap(null)
+            }
+
+            return {failed: false}
+        }
+
         try {
-            await new Promise(resolve => setTimeout(resolve, 400))
-            const [file] = await GenerationPlaceService.downloadImage(`https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&sensor=false&maxheight=800&photo_reference=${photo_ref}&key=${key}`)
-            console.log(file?.id, "file")
-            return file?.id || null
+            return await forLoop()
         } catch (e) {
-            return null
+            if (squareRef.current) {
+                squareRef.current.setMap(null)
+            }
+
+            return {
+                failed: true,
+                city_id: city.id,
+                message: e.message,
+                type: null,
+                indexI: currentI,
+                indexJ: currentJ,
+            };
         }
     }
+    const getRectangle = async ({geometry, cityId, type}) => {
+        try {
+            //Получение геометрии квадрата, его отрисовка на UI
+            const {north, south, east, west} = geometry;
+            const bounds = GoogleClient.getBounds(north, south, east, west)
+
+            if (squareRef.current) {
+                squareRef.current.setMap(null)
+            }
+
+            squareRef.current = GoogleClient.getRectangle(
+                mapRef.current,
+                GoogleClient.parseBounds(bounds)
+            );
+
+            //После получения и отрисовски всех данных идем получать плейсы
+            return await getPlaces(bounds, cityId, type)
+        } catch (e) {
+            return {
+                failed: true,
+                message: e.message,
+                type: null
+            }
+        }
+
+    }
     const getPlaces = async (bounds, cityId, type) => {
+        //Инициализация гугл сервиса по получению плейсов
         const service = new window.google.maps.places.PlacesService(mapRef.current);
         let lastType = null;
 
-        const forLoop = async _ => {
-            const geometry = {
-                north: bounds.getNorthEast().lat(), //noth lat
-                south: bounds.getSouthWest().lat(), //south lat
-                east: bounds.getNorthEast().lng(), //noth lng
-                west: bounds.getSouthWest().lng(), //south lng
-            }
+        const forLoop = async () => {
+            let placesToDB = [];
+            const geometry = GoogleClient.parseBounds(bounds)
             lastType = type;
 
-            const requestNearbySearch = {
-                bounds,
-                types: [type],
-            }
-            let placesToDB = [];
+            const requestNearbySearch = {bounds, types: [type]}
             await new Promise(resolve => setTimeout(() => resolve(), 1000))
 
+            //Проверяем был ли сгинерирован квадрат ранее (чтобы не создавать дубликаты)
             const isGenerate = await GenerationPlaceService.generatedSquare({
-                json: { geometry },
-                eq: { type }
+                json: {geometry},
+                eq: {type}
             })
 
-            if(isGenerate.data.length){
+            if (isGenerate.data.length) {
                 return {failed: false};
             }
 
             await new Promise((resolve, reject) => {
+                //Получения плейсов в текущем квадрате с которым работаем
                 service.nearbySearch(requestNearbySearch, async (places, status, pagination) => {
                     if (!["ZERO_RESULTS", "OK"].includes(status)) {
                         reject({
@@ -143,7 +204,8 @@ export default function GeneratePlace() {
                         })
                     }
 
-                    if(!places.length){
+                    if (!places.length) {
+                        //Запись в базу о том, в каком квадрате, какой тип плейсов мы достали
                         await GenerationPlaceService.create({
                             country_id: countryId,
                             geometry,
@@ -155,144 +217,99 @@ export default function GeneratePlace() {
                     for (let i = 0; i < places.length; i++) {
                         try {
                             const currentPlace = places[i];
-                            const requestDetailPlace = {
-                                placeId: currentPlace.place_id,
-                                fields: [
-                                    'international_phone_number',
-                                    'opening_hours',
-                                    'website',
-                                    'geometry',
-                                    'type',
-                                    'photo',
-                                    'formatted_address',
-                                    'address_components',
-                                    'name',
-                                    'place_id',
-                                ]
-                            };
-                            const placeDetailRes = (await fetch(`https://maps.googleapis.com/maps/api/place/details/json?place_id=${requestDetailPlace.placeId}&fields=${requestDetailPlace.fields.join(",")}&key=${key}`)).json()
-                            const placeDetail = await placeDetailRes
-                            const place = placeDetail ? placeDetail.result : currentPlace;
+
+                            //Получения детайльной информации по плейсу
+                            const placeDetail = await GoogleClient.getPlaceDetails(currentPlace.place_id)
+
+                            if (placeDetail?.failed) {
+                                return reject({
+                                    message: placeDetail.message,
+                                })
+                            }
+
+                            //Мы можем найти плейс, но по нему не выдадут детальной информации поэтому записываем в плейс
+                            //в приоритете  детальный, если его не нашли записываем ту инфу что дали нам ранее
+                            const place = placeDetail || currentPlace;
 
                             if (!place) {
                                 continue
                             }
 
+                            //Общая информация у обычного плейса и у детального
                             let placeToBd = {
                                 city_id: cityId,
                                 country_id: countryId,
-                                website: place.website && place.website.length < 255 ?  place.website : null,
+                                website: place.website && place.website.length < 255 ? place.website : null,
                                 international_phone_number: place.international_phone_number || null,
                                 sight_name: place.name,
                                 original_name: place.name,
                                 formatted_address: place.formatted_address,
                                 google_place_id: place.place_id,
-                                place_type: place.types.filter( type => {
+                                files_ids: [],
+                                place_type: place.types.filter(type => {
                                     return dictionary.place_types.list
                                         .map(({value}) => value)
                                         .includes(type)
                                 }),
-                                opening_hours: place.opening_hours?.periods || null,
+                                opening_hours: GoogleClient.parseOpeningHours(place.opening_hours?.periods),
                             }
 
-                            if(placeToBd.opening_hours){
-                                if(placeToBd.opening_hours.length === 1 && placeToBd.opening_hours[0].close === undefined){
-                                    placeToBd.opening_hours = days.reduce((result, day ) => ({
-                                        ...result,
-                                        [day]: {
-                                            open: "00:00",
-                                            close: "00:00"
-                                        }
-                                    }), {})
-                                }
-                                else{
-                                    placeToBd.opening_hours = placeToBd.opening_hours.reduce( (result, openHour) => ({
-                                        ...result,
-                                        [days[openHour.open.day]]: {
-                                            open: `${openHour.open.time.slice(0, 2)}:${openHour.open.time.slice(2, 4)}`,
-                                            close: `${openHour.close.time.slice(0, 2)}:${openHour.close.time.slice(2, 4)}`,
-                                        }
-                                    }), {})
-                                }
-                            }
 
+                            //Доп инфа в зависимости от того работаем с детальным плейсом или нет
                             if (placeDetail) {
-                                const photosList = place.photos?.filter((_, index) => index < 3) || [];
                                 placeToBd = {
                                     ...placeToBd,
                                     latitude: place.geometry.location.lat,
                                     longitude: place.geometry.location.lng,
-                                    files_ids: [],
-                                }
-
-                                if (photosList.length) {
-                                    for (let i = 0; i < photosList.length; i++) {
-                                        const photoReference = photosList[i].photo_reference;
-                                        const id = await getPhotos(photoReference)
-                                        if (id) {
-                                            placeToBd.files_ids = [...placeToBd.files_ids, id]
-                                        }
-                                    }
+                                    files_ids: await GoogleClient.getPhotosId(place.photos),
                                 }
                             }
 
+                            //Доп инфа в зависимости от того работаем с детальным плейсом или нет
                             if (!placeDetail) {
                                 placeToBd = {
                                     ...placeToBd,
                                     latitude: place.geometry.location.lat(),
                                     longitude: place.geometry.location.lng(),
-                                    files_ids: [],
                                 }
                             }
 
 
+                            //Получаем цвета для маркеров (для понятной отрисовки на UI)
                             const formattedTypeColor = {
                                 ...typeColor[GenerationTypeEnums.automatic],
                                 ...typeColor[GenerationTypeEnums.manual],
                             }
 
-                            new window.google.maps.Marker({
-                                position: {
-                                    lat: placeToBd.latitude,
-                                    lng: placeToBd.longitude
-                                },
-                                icon: generateMarker(formattedTypeColor[type]),
-                                map: mapRef.current,
-                            })
+                            //Генерируем маркер на UI
+                            GoogleClient.getMarker(
+                                mapRef.current,
+                                {lat: placeToBd.latitude, lng: placeToBd.longitude},
+                                GoogleClient.generateCustomMarker(formattedTypeColor[type])
+                            )
 
                             console.log(placeToBd)
 
                             placesToDB = [...placesToDB, placeToBd]
 
                             if (i + 1 === places.length) {
+                                //Если есть пагинация продолжаем брать плейсы дальше
                                 if (pagination && pagination.hasNextPage) {
                                     pagination.nextPage()
                                     return;
                                 }
 
+                                //Запись всех плейсов в базу
                                 await SightService.createBatch(placesToDB)
 
+                                //Запись в базу о том, в каком квадрате, какой тип плейсов мы достали
                                 await GenerationPlaceService.create({
                                     country_id: countryId,
                                     geometry,
                                     type
                                 })
 
-                                //WRITE TO BS ALL PLACE []
                                 console.log(placesToDB, "placesToDB")
-
-                                // socket.emit('pushLog', {
-                                //     success: true,
-                                //     cityId: cityId,
-                                //     sights: placesToDB,
-                                //     geometry_square: {
-                                //         north: bounds.getNorthEast().lat(), //noth lat
-                                //         south: bounds.getSouthWest().lat(), //south lat
-                                //         east: bounds.getNorthEast().lng(), //noth lng
-                                //         west: bounds.getSouthWest().lng(), //south lng
-                                //     },
-                                //     type,
-                                // });
 
                                 resolve()
                             }
@@ -310,168 +327,11 @@ export default function GeneratePlace() {
 
         try {
             return await forLoop()
-        }
-        catch (error) {
+        } catch (error) {
             return {
                 failed: true,
                 message: error.message,
                 type: lastType
-            };
-        }
-    }
-    const getRectangle = async ({geometry, cityId, type}) => {
-        try {
-            const {north, south, east, west} = geometry;
-            const bounds = new window.google.maps.LatLngBounds();
-
-            bounds.extend(new window.google.maps.LatLng(north, east));
-            bounds.extend(new window.google.maps.LatLng(south, west));
-
-            //
-            // console.log({
-            //     north: bounds.getNorthEast().lat(), //noth lat
-            //     south: bounds.getSouthWest().lat(), //south lat
-            //     east: bounds.getNorthEast().lng(), //noth lng
-            //     west: bounds.getSouthWest().lng(), //south lng
-            // })
-
-            if(squareRef.current){
-                squareRef.current.setMap(null)
-            }
-
-            squareRef.current =  new window.google.maps.Rectangle({
-                strokeColor: "blue",
-                strokeOpacity: 0.8,
-                strokeWeight: 2,
-                fillColor: "blue",
-                fillOpacity: 0.35,
-                map: mapRef.current,
-                bounds: {
-                    north: bounds.getNorthEast().lat(), //noth lat
-                    south: bounds.getSouthWest().lat(), //south lat
-                    east: bounds.getNorthEast().lng(), //noth lng
-                    west: bounds.getSouthWest().lng(), //south lng
-                },
-            });
-
-            return await getPlaces(bounds, cityId, type)
-        } catch (e) {
-            // socket.emit('pushLog', {
-            //     success: false,
-            //     cityId: cityId,
-            //     geometry_square: {
-            //         north: geometry.north, //noth lat
-            //         south: geometry.south, //south lat
-            //         east: geometry.east, //noth lng
-            //         west: geometry.west, //south lng
-            //     },
-            //     message: e.message,
-            //     type: null,
-            // });
-            return {
-                failed: true,
-                message: e.message,
-                type: null
-            }
-        }
-
-    }
-    const generatePlacesByCity = async (city, placeTypes = []) => {
-        if (!city.geometry || !placeTypes.length) {
-            return {failed: false};
-        }
-
-        let currentI = 1;
-        let currentJ = 1;
-
-        const forLoop = async _ => {
-            for(let i = 0; i < placeTypes.length; i++){
-                const currentType = placeTypes[i];
-
-                const countStep = PlaceTypeSquareEnum[currentType] || city.generation_count_of_squares;
-
-                const placeHeightCoordinate = city.geometry.north - city.geometry.south;
-                const placeWidthCoordinate = city.geometry.east - city.geometry.west;
-
-                const stepHorizontal = placeWidthCoordinate / countStep;
-                const stepVertical = placeHeightCoordinate / countStep;
-
-                currentI = 1;
-                for (currentI; currentI <= countStep; currentI++) {
-                    currentJ = 1;
-                    for (currentJ; currentJ <= countStep; currentJ++) {
-                        console.log(`index: ${currentI}; jndex ${currentJ}`)
-                        await new Promise(resolve => setTimeout(resolve, 500))
-                        const {failed, message, type} = await getRectangle(
-                            {
-                                geometry: {
-                                    north: city.geometry.south + (stepVertical * currentI),
-                                    east: city.geometry.west + (stepHorizontal * currentJ),
-                                    south: city.geometry.south + (stepVertical * (currentI - 1)),
-                                    west: city.geometry.west + (stepHorizontal * (currentJ - 1)),
-                                },
-                                cityId: city.id,
-                                type: currentType,
-                            }
-                        )
-
-                        if (failed) {
-                            // socket.emit('pushLog', {
-                            //     success: false,
-                            //     cityId: city.id,
-                            //     geometry_square: {
-                            //         north: city.geometry.north, //noth lat
-                            //         south: city.geometry.south, //south lat
-                            //         east: city.geometry.east, //noth lng
-                            //         west: city.geometry.west, //south lng
-                            //     },
-                            //     indexI: currentI,
-                            //     indexJ: currentJ,
-                            //     message,
-                            //     type,
-                            // });
-
-                            return {failed: true}
-                        }
-                    }
-                }
-            }
-
-            if(squareRef.current){
-                squareRef.current.setMap(null)
-            }
-
-            return {failed: false}
-        }
-
-        try {
-            return await forLoop()
-        } catch (e) {
-            // socket.emit('pushLog', {
-            //     success: false,
-            //     cityId: city.id,
-            //     geometry_square: {
-            //         north: city.geometry.north, //noth lat
-            //         south: city.geometry.south, //south lat
-            //         east: city.geometry.east, //noth lng
-            //         west: city.geometry.west, //south lng
-            //     },
-            //     message: e.message,
-            //     type: null,
-            //     indexI: currentI,
-            //     indexJ: currentJ,
-            // });
-            if(squareRef.current){
-                squareRef.current.setMap(null)
-            }
-
-            return {
-                failed: true,
-                city_id: city.id,
-                message: e.message,
-                type: null,
-                indexI: currentI,
-                indexJ: currentJ,
             };
         }
     }
@@ -487,21 +347,16 @@ export default function GeneratePlace() {
     const getCountry = async () => {
         const country = await CountryService.show(countryId)
         setCountry(country)
+
+        return country
     }
 
     useEffect(() => {
         getCountry()
     }, [])
 
-    // useEffect(() => {
-    //     socket.on('connect', () => {
-    //         console.log(socket, "socket")
-    //         socket.on('logs', console.log)
-    //     });
-    // }, [])
-
     useEffect(() => {
-        if(!generationType || !country?.geometry){
+        if (!generationType || !country?.geometry) {
             return;
         }
 
@@ -516,17 +371,22 @@ export default function GeneratePlace() {
                 <div style={{width: "30%"}}>
                     <RadioGenerationType generationType={generationType}
                                          setGenerationType={setGenerationType}/>
-                        <div style={{paddingTop: 20}}>
-                            {generationType === GenerationTypeEnums.automatic && (
-                                <AutomaticContent typeColor={typeColor[GenerationTypeEnums.automatic]} generationFinishCity={generationFinishCity} generatePlacesByCity={generatePlacesByCity} countryId={countryId}/>
-                            )}
-                            {generationType === GenerationTypeEnums.manual && (
-                                <ManualContent typeColor={typeColor[GenerationTypeEnums.manual]} generationFinishCity={generationFinishCity} generatePlacesByCity={generatePlacesByCity} countryId={countryId} mapRef={mapRef}/>
-                            )}
-                            {generationType === GenerationTypeEnums.custom && (
-                                <CustomContent countryId={countryId} getRectangle={getRectangle} mapRef={mapRef}/>
-                            )}
-                        </div>
+                    <div style={{paddingTop: 20}}>
+                        {generationType === GenerationTypeEnums.automatic && (
+                            <AutomaticContent typeColor={typeColor[GenerationTypeEnums.automatic]}
+                                              generationFinishCity={generationFinishCity}
+                                              generatePlacesByCity={generatePlacesByCity} countryId={countryId}/>
+                        )}
+                        {generationType === GenerationTypeEnums.manual && (
+                            <ManualContent typeColor={typeColor[GenerationTypeEnums.manual]}
+                                           generationFinishCity={generationFinishCity}
+                                           generatePlacesByCity={generatePlacesByCity} countryId={countryId}
+                                           mapRef={mapRef}/>
+                        )}
+                        {generationType === GenerationTypeEnums.custom && (
+                            <CustomContent countryId={countryId} getRectangle={getRectangle} mapRef={mapRef}/>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

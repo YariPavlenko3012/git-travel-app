@@ -30,9 +30,11 @@ export default function AutomaticContent({ generatePlacesByCity, typeColor, coun
             type: GenerationTypeEnums.automatic,
             per_page: 1000000
         })
+        console.log(data, "dataSort")
 
-        const dataSort = data.filter(({id}) => 224 === id)
-        console.log(dataSort)
+
+        const dataSort = data.filter(({id}) => 454 === id)
+        console.log(dataSort, "dataSort")
 
         for (let i = 0; i < dataSort.length; i++) {
             const city = dataSort[i];
@@ -45,7 +47,7 @@ export default function AutomaticContent({ generatePlacesByCity, typeColor, coun
             }
 
             console.log('FINISH')
-            await generationFinishCity(city.id, GenerationTypeEnums.automatic, dictionary.place_types.automatic.map(({value}) => value))
+            // await generationFinishCity(city.id, GenerationTypeEnums.automatic, dictionary.place_types.automatic.map(({value}) => value))
         }
 
         console.log("END")

@@ -10,6 +10,7 @@ import PlaceType from './components/Types'
  * services
  */
 import SightService from "../../../../services/admin/sight.service";
+import GoogleClient from "../../../../utils/GoogleClient";
 
 export default function Route() {
     const [placeTypes, setPlaceTypes] = useState([])
@@ -33,13 +34,13 @@ export default function Route() {
 
         mapRef.current = new window.google.maps.Map(mapBlockRef.current, opt)
 
-        new window.google.maps.Marker({
-            position: {
+        GoogleClient.getMarker(
+            mapRef.current,
+            {
                 lat: 50.4662711,
                 lng: 30.5134968
-            },
-            map: mapRef.current,
-        })
+            }
+        )
     }
 
     const selectPlaceTypes = ( type ) => {

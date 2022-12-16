@@ -1,7 +1,7 @@
 /**
  * external libs
  */
-import React from 'react';
+import React, {useContext} from 'react';
 /**
  * components
  */
@@ -14,9 +14,15 @@ import ExcursionPageTypeEnum from "../../../../../enums/ExcursionPageType";
  * services
  */
 import ExcursionService from "../../../../../services/admin/excursion.service";
+/**
+ * context
+ */
+import {AlertContext} from "../../../../context/alert.context";
 
 
 export default function ExcursionsEdit() {
+    const {setAlertSuccess} = useContext(AlertContext)
+
     const updateExcursion = async (excursionFormData) => {
         const requestExcursionFormData = JSON.parse(JSON.stringify(excursionFormData))
 
@@ -27,6 +33,7 @@ export default function ExcursionsEdit() {
 
 
         // await ExcursionService.create(requestExcursionFormData)
+        setAlertSuccess("Excursion successfully edited")
     }
 
     return (

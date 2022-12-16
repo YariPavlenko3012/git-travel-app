@@ -10,15 +10,18 @@ import {Button} from 'antd'
 import ExcursionForm from "../ExcursionForm";
 import ExcursionItemForm from "../ExcursionItemForm";
 import ExcursionTable from "../ExcursionTable";
+import GeoSelectForm from "../GeoSelectForm";
 /**
  * service
  */
 import CountryService from "../../../../../../services/admin/country.service";
 import ExcursionService from "../../../../../../services/admin/excursion.service";
+import CityService from "../../../../../../services/admin/city.service";
+import DictionaryService from "../../../../../../services/dictionary.service";
 /**
  * utils
  */
-import {QueryString} from "../../../../../../utils/Querystring";
+import GoogleClient from "../../../../../../utils/GoogleClient";
 /**
  * enums
  */
@@ -28,13 +31,9 @@ import ExcursionPageTypeEnum from "../../../../../../enums/ExcursionPageType";
  * context
  */
 import {DictionaryContext} from "../../../../../context/dictionary.context";
-import CityService from "../../../../../../services/admin/city.service";
-import GeoSelectForm from "../GeoSelectForm";
-import SightService from "../../../../../../services/admin/sight.service";
-import DictionaryService from "../../../../../../services/dictionary.service";
 
 
-export default function ExcursionsPage({ pageType, handler }) {
+export default function ExcursionsPage({pageType, handler}) {
     const {dictionary} = useContext(DictionaryContext)
     const {countryId, cityId, excursionId} = useParams();
     const [excursionFormData, setExcursionFormData] = useState({
@@ -74,24 +73,21 @@ export default function ExcursionsPage({ pageType, handler }) {
 
         mapRef.current = new window.google.maps.Map(mapBlockRef.current, opt)
     }
-
     const getCountry = async (countryId) => {
         const country = await CountryService.show(countryId)
         setCountry(country)
 
         return country;
     }
-
     const getPlaces = async (countryId, cityId) => {
         setPlaces(await DictionaryService.sights({
             eq: {
-              country_id: countryId
+                country_id: countryId
             },
             city_id: cityId
         }))
     }
-
-    const getCity = async ( cityId ) => {
+    const getCity = async (cityId) => {
         const city = await CityService.show(cityId)
         setCity(city)
 
@@ -101,7 +97,6 @@ export default function ExcursionsPage({ pageType, handler }) {
     }
 
     const finishDay = () => {
-        console.log(excursionFormData, "excursionFormData")
         setExcursionFormData({
             ...excursionFormData,
             items: [
@@ -112,7 +107,6 @@ export default function ExcursionsPage({ pageType, handler }) {
     }
 
     const drowOnMap = () => {
-        console.log(currentActiveDay, "currentActiveDay")
         markerListRef.current.forEach(marker => marker.setMap(null));
         if (polylineRef.current) {
             polylineRef.current.setMap(null)
@@ -121,41 +115,39 @@ export default function ExcursionsPage({ pageType, handler }) {
         markerListRef.current = currentActiveDay.map(({place}) => {
             const {longitude, latitude} = place
 
-            return new window.google.maps.Marker({
-                position: {
+            return GoogleClient.getMarker(
+                mapRef.current,
+                {
                     lat: latitude,
                     lng: longitude
                 },
-                map: mapRef.current,
-            })
+            )
         })
 
-        polylineRef.current = new window.google.maps.Polyline({
-            path: currentActiveDay
-                .reduce((polylineResult, excursionItem) => ([
-                    ...polylineResult,
-                    ...excursionItem.routes[ExcursionRouteTypeEnum.walking].path || []
-                ]), [])
-                .map(coordinate => {
-                    const [lat, lng] = coordinate.split(" ")
-                    return new window.google.maps.LatLng(lat, lng);
-                }, []),
-            strokeColor: "#FF0000",
-            strokeOpacity: 1.0,
-            strokeWeight: 3,
-            geodesic: true,
-            map: mapRef.current
-        });
+        const polylinePath = currentActiveDay
+            .reduce((polylineResult, excursionItem) => ([
+                ...polylineResult,
+                ...excursionItem.routes[ExcursionRouteTypeEnum.walking].path || []
+            ]), [])
+            .map(coordinate => {
+                const [lat, lng] = coordinate.split(" ")
+                return new window.google.maps.LatLng(lat, lng);
+            }, [])
+
+        polylineRef.current = GoogleClient.getPolyline(
+            mapRef.current,
+            polylinePath
+        )
     }
 
     const generateRoutesByGoogle = async (currentExcursionFormData, currentDayIndex, startIndexPlace = 0) => {
         const currentDay = currentExcursionFormData.items[currentDayIndex]
         const travelMode = dictionary.excursion_route_type.map(({value}) => value);
-        for(let i = startIndexPlace; i < currentDay.length; i++){
+        for (let i = startIndexPlace; i < currentDay.length; i++) {
             const currentPlace = currentDay[i];
             const prevPlace = currentDay[i - 1]
 
-            if(i === 0){
+            if (i === 0) {
                 travelMode.forEach((travelMode) => {
                     currentPlace.routes[travelMode] = {
                         path: [],
@@ -166,20 +158,16 @@ export default function ExcursionsPage({ pageType, handler }) {
                 continue;
             }
 
-
-
-            for (let j = 0; j < travelMode.length; j++){
+            for (let j = 0; j < travelMode.length; j++) {
                 const currentTravelMode = travelMode[j];
 
                 const params = {
-                    key: "AIzaSyApPL4vfjbQ_iVFrfE-97KN-ncf8i1NDLU",
                     destination: `${currentPlace.place.latitude},${currentPlace.place.longitude}`,
                     origin: `${prevPlace.place.latitude},${prevPlace.place.longitude}`,
                     mode: currentTravelMode
                 }
-                const url = `https://maps.googleapis.com/maps/api/directions/json?${QueryString.stringify(params)}`
 
-                const route = await (await fetch(url)).json()
+                const route = await GoogleClient.getDirection(params)
 
                 currentPlace.routes[currentTravelMode] = {
                     path: route.routes[0].legs[0].steps.reduce((polylineResult, {polyline}) => {
@@ -205,33 +193,29 @@ export default function ExcursionsPage({ pageType, handler }) {
         markerListRef.current = currentDay.map(({place}) => {
             const {longitude, latitude} = place
 
-            return new window.google.maps.Marker({
-                position: {
+            return GoogleClient.getMarker(
+                mapRef.current,
+                {
                     lat: latitude,
                     lng: longitude
-                },
-                map: mapRef.current,
-            })
+                }
+            )
         })
 
-        polylineRef.current = new window.google.maps.Polyline({
-            path: currentDay
-                .reduce((polylineResult, excursionItem) => ([
-                    ...polylineResult,
-                    ...excursionItem.routes[ExcursionRouteTypeEnum.walking].path
-                ]), [])
-                .map(coordinate => {
-                    const [lat, lng] = coordinate.split(" ")
-                    return new window.google.maps.LatLng(lat, lng);
-                }, []),
-            strokeColor: "#FF0000",
-            strokeOpacity: 1.0,
-            strokeWeight: 3,
-            geodesic: true,
-            map: mapRef.current
-        });
+        const polylinePath = currentDay
+            .reduce((polylineResult, excursionItem) => ([
+                ...polylineResult,
+                ...excursionItem.routes[ExcursionRouteTypeEnum.walking].path
+            ]), [])
+            .map(coordinate => {
+                const [lat, lng] = coordinate.split(" ")
+                return new window.google.maps.LatLng(lat, lng);
+            }, []);
 
-        // currentExcursionFormData.items[currentDayIndex] = currentDay;
+        polylineRef.current = GoogleClient.getPolyline(
+            mapRef.current,
+            polylinePath
+        )
 
         setExcursionFormData(currentExcursionFormData)
     }
@@ -254,7 +238,7 @@ export default function ExcursionsPage({ pageType, handler }) {
         const newExcursionFormData = {...excursionFormData}
 
         newExcursionFormData.items[currentDay - 1] = newExcursionFormData.items[currentDay - 1]
-            .filter(({place_id}) => place_id !== placeId )
+            .filter(({place_id}) => place_id !== placeId)
             .map((place, index) => ({
                 ...place,
                 priority: index + 1
@@ -267,19 +251,19 @@ export default function ExcursionsPage({ pageType, handler }) {
         let country = null;
         let city = null;
 
-        if(countryId){
+        if (countryId) {
             country = await getCountry(countryId);
         }
 
-        if(cityId){
+        if (cityId) {
             city = await getCity(cityId);
         }
 
-        if(!cityId){
+        if (!cityId) {
             await getPlaces(country?.id, city?.id)
         }
 
-        if(excursionId){
+        if (excursionId) {
             await getExcursion(excursionId);
         }
 
@@ -343,7 +327,8 @@ export default function ExcursionsPage({ pageType, handler }) {
                                            cityId={city?.id}
                         />
                     )}
-                    <ExcursionTable day={day} changePriority={changePriority} isShowPage={isShowPage} deletePlace={deletePlace}/>
+                    <ExcursionTable day={day} changePriority={changePriority} isShowPage={isShowPage}
+                                    deletePlace={deletePlace}/>
                 </div>
             ))}
             {!isShowPage && (
