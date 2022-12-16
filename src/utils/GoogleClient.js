@@ -192,7 +192,7 @@ export default class GoogleClient {
         })
     }
 
-    static generateCustomMarker(color = "#ffffff") {
+    static generateCustomMarker(color = "black") {
         const pinSVGFilled = "M 12,2 C 8.1340068,2 5,5.1340068 5,9 c 0,5.25 7,13 7,13 0,0 7,-7.75 7,-13 0,-3.8659932 -3.134007,-7 -7,-7 z";
         const labelOriginFilled = new window.google.maps.Point(12, 9);
 
