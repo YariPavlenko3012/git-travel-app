@@ -15,6 +15,7 @@ export default class PlaceTypeEnum{
     static get mosque(){ return "mosque" }
     static get embassy(){ return "embassy" }
     static get museum(){ return "museum" }
+    static get theater(){ return "theater" }
     static get park(){ return "park" }
     static get zoo(){ return "zoo" }
 
@@ -51,6 +52,7 @@ export default class PlaceTypeEnum{
             PlaceTypeEnum.sea,
             PlaceTypeEnum.church,
             PlaceTypeEnum.mosque,
+            PlaceTypeEnum.theater,
             PlaceTypeEnum.lake,
         ]
     }

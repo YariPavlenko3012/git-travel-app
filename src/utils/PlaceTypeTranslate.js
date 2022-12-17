@@ -16,7 +16,7 @@ export default class PlaceTypeTranslate {
             [PlaceTypeEnum.tourist_attraction]: "Туристична пам'ятка",
             [PlaceTypeEnum.campground]: "Кемпінг",
             [PlaceTypeEnum.church]: "Церква",
-            [PlaceTypeEnum.city_hall]: "Ратуша",
+            [PlaceTypeEnum.theater]: "Театр",
             [PlaceTypeEnum.mosque]: "Мечеть",
             [PlaceTypeEnum.embassy]: "Посольство",
             [PlaceTypeEnum.museum]: "Музей",
