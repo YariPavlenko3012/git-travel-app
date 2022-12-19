@@ -14,7 +14,11 @@ export default class FilesService {
     static async upload(data) {
         return await axios.post("/v1/files", data)
     }
-    
+
+    static async uploadChunk(data) {
+        return await axios.post("/v1/files/chunk", data)
+    }
+
     static async delete(data) {
         return await axios.delete("/v1/files", {
             params: data,

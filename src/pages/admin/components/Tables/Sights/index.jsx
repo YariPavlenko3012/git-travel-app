@@ -30,6 +30,7 @@ import {
  * utils
  */
 import PlaceTypeTranslate from "../../../../../utils/PlaceTypeTranslate";
+import {QueryString} from "../../../../../utils/Querystring";
 /**
  * enums
  */
@@ -216,11 +217,13 @@ export default function SightTable({searchParams}) {
     const getSightHandler = async (params) => {
         setIsReady(false);
         setSights(await getSight({
+            ...QueryString.parseQueryString(window.location.search),
             ...settings.table[TablesKeyEnum.sight],
             ...(!withPlaceType && {isNull: 'place_type'}),
             ...searchParams,
             ...params,
         }))
+
         setIsReady(true);
     }
 

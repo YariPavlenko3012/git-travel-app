@@ -1,7 +1,6 @@
 /**
  * external libs
  */
-import {SlideDown} from 'react-slidedown/lib/slidedown'
 import React, {useContext, useState} from "react";
 import {Field, useForm, useFormState} from "react-final-form";
 import { Upload } from 'antd';

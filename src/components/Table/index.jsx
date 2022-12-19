@@ -11,6 +11,10 @@ import StorageService from "../../services/storage.service";
  * context
  */
 import {SettingsContext} from "../../pages/context/settings.context";
+/**
+ * utils
+ */
+import {QueryString} from "../../utils/Querystring";
 
 export default function TableUI({data, columns, fetchingData, loader = false, tableKey, ...props}) {
     const {settings} = useContext(SettingsContext);
@@ -30,6 +34,7 @@ export default function TableUI({data, columns, fetchingData, loader = false, ta
             const newSettings = {...settings}
 
             newSettings.table[tableKey].per_page = pagination.pageSize
+            newSettings.table[tableKey].page = pagination.current
 
             StorageService.settings = newSettings
         }

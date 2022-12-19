@@ -12,6 +12,7 @@
     "antd-img-crop": "^4.2.4",
     "axios": "^0.20.0",
     "bootstrap": "^5.1.0",
+    "buffer": "^6.0.3",
     "date-fns": "^2.24.0",
     "final-form": "^4.20.2",
     "final-form-arrays": "^3.0.2",
@@ -38,6 +39,9 @@
     "react-slidedown": "^2.4.7",
     "slick-carousel": "^1.8.1",
     "socket.io-client": "^4.5.4"
+  },
+  "browser": {
+    "buffer": false
   },
   "devDependencies": {
     "eslint-config-prettier": "^6.12.0",
