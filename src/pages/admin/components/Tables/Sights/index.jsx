@@ -217,7 +217,7 @@ export default function SightTable({searchParams}) {
     const getSightHandler = async (params) => {
         setIsReady(false);
         setSights(await getSight({
-            ...QueryString.parseQueryString(window.location.search),
+            ...QueryString.parseQueryString("?" + window.location.hash.split("?")[1]),
             ...settings.table[TablesKeyEnum.sight],
             ...(!withPlaceType && {isNull: 'place_type'}),
             ...searchParams,

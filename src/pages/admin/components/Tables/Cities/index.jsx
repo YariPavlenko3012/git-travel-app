@@ -36,6 +36,7 @@ import TablesKeyEnum from "../../../../../enums/TablesKey";
  */
 import {AlertContext} from "../../../../context/alert.context";
 import {SettingsContext} from "../../../../context/settings.context";
+import {QueryString} from "../../../../../utils/Querystring";
 
 export default function CityTable({ searchParams }) {
     const [cities, setCities] = useState(null);
@@ -180,6 +181,7 @@ export default function CityTable({ searchParams }) {
     const getCityHandler = async (params) => {
         setIsReady(false)
         setCities(await getCity({
+            ...QueryString.parseQueryString("?" + window.location.hash.split("?")[1]),
             ...settings.table[TablesKeyEnum.city],
             ...(!withCoordination && {isNull: 'latitude,longitude'}),
             ...searchParams,

@@ -18,6 +18,7 @@ import {
     ADMIN_MAKE_SHOW_STATE_URI,
 } from "../../../../../constants/admin/uri.constant";
 import StateService from "../../../../../services/admin/state.service";
+import {QueryString} from "../../../../../utils/Querystring";
 
 export default function StatesTable({searchParams}) {
     const [states, setStates] = useState(null);
@@ -66,6 +67,7 @@ export default function StatesTable({searchParams}) {
     const getStateHandler = async (params) => {
         setIsReady(false)
         await getState(await getState({
+            ...QueryString.parseQueryString("?" + window.location.hash.split("?")[1]),
             ...searchParams,
             ...params,
         }))

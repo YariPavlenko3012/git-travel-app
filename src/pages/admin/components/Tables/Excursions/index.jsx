@@ -21,6 +21,7 @@ import {
  * services
  */
 import ExcursionService from "../../../../../services/admin/excursion.service";
+import {QueryString} from "../../../../../utils/Querystring";
 
 export default function ExcursionsTable({searchParams}) {
     const [excursions, setExcursions] = useState(null);
@@ -110,6 +111,7 @@ export default function ExcursionsTable({searchParams}) {
     const getExcursionsHandler = async (params) => {
         setIsReady(false)
         setExcursions(await getExcursions({
+            ...QueryString.parseQueryString("?" + window.location.hash.split("?")[1]),
             ...searchParams,
             ...params,
         }))

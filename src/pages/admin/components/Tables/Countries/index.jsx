@@ -21,6 +21,7 @@ import {
     ADMIN_MAKE_SHOW_LANGUAGE_URI
 } from "../../../../../constants/admin/uri.constant";
 import CountryService from "../../../../../services/admin/country.service";
+import {QueryString} from "../../../../../utils/Querystring";
 
 export default function CountryTable({searchParams}) {
     const [countries, setCountries] = useState(null);
@@ -165,6 +166,7 @@ export default function CountryTable({searchParams}) {
     const getCountryHandler = async (params) => {
         setIsReady(false)
         setCountries(await getCountry({
+            ...QueryString.parseQueryString("?" + window.location.hash.split("?")[1]),
             ...searchParams,
             ...params,
         }))

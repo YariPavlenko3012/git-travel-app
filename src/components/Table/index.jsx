@@ -34,11 +34,20 @@ export default function TableUI({data, columns, fetchingData, loader = false, ta
             const newSettings = {...settings}
 
             newSettings.table[tableKey].per_page = pagination.pageSize
-            newSettings.table[tableKey].page = pagination.current
 
             StorageService.settings = newSettings
         }
 
+        const [url] = window.location.hash.split('?')
+        window.history.pushState(null, null, url + "?" + QueryString.stringify({
+            sort_column: sorter.field,
+            sort_type: sorter.order === 'ascend' ? "asc" : "desc",
+            page: pagination.current,
+            per_page: pagination.pageSize,
+            filters,
+        }));
+
+        // window.history.push()
         await fetchingData({
             sort_column: sorter.field,
             sort_type: sorter.order === 'ascend' ? "asc" : "desc",
