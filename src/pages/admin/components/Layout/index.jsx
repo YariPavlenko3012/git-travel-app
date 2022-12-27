@@ -117,7 +117,11 @@ export default function LayoutUI({children}) {
         const itemsWorker = [
             getItem('State', '7', GoldOutlined, ADMIN_STATE_LIST_URI),
             getItem('City', '2', HomeOutlined, ADMIN_CITY_LIST_URI),
-            getItem('Sight', '3', PictureOutlined, ADMIN_SIGHT_LIST_URI),
+            getItem('Sight', 'sub1', PictureOutlined, null, [
+                getItemChild("List", 'sub1_1', ADMIN_SIGHT_LIST_URI ),
+                getItemChild('Need review', 'sub1_2', ADMIN_SIGHT_LIST_NEED_REVIEW_URI ),
+                getItemChild('Check coordinate', 'sub1_3', ADMIN_SIGHT_LIST_CHECK_COORDINATE_URI ),
+            ]),
             getItem('Statistics', 'sub2', BarChartOutlined, null, [
                 getItemChild('Price', 'sub2_1', ADMIN_STATISTICS_PRICE ),
             ]),
