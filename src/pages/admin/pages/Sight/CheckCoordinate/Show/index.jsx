@@ -243,12 +243,15 @@ export default function CheckCoordinate() {
                 <div ref={mapBlockRef} style={{width: "70%", height: 500}}/>
                 <div style={{display: "flex", flexDirection: "column", gap: 10, paddingTop: 20, fontSize: 18}}>
                     {sights && sights.map( (sight, index) => (
-                        <div style={{cursor: "pointer", color: sight.google_place_id === currentSight?.google_place_id ? "#0d6efd" : "black"}} onClick={() => setCurrentSight(sight)}>
+                        <div style={{cursor: "pointer", color: sight.google_place_id === currentSight?.google_place_id ? "#0d6efd" : "black"}}>
                             <div >
                                 №: {index + 1}, {sight.google_place_name}
                             </div>
                             <div>
                                 Lat: {sight.latitude}, Lng: {sight.longitude}
+                            </div>
+                            <div>
+                                Address: {sight.formatted_address}
                             </div>
                         </div>
                     ))}
