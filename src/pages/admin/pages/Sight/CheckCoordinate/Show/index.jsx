@@ -120,7 +120,7 @@ export default function CheckCoordinate() {
     const mapInit = async (lat, lng) => {
         const opt = {
             center: {lat, lng},
-            zoom: 11,
+            zoom: 14,
             // restriction: {
             //     latLngBounds: {
             //         north: lat + 0.025 / 2, //noth lat
