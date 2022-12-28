@@ -54,7 +54,7 @@ export default function CheckCoordinate() {
 
         const {north, south, east, west,} = squareSize
 
-        const placesList = (await fetch(`https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${sight.original_name}&fields=formatted_address,name,place_id,opening_hours,geometry&locationbias=rectangle:${south},${west}|${north},${east}&inputtype=textquery&key=${key}`)).json()
+        const placesList = (await fetch(`https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${sight.original_name}&fields=formatted_address,name,place_id,opening_hours,geometry&locationrestriction=rectangle:${south},${west}|${north},${east}&locationbias=rectangle:${south},${west}|${north},${east}&inputtype=textquery&key=${key}`)).json()
         const places = await placesList
 
         if (!places.candidates.length) {
