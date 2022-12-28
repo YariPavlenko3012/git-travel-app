@@ -46,10 +46,10 @@ export default function CheckCoordinate() {
     }
     const searchPlace = async (sight) => {
         const squareSize = {
-            north: sight.latitude + 0.03 / 2, //noth lat
-            south: sight.latitude - 0.03 / 2, //south lat
-            east: sight.longitude + 0.03, //noth lng = 0.05
-            west: sight.longitude - 0.03, //south lng = 0.05
+            north: sight.latitude + 0.025 / 2, //noth lat
+            south: sight.latitude - 0.025 / 2, //south lat
+            east: sight.longitude + 0.025, //noth lng = 0.05
+            west: sight.longitude - 0.025, //south lng = 0.05
         };
 
         const {north, south, east, west,} = squareSize
@@ -121,15 +121,15 @@ export default function CheckCoordinate() {
         const opt = {
             center: {lat, lng},
             zoom: 11,
-            restriction: {
-                latLngBounds: {
-                    north: lat + 0.03 / 2, //noth lat
-                    south: lat - 0.03 / 2, //south lat
-                    east: lng + 0.03, //noth lng = 0.05
-                    west: lng - 0.03, //south lng = 0.05
-                },
-                strictBounds: true
-            },
+            // restriction: {
+            //     latLngBounds: {
+            //         north: lat + 0.025 / 2, //noth lat
+            //         south: lat - 0.025 / 2, //south lat
+            //         east: lng + 0.025, //noth lng = 0.05
+            //         west: lng - 0.025, //south lng = 0.05
+            //     },
+            //     strictBounds: true
+            // },
             // styles: [
             //     {
             //         "featureType": "administrative",
@@ -158,6 +158,15 @@ export default function CheckCoordinate() {
         GoogleClient.getMarker(
             mapRef.current,
 
+        )
+        GoogleClient.getRectangle(
+            mapRef.current,
+            {
+                north: lat + 0.025 / 2, //noth lat
+                south: lat - 0.025 / 2, //south lat
+                east: lng + 0.025, //noth lng = 0.05
+                west: lng - 0.025, //south lng = 0.05
+            }
         )
         GoogleClient.getMarker(
             mapRef.current,
@@ -243,7 +252,7 @@ export default function CheckCoordinate() {
                 <div ref={mapBlockRef} style={{width: "70%", height: 500}}/>
                 <div style={{display: "flex", flexDirection: "column", gap: 10, paddingTop: 20, fontSize: 18}}>
                     {sights && sights.map( (sight, index) => (
-                        <div style={{cursor: "pointer", color: sight.google_place_id === currentSight?.google_place_id ? "#0d6efd" : "black"}}>
+                        <div style={{cursor: "pointer", color: sight.google_place_id === currentSight?.google_place_id ? "#0d6efd" : "black"}} onClick={() => setCurrentSight(sight)}>
                             <div >
                                 №: {index + 1}, {sight.google_place_name}
                             </div>
