@@ -24,7 +24,8 @@ export default function CheckCoordinate() {
     const mapBlockRef = useRef(null);
     const mapRef = useRef(null);
     const {dictionary} = useContext(DictionaryContext)
-    const [sights, setSights] = useState(null);
+    const [placeList, setPlaceList] = useState([]);
+    const [place, setPlace] = useState(null);
     const [currentSight, setCurrentSight] = useState(null);
     const key = "AIzaSyApPL4vfjbQ_iVFrfE-97KN-ncf8i1NDLU";
 
@@ -51,21 +52,40 @@ export default function CheckCoordinate() {
             east: sight.longitude + 0.025, //noth lng = 0.05
             west: sight.longitude - 0.025, //south lng = 0.05
         };
-
+        GoogleClient.getRectangle(
+            mapRef.current,
+            squareSize
+        )
         const {north, south, east, west,} = squareSize
 
-        const placesList = (await fetch(`https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${sight.original_name}&fields=formatted_address,name,place_id,opening_hours,geometry&locationrestriction=rectangle:${south},${west}|${north},${east}&locationbias=rectangle:${south},${west}|${north},${east}&inputtype=textquery&key=${key}`)).json()
+        const placesList = (await fetch(`https://maps.googleapis.com/maps/api/place/textsearch/json?query=${sight.original_name}&location=${sight.latitude},${sight.longitude}&inputtype=textquery&key=AIzaSyApPL4vfjbQ_iVFrfE-97KN-ncf8i1NDLU`)).json()
+
+
+        // const placesList = (await fetch(`https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${sight.original_name}&language=uk&fields=formatted_address,name,place_id,opening_hours,geometry&locationrestriction=rectangle:${south},${west}|${north},${east}&locationbias=rectangle:${south},${west}|${north},${east}&inputtype=textquery&key=${key}`)).json()
         const places = await placesList
 
-        if (!places.candidates.length) {
-            return null
+        if (!places.results.length) {
+            return setPlaceList([])
         }
 
-        return places.candidates
+        places.results.forEach( place => {
+            const marker = GoogleClient.getMarker(
+                mapRef.current,
+                {lat: place.geometry.location.lat, lng: place.geometry.location.lng},
+                GoogleClient.generateCustomMarker("red")
+            )
+
+
+            marker.addListener("click", () => {
+                placeDetails(place, sight)
+            });
+        })
+
+        setPlaceList(places.results)
     }
-    const placeDetails = async (placeId) => {
+    const placeDetails = async (newPlace, place) => {
         const requestDetailPlace = {
-            placeId: placeId,
+            placeId: newPlace.place_id,
             fields: [
                 'international_phone_number',
                 'opening_hours',
@@ -78,43 +98,36 @@ export default function CheckCoordinate() {
                 'place_id',
             ]
         };
-        const placeDetailRes = (await fetch(`https://maps.googleapis.com/maps/api/place/details/json?place_id=${requestDetailPlace.placeId}&fields=${requestDetailPlace.fields.join(",")}&key=${key}`)).json()
-        const result = await placeDetailRes
 
+        const placeDetail = await GoogleClient.getPlaceDetails(requestDetailPlace.placeId, requestDetailPlace.fields)
 
-        if(result.status === "OK"){
-            let placeDetails = {
-                ...result.result,
-                opening_hours: result.result.opening_hours?.periods || null
-            }
-
-            console.log(placeDetails, "placeDetails")
-
-            if(placeDetails.opening_hours){
-                if(placeDetails.opening_hours.length === 1 && placeDetails.opening_hours[0].close === undefined){
-                    placeDetails.opening_hours = days.reduce((result, day ) => ({
-                        ...result,
-                        [day]: {
-                            open: "00:00",
-                            close: "00:00"
-                        }
-                    }), {})
-                }
-                else{
-                    placeDetails.opening_hours = placeDetails.opening_hours.reduce( (result, openHour) => ({
-                        ...result,
-                        [days[openHour.open.day]]: {
-                            open: `${openHour.open.time.slice(0, 2)}:${openHour.open.time.slice(2, 4)}`,
-                            close: `${openHour.close.time.slice(0, 2)}:${openHour.close.time.slice(2, 4)}`,
-                        }
-                    }), {})
-                }
-            }
-
-            return placeDetails
+        if (placeDetail?.failed) {
+            return setCurrentSight({
+                ...place,
+                google_place_name: place.name,
+                formatted_address: place.formatted_address || place.formatted_address || null,
+                google_place_id: place.place_id,
+                latitude: place.geometry.location.lat,
+                longitude: place.geometry.location.lng,
+            })
         }
-
-        return null
+        setCurrentSight({
+            ...place,
+            google_place_name: placeDetail.name,
+            formatted_address: placeDetail.formatted_address || place.formatted_address || null,
+            google_place_id: placeDetail.place_id,
+            latitude: placeDetail.geometry.location.lat,
+            longitude: placeDetail.geometry.location.lng,
+            international_phone_number: placeDetail.international_phone_number || place.international_phone_number || null,
+            website: placeDetail.website || place.website || null,
+            opening_hours: GoogleClient.parseOpeningHours(placeDetail.opening_hours?.periods) || place.opening_hours || null,
+            place_type: [...new Set([...place.place_type, ...placeDetail.types])]
+                .filter( type => {
+                    return dictionary.place_types.list
+                        .map(({value}) => value)
+                        .includes(type)
+                }),
+        })
     }
 
     const mapInit = async (lat, lng) => {
@@ -157,89 +170,16 @@ export default function CheckCoordinate() {
 
         GoogleClient.getMarker(
             mapRef.current,
-
-        )
-        GoogleClient.getRectangle(
-            mapRef.current,
-            {
-                north: lat + 0.025 / 2, //noth lat
-                south: lat - 0.025 / 2, //south lat
-                east: lng + 0.025, //noth lng = 0.05
-                west: lng - 0.025, //south lng = 0.05
-            }
-        )
-        GoogleClient.getMarker(
-            mapRef.current,
             {lat, lng},
-            GoogleClient.generateCustomMarker()
+            GoogleClient.generateCustomMarker("black")
         )
     }
 
     const init = async () => {
         const sight = await SightService.show(sightId)
-        const place = await searchPlace(sight)
         await mapInit(sight.latitude, sight.longitude)
-
-        if (place) {
-            let placesList = []
-
-
-            for (let i = 0; i < place.length; i++) {
-                const currentPlace = place[i];
-                const placeDetail = await placeDetails(currentPlace.place_id)
-
-                console.log(placeDetail)
-
-                if (placeDetail) {
-
-                    placesList = [...placesList, {
-                        ...sight,
-                        google_place_name: placeDetail.name,
-                        formatted_address: placeDetail.formatted_address || sight.formatted_address || null,
-                        google_place_id: placeDetail.place_id,
-                        latitude: placeDetail.geometry.location.lat,
-                        longitude: placeDetail.geometry.location.lng,
-                        international_phone_number: placeDetail.international_phone_number || sight.international_phone_number || null,
-                        website: placeDetail.website || sight.website || null,
-                        opening_hours: placeDetail.opening_hours || sight.opening_hours || null,
-                        place_type: [...new Set([...sight.place_type, ...placeDetail.types])]
-                            .filter( type => {
-                                return dictionary.place_types.list
-                                    .map(({value}) => value)
-                                    .includes(type)
-                            }),
-                    }]
-
-                    continue
-                }
-
-                placesList = [...placesList, {
-                    ...sight,
-                    google_place_name: currentPlace.name,
-                    formatted_address: currentPlace.formatted_address || sight.formatted_address || null,
-                    google_place_id: currentPlace.place_id,
-                    latitude: currentPlace.geometry.location.lat,
-                    longitude: currentPlace.geometry.location.lng,
-                }]
-            }
-
-            placesList.forEach( place => {
-                const marker = GoogleClient.getMarker(
-                    mapRef.current,
-                    {lat: place.latitude, lng: place.longitude},
-                    generateMarker("red")
-                )
-
-                marker.addListener("click", () => {
-                    setCurrentSight(place)
-                });
-            })
-
-            setSights(placesList)
-            return;
-        }
-
-        setSights([])
+        await searchPlace(sight)
+        setPlace(sight)
     }
 
     useEffect(() => {
@@ -251,16 +191,16 @@ export default function CheckCoordinate() {
             <div style={{display: "flex", gap: 20}}>
                 <div ref={mapBlockRef} style={{width: "70%", height: 500}}/>
                 <div style={{display: "flex", flexDirection: "column", gap: 10, paddingTop: 20, fontSize: 18}}>
-                    {sights && sights.map( (sight, index) => (
-                        <div style={{cursor: "pointer", color: sight.google_place_id === currentSight?.google_place_id ? "#0d6efd" : "black"}} onClick={() => setCurrentSight(sight)}>
+                    {placeList.map( (currentPlace, index) => (
+                        <div style={{cursor: "pointer", color: currentPlace.place_id === currentSight?.google_place_id ? "#0d6efd" : "black"}} onClick={() => placeDetails(currentPlace, place)}>
                             <div >
-                                №: {index + 1}, {sight.google_place_name}
+                                №: {index + 1}, {currentPlace.name}
                             </div>
                             <div>
-                                Lat: {sight.latitude}, Lng: {sight.longitude}
+                                Lat: {currentPlace.geometry.location.lat}, Lng: {currentPlace.geometry.location.lng}
                             </div>
                             <div>
-                                Address: {sight.formatted_address}
+                                Address: {currentPlace.formatted_address}
                             </div>
                         </div>
                     ))}

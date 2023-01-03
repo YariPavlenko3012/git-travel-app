@@ -47,7 +47,7 @@ export default function AutomaticContent({ generatePlacesByCity, typeColor, coun
             }
 
             console.log('FINISH')
-            // await generationFinishCity(city.id, GenerationTypeEnums.automatic, dictionary.place_types.automatic.map(({value}) => value))
+            await generationFinishCity(city.id, GenerationTypeEnums.automatic, dictionary.place_types.automatic.map(({value}) => value))
         }
 
         console.log("END")

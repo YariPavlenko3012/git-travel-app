@@ -29,7 +29,12 @@ const languages_list = [
 
 export default function LanguageUpdateForm({sightId, sight, getSight}) {
     const updateSightTranslate = async (value) => {
-        await SightService.updateTranslate(sightId, value.id, {sight_id: sightId, ...value});
+        console.log(value, "value")
+        await SightService.updateTranslate(sightId, value.id, {
+            sight_id: sightId,
+            sight_description: value.sight_description || "",
+            sight_name: value.sight_name || "",
+        });
         await getSight(sightId)
     };
 

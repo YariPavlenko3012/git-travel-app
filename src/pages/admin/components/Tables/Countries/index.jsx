@@ -166,7 +166,7 @@ export default function CountryTable({searchParams}) {
     const getCountryHandler = async (params) => {
         setIsReady(false)
         setCountries(await getCountry({
-            ...QueryString.parseQueryString("?" + window.location.hash.split("?")[1]),
+            ...QueryString.parseQueryString("?" + (window.location.hash.split("?")[1] || "")),
             ...searchParams,
             ...params,
         }))

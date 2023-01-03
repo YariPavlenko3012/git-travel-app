@@ -111,7 +111,7 @@ export default function ExcursionsTable({searchParams}) {
     const getExcursionsHandler = async (params) => {
         setIsReady(false)
         setExcursions(await getExcursions({
-            ...QueryString.parseQueryString("?" + window.location.hash.split("?")[1]),
+            ...QueryString.parseQueryString("?" + (window.location.hash.split("?")[1] || "")),
             ...searchParams,
             ...params,
         }))

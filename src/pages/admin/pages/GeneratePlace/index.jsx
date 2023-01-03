@@ -83,7 +83,7 @@ export default function GeneratePlace() {
                 const currentType = placeTypes[i];
 
                 //Берем колл-во квадратов по которым ходим. Есть значения захардкодженые, а есть с базы
-                const countStep = PlaceTypeSquareEnum[currentType] || city.generation_count_of_squares;
+                let countStep = PlaceTypeSquareEnum[currentType] || city.generation_count_of_squares;
 
                 //Ширина и Высота квадрата по которому идем (сити геометрия)
                 const placeHeightCoordinate = city.geometry.north - city.geometry.south;
@@ -375,12 +375,14 @@ export default function GeneratePlace() {
                         {generationType === GenerationTypeEnums.automatic && (
                             <AutomaticContent typeColor={typeColor[GenerationTypeEnums.automatic]}
                                               generationFinishCity={generationFinishCity}
-                                              generatePlacesByCity={generatePlacesByCity} countryId={countryId}/>
+                                              generatePlacesByCity={generatePlacesByCity}
+                                              countryId={countryId}/>
                         )}
                         {generationType === GenerationTypeEnums.manual && (
                             <ManualContent typeColor={typeColor[GenerationTypeEnums.manual]}
                                            generationFinishCity={generationFinishCity}
-                                           generatePlacesByCity={generatePlacesByCity} countryId={countryId}
+                                           generatePlacesByCity={generatePlacesByCity}
+                                           countryId={countryId}
                                            mapRef={mapRef}/>
                         )}
                         {generationType === GenerationTypeEnums.custom && (

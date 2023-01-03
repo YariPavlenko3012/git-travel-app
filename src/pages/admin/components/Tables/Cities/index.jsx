@@ -181,7 +181,7 @@ export default function CityTable({ searchParams }) {
     const getCityHandler = async (params) => {
         setIsReady(false)
         setCities(await getCity({
-            ...QueryString.parseQueryString("?" + window.location.hash.split("?")[1]),
+            ...QueryString.parseQueryString("?" + (window.location.hash.split("?")[1] || "")),
             ...settings.table[TablesKeyEnum.city],
             ...(!withCoordination && {isNull: 'latitude,longitude'}),
             ...searchParams,
