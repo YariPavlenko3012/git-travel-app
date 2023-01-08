@@ -3,8 +3,8 @@
  */
 import React, {useMemo, useState, useEffect} from 'react';
 import {Link, useHistory} from 'react-router-dom'
-import {Button, Space, Tooltip, Table as TableAntd} from 'antd'
-import {EditOutlined, EyeOutlined} from '@ant-design/icons'
+import {Button, Space, Tooltip, Table as TableAntd, Popconfirm} from 'antd'
+import {DeleteOutlined, EditOutlined, EyeOutlined} from '@ant-design/icons'
 /**
  * components
  */
@@ -60,6 +60,17 @@ export default function ExcursionsTable({searchParams}) {
                       <Button type="primary" onClick={() => history.push(ADMIN_MAKE_EXCURSION_EDIT(row.id))}
                               icon={<EditOutlined/>} size={20}/>
                   </Tooltip>
+                  <Popconfirm
+                      title="Are you sure to delete this excursion?"
+                      onConfirm={() => deleteExcursion(row.id)}
+                      okText="Yes"
+                      cancelText="No"
+                  >
+                      <Tooltip title="Delete Country">
+                          <Button type="danger" icon={<DeleteOutlined />} size={20} />
+                      </Tooltip>
+                  </Popconfirm>
+
               </Space>
             )
         },
@@ -116,6 +127,11 @@ export default function ExcursionsTable({searchParams}) {
             ...params,
         }))
         setIsReady(true)
+    }
+
+    const deleteExcursion = async (excursionId) => {
+        await ExcursionService.delete(excursionId)
+        await getExcursionsHandler()
     }
 
     useEffect(() => {

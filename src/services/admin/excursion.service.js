@@ -9,6 +9,7 @@ import {
     ADMIN_EXCURSION_CREATE,
     ADMIN_EXCURSION_LIST,
     ADMIN_EXCURSION_MAKE_NEAR_ROADS_PLACE,
+    ADMIN_MAKE_EXCURSION_DELETE,
     ADMIN_MAKE_EXCURSION_SHOW,
     API_ADMIN_COUNTRY_LIST
 } from "../../constants/admin/api.constant";
@@ -34,8 +35,13 @@ export default class ExcursionService {
 
         return excursionList;
     }
+
     static async show(excursionId) {
         return new ExcursionModel(await axios.get(ADMIN_MAKE_EXCURSION_SHOW(excursionId)));
+    }
+
+    static async delete(excursionId) {
+        return await axios.delete(ADMIN_MAKE_EXCURSION_DELETE(excursionId))
     }
 
     static async nearRoadsPlace(excursionId, itemId, params) {
