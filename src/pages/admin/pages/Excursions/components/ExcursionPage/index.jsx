@@ -4,6 +4,7 @@
 import React, {useEffect, useContext, useMemo, useState, useRef} from 'react';
 import {useParams} from "react-router-dom";
 import {Button} from 'antd'
+import { Radio } from 'antd';
 /**
  * components
  */
@@ -31,6 +32,8 @@ import ExcursionPageTypeEnum from "../../../../../../enums/ExcursionPageType";
  * context
  */
 import {DictionaryContext} from "../../../../../context/dictionary.context";
+import PlaceTypeEnum from "../../../../../../enums/PlaceType";
+import RouteTypeInfo from "../RouteTypeInfo";
 
 
 export default function ExcursionsPage({pageType, handler}) {
@@ -43,6 +46,7 @@ export default function ExcursionsPage({pageType, handler}) {
             [],
         ]
     })
+    const [activeRouteType, setActiveRouteType] = useState(ExcursionRouteTypeEnum.walking)
     const [country, setCountry] = useState(null)
     const [city, setCity] = useState(null)
     const [places, setPlaces] = useState([])
@@ -289,6 +293,12 @@ export default function ExcursionsPage({pageType, handler}) {
                            getCity={getCity}
                            getCountry={getCountry}/>
             <div ref={mapBlockRef} style={{width: "100%", height: 500}}/>
+            <div style={{display: "flex", alignItems: "center", marginBottom: 30}}>
+                <Radio.Group onChange={e => setActiveRouteType(e.target.value)} value={activeRouteType}>
+                    <Radio value={ExcursionRouteTypeEnum.walking}>Walking</Radio>
+                    <Radio value={ExcursionRouteTypeEnum.driving}>Driving</Radio>
+                </Radio.Group>
+            </div>
             {!excursionFormData.name && (
                 <ExcursionForm excursionFormData={excursionFormData}
                                setExcursionFormData={setExcursionFormData}/>
@@ -309,8 +319,11 @@ export default function ExcursionsPage({pageType, handler}) {
                         marginBottom: 10,
                         alignItems: "center"
                     }}>
-                        <div onClick={() => setCurrentActiveDay(day)} style={{cursor: "pointer"}}>
-                            Day #{index + 1}
+                        <div onClick={() => setCurrentActiveDay(day)} style={{cursor: "pointer", display: "flex", alignItems: "center", gap: 7}}>
+                            <div>
+                                Day №{index + 1}
+                            </div>
+                            <RouteTypeInfo day={day} activeRouteType={activeRouteType}/>
                         </div>
                         {!isShowPage && (
                             <Button onClick={() => setCreateActiveDay(index)}>Create place for {index + 1} day</Button>
@@ -327,7 +340,10 @@ export default function ExcursionsPage({pageType, handler}) {
                                            cityId={city?.id}
                         />
                     )}
-                    <ExcursionTable day={day} changePriority={changePriority} isShowPage={isShowPage}
+                    <ExcursionTable day={day}
+                                    activeRouteType={activeRouteType}
+                                    changePriority={changePriority}
+                                    isShowPage={isShowPage}
                                     deletePlace={deletePlace}/>
                 </div>
             ))}

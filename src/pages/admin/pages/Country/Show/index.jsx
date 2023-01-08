@@ -24,6 +24,7 @@ import SightService from "../../../../../services/admin/sight.service";
 import {
     ADMIN_MAKE_CREATE_STATE_URI,
     ADMIN_MAKE_EDIT_COUNTRY_URI,
+    ADMIN_MAKE_EXCURSION_CREATE,
     ADMIN_MAKE_SHOW_CITY_URI,
     ADMIN_MAKE_SHOW_CURRENCY_URI
 } from "../../../../../constants/admin/uri.constant";
@@ -134,12 +135,21 @@ export default function CountryShow() {
     return (
         <div>
             <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
-                {country.name}
-                <Link to={ADMIN_MAKE_EDIT_COUNTRY_URI(countryId)}>
-                    <Button type="primary" className={styles.show__btn}>
-                        Edit Country
-                    </Button>
-                </Link>
+                <div>
+                    {country.name}
+                </div>
+                <div style={{display: "flex", alignItems: "center", gap: 10}}>
+                    <Link to={ADMIN_MAKE_EXCURSION_CREATE(countryId)}>
+                        <Button type="primary" className={styles.show__btn}>
+                            Create Excursions
+                        </Button>
+                    </Link>
+                    <Link to={ADMIN_MAKE_EDIT_COUNTRY_URI(countryId)}>
+                        <Button type="primary" className={styles.show__btn}>
+                            Edit Country
+                        </Button>
+                    </Link>
+                </div>
             </h3>
             <div className={styles.show}>
                 <div className={styles.show__wrapper}>

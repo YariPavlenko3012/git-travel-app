@@ -29,6 +29,7 @@ export default function GeoSelectForm({countryId, cityId, getCountry, getCity })
                                                     required={true}
                                                     onChange={getCountry}
                                                     defaultValue={countryId}
+                                                    disabled={true}
                                                     select={{
                                                         showSearch: true,
                                                     }}/>

@@ -10,7 +10,7 @@ import ExcursionsTable from "../../../components/Tables/Excursions";
 export default function ExcursionList(){
     return (
         <div>
-            <ExcursionsTable searchParams={{place_id: 51,}}/>
+            <ExcursionsTable searchParams={{}}/>
         </div>
     )
 }

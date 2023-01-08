@@ -8,9 +8,12 @@ import {DeleteOutlined} from "@ant-design/icons";
  * components
  */
 import ChangePriorityInput from '../ChangePriorityInput'
+import PlaceTypeDurationEnum from "../../../../../../enums/PlaceTypeDuration";
+import PlaceTypeEnum from "../../../../../../enums/PlaceType";
+import DateTime from "../../../../../../utils/DateTime";
 
 
-export default function ExcursionTable({ day, changePriority, isShowPage, deletePlace }){
+export default function ExcursionTable({ day, changePriority, isShowPage, activeRouteType, deletePlace }){
     const columns = [
         {
             title: 'Day',
@@ -45,6 +48,31 @@ export default function ExcursionTable({ day, changePriority, isShowPage, delete
             title: 'Description',
             dataIndex: 'description',
             key: 'description',
+        },
+        {
+            title: 'Place time',
+            dataIndex: 'place_time',
+            key: 'place_time',
+            render: (_, {place}) => {
+                let currentPlace = place.place_type[0];
+                if(place.place_type[0] === PlaceTypeEnum.tourist_attraction && place.place_type.length > 1){
+                    currentPlace = place.place_type[1]
+                }
+
+                return `${DateTime.secondsToH(PlaceTypeDurationEnum[currentPlace])}h`
+            }
+        },
+        {
+            title: 'Route time',
+            dataIndex: 'route_time',
+            key: 'route_time',
+            render: (_, excursion) => `${DateTime.secondsToH(excursion.routes[activeRouteType].duration)}h`
+        },
+        {
+            title: 'Route distance',
+            dataIndex: 'route_distance',
+            key: 'route_distance',
+            render: (_, excursion) => `${(excursion.routes[activeRouteType].distance / 1000).toFixed(1)}km`
         },
         {
             title: 'Action',

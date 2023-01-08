@@ -47,4 +47,12 @@ export default class DateTime {
     static dateToYmdHis(dateObj) {
         return DateTime.dateToYmd(dateObj) + ' ' + DateTime.timeToHis(dateObj);
     }
+
+    /**
+     * @param {String} second
+     * @return string
+     */
+    static secondsToH(second) {
+        return (second / 60 / 60).toFixed(1)
+    }
 }
