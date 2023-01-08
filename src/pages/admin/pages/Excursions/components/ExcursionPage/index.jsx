@@ -4,7 +4,7 @@
 import React, {useEffect, useContext, useMemo, useState, useRef} from 'react';
 import {useParams} from "react-router-dom";
 import {Button} from 'antd'
-import { Radio } from 'antd';
+import {Radio} from 'antd';
 /**
  * components
  */
@@ -209,12 +209,13 @@ export default function ExcursionsPage({pageType, handler}) {
         const polylinePath = currentDay
             .reduce((polylineResult, excursionItem) => ([
                 ...polylineResult,
-                ...excursionItem.routes[ExcursionRouteTypeEnum.walking].path
+                ...(excursionItem.routes[ExcursionRouteTypeEnum.walking].path || [])
             ]), [])
             .map(coordinate => {
                 const [lat, lng] = coordinate.split(" ")
                 return new window.google.maps.LatLng(lat, lng);
             }, []);
+
 
         polylineRef.current = GoogleClient.getPolyline(
             mapRef.current,
@@ -319,7 +320,8 @@ export default function ExcursionsPage({pageType, handler}) {
                         marginBottom: 10,
                         alignItems: "center"
                     }}>
-                        <div onClick={() => setCurrentActiveDay(day)} style={{cursor: "pointer", display: "flex", alignItems: "center", gap: 7}}>
+                        <div onClick={() => setCurrentActiveDay(day)}
+                             style={{cursor: "pointer", display: "flex", alignItems: "center", gap: 7}}>
                             <div>
                                 Day №{index + 1}
                             </div>
