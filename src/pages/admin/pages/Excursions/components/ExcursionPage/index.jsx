@@ -4,7 +4,7 @@
 import React, {useEffect, useContext, useMemo, useState, useRef} from 'react';
 import {useParams} from "react-router-dom";
 import {Button} from 'antd'
-import {Radio} from 'antd';
+import { Radio } from 'antd';
 /**
  * components
  */
@@ -129,10 +129,14 @@ export default function ExcursionsPage({pageType, handler}) {
         })
 
         const polylinePath = currentActiveDay
-            .reduce((polylineResult, excursionItem) => ([
-                ...polylineResult,
-                ...excursionItem.routes[ExcursionRouteTypeEnum.walking].path || []
-            ]), [])
+            .reduce((polylineResult, excursionItem) => {
+                const path = excursionItem.routes[ExcursionRouteTypeEnum.walking].path || []
+
+                return [
+                    ...polylineResult,
+                    ...(path.length > 1 ? path : [])
+                ]
+            }, [])
             .map(coordinate => {
                 const [lat, lng] = coordinate.split(" ")
                 return new window.google.maps.LatLng(lat, lng);
@@ -178,10 +182,12 @@ export default function ExcursionsPage({pageType, handler}) {
                         const polylinePoints = window.google.maps.geometry.encoding.decodePath(polyline.points);
                         const polylineCoordinates = polylinePoints.map(polyline => `${polyline.lat()} ${polyline.lng()}`);
 
-                        return [
+                        const resultPath = [
                             ...polylineResult,
                             ...polylineCoordinates,
                         ]
+
+                        return resultPath.length > 1 ? resultPath : []
                     }, []),
                     duration: route.routes[0].legs[0].duration.value,
                     distance: route.routes[0].legs[0].distance.value
@@ -206,15 +212,23 @@ export default function ExcursionsPage({pageType, handler}) {
             )
         })
 
+        console.log(currentDay, "currentDay")
+
         const polylinePath = currentDay
-            .reduce((polylineResult, excursionItem) => ([
-                ...polylineResult,
-                ...(excursionItem.routes[ExcursionRouteTypeEnum.walking].path || [])
-            ]), [])
+            .reduce((polylineResult, excursionItem) => {
+                const path = excursionItem.routes[ExcursionRouteTypeEnum.walking].path || [];
+
+                return [
+                    ...polylineResult,
+                    ...(path.length > 1 ? path : [])
+                ]
+            }, [])
             .map(coordinate => {
                 const [lat, lng] = coordinate.split(" ")
                 return new window.google.maps.LatLng(lat, lng);
             }, []);
+
+        console.log(polylinePath, "currentDay")
 
 
         polylineRef.current = GoogleClient.getPolyline(
@@ -320,8 +334,7 @@ export default function ExcursionsPage({pageType, handler}) {
                         marginBottom: 10,
                         alignItems: "center"
                     }}>
-                        <div onClick={() => setCurrentActiveDay(day)}
-                             style={{cursor: "pointer", display: "flex", alignItems: "center", gap: 7}}>
+                        <div onClick={() => setCurrentActiveDay(day)} style={{cursor: "pointer", display: "flex", alignItems: "center", gap: 7}}>
                             <div>
                                 Day №{index + 1}
                             </div>
