@@ -163,8 +163,8 @@ export default function AutomaticContent({ getRectangle, countryId, mapRef }){
 
         const {data} = await GenerationPlaceService.generatedSquare({
             eq: {
-                country_id: countryId,
-                type: placeTypes
+                country_id: [countryId],
+                type: [placeTypes]
             },
             per_page: 1000000,
         });

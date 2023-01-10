@@ -219,7 +219,7 @@ export default function SightTable({searchParams}) {
         setSights(await getSight({
             ...QueryString.parseQueryString("?" + (window.location.hash.split("?")[1] || "")),
             ...settings.table[TablesKeyEnum.sight],
-            ...(!withPlaceType && {isNull: 'place_type'}),
+            ...(!withPlaceType && {isNull: ['place_type']}),
             ...searchParams,
             ...params,
         }))

@@ -183,7 +183,7 @@ export default function CityTable({ searchParams }) {
         setCities(await getCity({
             ...QueryString.parseQueryString("?" + (window.location.hash.split("?")[1] || "")),
             ...settings.table[TablesKeyEnum.city],
-            ...(!withCoordination && {isNull: 'latitude,longitude'}),
+            ...(!withCoordination && {isNull: ['latitude', 'longitude']}),
             ...searchParams,
             ...params,
         }))

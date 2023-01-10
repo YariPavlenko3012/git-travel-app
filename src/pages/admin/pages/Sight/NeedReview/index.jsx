@@ -140,7 +140,7 @@ export default function NeedReview(){
 
     const getSightWithNeedReview = async (params) => {
         setIsReady(false)
-        setSights(await SightService.list({ ...params, per_page: 5, eq: {need_review: 1}  }))
+        setSights(await SightService.list({ ...params, per_page: 5, eq: {need_review: [1]}  }))
         setIsReady(true)
     }
 

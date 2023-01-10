@@ -188,7 +188,7 @@ export default function GeneratePlace() {
             //Проверяем был ли сгинерирован квадрат ранее (чтобы не создавать дубликаты)
             const isGenerate = await GenerationPlaceService.generatedSquare({
                 json: {geometry},
-                eq: {type}
+                eq: {type: [type]}
             })
 
             if (isGenerate.data.length) {

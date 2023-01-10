@@ -86,7 +86,7 @@ export default function ExcursionsPage({pageType, handler}) {
     const getPlaces = async (countryId, cityId) => {
         setPlaces(await DictionaryService.sights({
             eq: {
-                country_id: countryId
+                country_id: [countryId]
             },
             city_id: cityId
         }))
