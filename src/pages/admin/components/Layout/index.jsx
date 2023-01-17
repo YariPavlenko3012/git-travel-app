@@ -108,13 +108,14 @@ export default function LayoutUI({children}) {
             //     getItemChild('Create', 'sub1_2',  ADMIN_USERS_CREATE),
             //     getItemChild('Roles', 'sub1_3', ADMIN_USERS_CREATE ),
             // ]),
-            getItem('Statistics', 'sub2', BarChartOutlined, null, [
-                getItemChild('Price', 'sub2_1', ADMIN_STATISTICS_PRICE ),
-                getItemChild('Users', 'sub2_2', ADMIN_STATISTICS_USERS_LIST ),
-            ]),
+            // getItem('Statistics', 'sub2', BarChartOutlined, null, [
+            //     getItemChild('Price', 'sub2_1', ADMIN_STATISTICS_PRICE ),
+            //     getItemChild('Users', 'sub2_2', ADMIN_STATISTICS_USERS_LIST ),
+            // ]),
             getItem('Logout', '6', LogoutOutlined, AUTH_PAGE_LOGOUT_URI)
         ];
         const itemsWorker = [
+            getItem('Country', '1', BankOutlined, ADMIN_MAKE_SHOW_COUNTRY_URI(1)),
             getItem('State', '7', GoldOutlined, ADMIN_STATE_LIST_URI),
             getItem('City', '2', HomeOutlined, ADMIN_CITY_LIST_URI),
             getItem('Sight', 'sub1', PictureOutlined, null, [
@@ -122,9 +123,10 @@ export default function LayoutUI({children}) {
                 getItemChild('Need review', 'sub1_2', ADMIN_SIGHT_LIST_NEED_REVIEW_URI ),
                 getItemChild('Check coordinate', 'sub1_3', ADMIN_SIGHT_LIST_CHECK_COORDINATE_URI ),
             ]),
-            getItem('Statistics', 'sub2', BarChartOutlined, null, [
-                getItemChild('Price', 'sub2_1', ADMIN_STATISTICS_PRICE ),
-            ]),
+            getItem('Excursion', '9',  RollbackOutlined, ADMIN_EXCURSION_LIST),
+            // getItem('Statistics', 'sub2', BarChartOutlined, null, [
+            //     getItemChild('Price', 'sub2_1', ADMIN_STATISTICS_PRICE ),
+            // ]),
             getItem('Logout', '6', LogoutOutlined, AUTH_PAGE_LOGOUT_URI)
         ];
 
