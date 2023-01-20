@@ -10,6 +10,7 @@ import {
     ADMIN_EXCURSION_LIST,
     ADMIN_EXCURSION_MAKE_NEAR_ROADS_PLACE,
     ADMIN_MAKE_EXCURSION_DELETE,
+    ADMIN_MAKE_EXCURSION_UPDATE,
     ADMIN_MAKE_EXCURSION_SHOW,
     API_ADMIN_COUNTRY_LIST
 } from "../../constants/admin/api.constant";
@@ -21,6 +22,9 @@ import CountryModel from "../../model/Country/country.model";
 export default class ExcursionService {
     static async create(data) {
         return await axios.post(ADMIN_EXCURSION_CREATE, data);
+    }
+    static async update(excursionId, data) {
+        return await axios.put(ADMIN_MAKE_EXCURSION_UPDATE(excursionId), data);
     }
 
     static async list(params) {

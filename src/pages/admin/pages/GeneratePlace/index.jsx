@@ -246,6 +246,7 @@ export default function GeneratePlace() {
                                 formatted_address: place.formatted_address,
                                 google_place_id: place.place_id,
                                 files_ids: [],
+                                check_coordinates: true,
                                 place_type: place.types.filter(type => {
                                     return dictionary.place_types.list
                                         .map(({value}) => value)

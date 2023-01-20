@@ -54,7 +54,6 @@ export default function ExcursionItemForm({
             ...copyExcursionFormData.items[createActiveDay],
             {
                 day: createActiveDay + 1,
-                description: values.description || "",
                 place: currentPlace,
                 routes: routes,
                 place_id: values.place_id,
@@ -83,13 +82,6 @@ export default function ExcursionItemForm({
                                                   select={{
                                                       showSearch: true,
                                                   }}/>
-                            </div>
-                            <div style={{width: "calc(100% - 10px - (100% / 4 - 10px))"}}>
-                                <FieldInput label="Description"
-                                            name={`description`}
-                                            placeholder={`Enter description`}
-                                            required={true}/>
-
                             </div>
                         </div>
                         <div style={{display: "flex", marginBottom: 20, marginTop: -10, justifyContent: "flex-end"}}>

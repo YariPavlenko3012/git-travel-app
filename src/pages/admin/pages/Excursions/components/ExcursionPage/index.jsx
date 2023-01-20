@@ -368,7 +368,7 @@ export default function ExcursionsPage({pageType, handler}) {
                         <Button onClick={finishDay}>Finish day</Button>
                     )}
                     {excursionFormData.name && !!excursionFormData.items.length && !!excursionFormData.items[0].length && !excursionFormData.items[excursionFormData.items.length - 1].length && (
-                        <Button onClick={() => handler(excursionFormData)}>CREATE EXCURSION</Button>
+                        <Button onClick={() => handler(excursionFormData)}>{pageType === ExcursionPageTypeEnum.edit ? "EDIT" : "CREATE"} EXCURSION</Button>
                     )}
                 </div>
             )}

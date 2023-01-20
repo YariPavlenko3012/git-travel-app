@@ -101,7 +101,6 @@ export default function ExcursionsTable({searchParams}) {
                     )
                 }
             ]), []),
-            { title: 'Description', dataIndex: 'description', key: 'description' },
         ]
 
         return <TableAntd columns={columns} dataSource={data} pagination={false} />;

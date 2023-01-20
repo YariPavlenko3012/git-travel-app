@@ -57,6 +57,7 @@ export const ADMIN_GET_CITY_WHITE_LIST_GENERATE_PLACE  = `${ADMIN_GENERATE_PLACE
 
 const ADMIN_EXCURSION = `${ADMIN}/excursions`;
 export const ADMIN_EXCURSION_CREATE = `${ADMIN_EXCURSION}`;
+export const ADMIN_MAKE_EXCURSION_UPDATE = excursionId => `${ADMIN_EXCURSION}/${excursionId}`;
 export const ADMIN_EXCURSION_LIST = `${ADMIN_EXCURSION}`;
 export const ADMIN_MAKE_EXCURSION_DELETE = excursionId => `${ADMIN_EXCURSION}/${excursionId}`;
 export const ADMIN_MAKE_EXCURSION_SHOW = excursionId => `${ADMIN_EXCURSION}/${excursionId}`;

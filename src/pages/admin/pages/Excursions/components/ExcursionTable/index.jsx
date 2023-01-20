@@ -45,11 +45,6 @@ export default function ExcursionTable({ day, changePriority, isShowPage, active
             }
         },
         {
-            title: 'Description',
-            dataIndex: 'description',
-            key: 'description',
-        },
-        {
             title: 'Place time',
             dataIndex: 'place_time',
             key: 'place_time',

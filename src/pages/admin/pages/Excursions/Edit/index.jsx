@@ -18,9 +18,11 @@ import ExcursionService from "../../../../../services/admin/excursion.service";
  * context
  */
 import {AlertContext} from "../../../../context/alert.context";
+import {useParams} from "react-router-dom";
 
 
 export default function ExcursionsEdit() {
+    const {excursionId} = useParams();
     const {setAlertSuccess} = useContext(AlertContext)
 
     const updateExcursion = async (excursionFormData) => {
@@ -32,7 +34,7 @@ export default function ExcursionsEdit() {
         ]), [])
 
 
-        // await ExcursionService.create(requestExcursionFormData)
+        await ExcursionService.update(excursionId, requestExcursionFormData)
         setAlertSuccess("Excursion successfully edited")
     }
 
