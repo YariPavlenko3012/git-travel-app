@@ -2,12 +2,8 @@
   &__btn{
     margin-bottom: 10px;
     &_actions{
-
       border: 1px solid #d9d9d9;
       background: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       position: relative;
       &.landscape{
         width: 180px;

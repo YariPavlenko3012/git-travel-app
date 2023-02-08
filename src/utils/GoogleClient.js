@@ -48,7 +48,7 @@ export default class GoogleClient {
     static async getPhotoFile (photo_ref){
         try {
             await new Promise(resolve => setTimeout(resolve, 400))
-            const [file] = await GenerationPlaceService.downloadImage(`https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&sensor=false&maxheight=800&photo_reference=${photo_ref}&key=${this.key}`)
+            const file = await GenerationPlaceService.downloadImage(`https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&sensor=false&maxheight=800&photo_reference=${photo_ref}&key=${this.key}`)
 
             return file?.id ? file : null;
         } catch (e) {

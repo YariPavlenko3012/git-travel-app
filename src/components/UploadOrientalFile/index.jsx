@@ -15,6 +15,7 @@ import {AlertContext} from "../../pages/context/alert.context";
 import styles from './index.module.scss';
 import FilesService from "../../services/files.service";
 import FileOrientationEnums from "../../enums/FileOrientation";
+import CheckNormalImage from "../CheckNormalImage";
 
 export default function UploadFiles({name, oriental, keyFiles}) {
     const {mutators: {setValue}} = useForm();
@@ -54,8 +55,10 @@ export default function UploadFiles({name, oriental, keyFiles}) {
                             <Upload customRequest={(e) => e}>
                                 <div className={`${oriental === FileOrientationEnums.landscape ? styles.landscape : styles.portrait} ${styles.download__btn_actions} ${submitErrors?.[keyFiles] ? styles.error : ""}`}>
                                     {previewFiles.path && (
-                                        <img src={previewFiles.path} alt="img"
-                                             className={styles.download__btn_photo}/>
+                                        <CheckNormalImage url={previewFiles.path}>
+                                            <img src={previewFiles.path} alt="img"
+                                                 className={styles.download__btn_photo}/>
+                                        </CheckNormalImage>
                                     )}
                                     <img src="/git-travel-app/img/download.svg" alt="download"
                                          className={styles.download__btn_download}/>

@@ -33,8 +33,7 @@ export default function AutomaticContent({ generatePlacesByCity, typeColor, coun
         console.log(data, "dataSort")
 
 
-        const dataSort = data.filter(({id}) => 99 === id)
-        console.log(dataSort, "dataSort")
+        const dataSort = data.filter(({id}) => 454 === id)
 
         for (let i = 0; i < dataSort.length; i++) {
             const city = dataSort[i];

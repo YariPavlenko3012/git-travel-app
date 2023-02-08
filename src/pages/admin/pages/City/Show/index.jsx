@@ -3,7 +3,7 @@
  */
 import React, {useEffect, useState, useContext} from 'react';
 import {Link, useParams} from "react-router-dom";
-import {Button, Popconfirm, Tooltip} from "antd";
+import {Button, Popconfirm, Tabs, Tooltip} from "antd";
 import {DeleteOutlined} from "@ant-design/icons";
 /**
  * components
@@ -39,6 +39,9 @@ import RolesEnum from "../../../../../enums/RolesEnum";
  * context
  */
 import {AlertContext} from "../../../../context/alert.context";
+import SightsTable from "../../../components/Tables/Sights";
+import SightWorkStatusEnum from "../../../../../enums/SightWorkStatus";
+import CheckNormalImage from "../../../../../components/CheckNormalImage";
 
 
 export default function CityShow() {
@@ -132,8 +135,12 @@ export default function CityShow() {
                   </p>
               </div>
               <div style={{display: "flex", gap: 10, marginBottom: 10}}>
-                  <PreviewFilesOriental oriental={FileOrientationEnums.landscape} image={city.landscape_image?.path} height={100}/>
-                  <PreviewFilesOriental oriental={FileOrientationEnums.portrait} image={city.portrait_image?.path} height={100}/>
+                  <CheckNormalImage url={city.landscape_image?.path}>
+                      <PreviewFilesOriental oriental={FileOrientationEnums.landscape} image={city.landscape_image?.path} height={100}/>
+                  </CheckNormalImage>
+                  <CheckNormalImage url={city.portrait_image?.path}>
+                      <PreviewFilesOriental oriental={FileOrientationEnums.portrait} image={city.portrait_image?.path} height={100}/>
+                  </CheckNormalImage>
               </div>
           </div>
           <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
@@ -144,7 +151,14 @@ export default function CityShow() {
                   </Button>
               </Link>
           </h3>
-          <SightTable searchParams={{city_id: cityId}} />
+          <Tabs type="card">
+              <Tabs.TabPane tab="Pending" key="1">
+                  <SightsTable searchParams={{city_id: cityId, eq: {work_status: [SightWorkStatusEnum.pending]}}}/>
+              </Tabs.TabPane>
+              <Tabs.TabPane tab="Done" key="2">
+                  <SightsTable searchParams={{city_id: cityId, eq: {work_status: [SightWorkStatusEnum.done]}}}/>
+              </Tabs.TabPane>
+          </Tabs>
       </div>
     )
 }

@@ -41,6 +41,7 @@ import TablesKeyEnum from "../../../../../enums/TablesKey";
  */
 import {AlertContext} from "../../../../context/alert.context";
 import {SettingsContext} from "../../../../context/settings.context";
+import ImageGallery from "../../../../../components/ImageGallery";
 
 export default function SightTable({searchParams}) {
     const [sights, setSights] = useState(null);
@@ -48,7 +49,6 @@ export default function SightTable({searchParams}) {
     const {setAlertSuccess} = useContext(AlertContext)
     const {settings} = useContext(SettingsContext)
     const [withPlaceType, setWithPlaceType] = useState(true);
-    const history = useHistory();
     const columns = useMemo(() => ([
         {
             title: 'ID',
@@ -61,10 +61,12 @@ export default function SightTable({searchParams}) {
             key: 'images',
             render: (images) => (
                 <div style={{display: "flex", alignItems: "center", flexDirection: "column", gap: 5, minWidth: "max-content"}}>
-                    {images.map(({path}) => (
-                        <img src={path} style={{height: 70, minWidth: "max-content"}} alt="photo"/>
-                    ))}
+                    <ImageGallery images={images}
+                                  renderItem={({file, setImage}) => (
+                                      <img src={file.path} style={{height: 70, minWidth: "max-content"}} alt="photo" onClick={setImage}/>
+                                  )} />
                 </div>
+
             ),
         },
         {

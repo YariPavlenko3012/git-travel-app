@@ -25,6 +25,8 @@ import {
  * style
  */
 import styles from '../../../styles/show.module.scss'
+import SightsTable from "../../../components/Tables/Sights";
+import SightWorkStatusEnum from "../../../../../enums/SightWorkStatus";
 
 export default function StateShow() {
     const [state, setState] = useState(null);
@@ -85,7 +87,14 @@ export default function StateShow() {
                   <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
                       Sights of {state.name}
                   </h3>
-                  <SightTable searchParams={{state_id: stateId}}/>
+                  <Tabs type="card">
+                      <Tabs.TabPane tab="Pending" key="1">
+                          <SightsTable searchParams={{state_id: stateId, eq: {work_status: [SightWorkStatusEnum.pending]}}}/>
+                      </Tabs.TabPane>
+                      <Tabs.TabPane tab="Done" key="2">
+                          <SightsTable searchParams={{state_id: stateId, eq: {work_status: [SightWorkStatusEnum.done]}}}/>
+                      </Tabs.TabPane>
+                  </Tabs>
               </Tabs.TabPane>
           </Tabs>
       </div>

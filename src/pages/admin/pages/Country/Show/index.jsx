@@ -36,6 +36,10 @@ import styles from '../../../styles/show.module.scss'
  * enum
  */
 import FileOrientationEnums from '../../../../../enums/FileOrientation'
+import CityWorkStatusEnum from "../../../../../enums/CityWorkStatus";
+import SightsTable from "../../../components/Tables/Sights";
+import SightWorkStatusEnum from "../../../../../enums/SightWorkStatus";
+import CheckNormalImage from "../../../../../components/CheckNormalImage";
 
 export default function CountryShow() {
     const [country, setCountry] = useState(null);
@@ -252,8 +256,16 @@ export default function CountryShow() {
                     </p>
                 </div>
                 <div style={{display: "flex", gap: 10, marginBottom: 10}}>
-                    <PreviewFilesOriental oriental={FileOrientationEnums.landscape} image={country.landscape_image?.path} height={100}/>
-                    <PreviewFilesOriental oriental={FileOrientationEnums.portrait} image={country.portrait_image?.path} height={100}/>
+                    <CheckNormalImage url={country.landscape_image?.path}>
+                        <PreviewFilesOriental oriental={FileOrientationEnums.landscape}
+                                              image={country.landscape_image?.path}
+                                              height={100}/>
+                    </CheckNormalImage>
+                    <CheckNormalImage url={country.portrait_image?.path}>
+                        <PreviewFilesOriental oriental={FileOrientationEnums.portrait}
+                                              image={country.portrait_image?.path}
+                                              height={100}/>
+                    </CheckNormalImage>
                 </div>
             </div>
 
@@ -273,13 +285,30 @@ export default function CountryShow() {
                     <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
                         City of {country.name}
                     </h3>
-                    <CitiesTable searchParams={{country_id: countryId}}/>
+                    <Tabs type="card">
+                        <Tabs.TabPane tab="Pending" key="1">
+                            <CitiesTable searchParams={{country_id: countryId, work_status: CityWorkStatusEnum.pending}}/>
+                        </Tabs.TabPane>
+                        <Tabs.TabPane tab="In Progress" key="2">
+                            <CitiesTable searchParams={{country_id: countryId, work_status: CityWorkStatusEnum.inProgress}}/>
+                        </Tabs.TabPane>
+                        <Tabs.TabPane tab="Done" key="3">
+                            <CitiesTable searchParams={{country_id: countryId, work_status: CityWorkStatusEnum.done, per_page: 100}}/>
+                        </Tabs.TabPane>
+                    </Tabs>
                 </Tabs.TabPane>
                 <Tabs.TabPane tab="Sight" key="3">
                     <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
                         Sights of {country.name}
                     </h3>
-                    <SightTable searchParams={{country_id: countryId}}/>
+                    <Tabs type="card">
+                        <Tabs.TabPane tab="Pending" key="1">
+                            <SightsTable searchParams={{country_id: countryId, eq: {work_status: [SightWorkStatusEnum.pending]}}}/>
+                        </Tabs.TabPane>
+                        <Tabs.TabPane tab="Done" key="2">
+                            <SightsTable searchParams={{country_id: countryId, eq: {work_status: [SightWorkStatusEnum.done]}}}/>
+                        </Tabs.TabPane>
+                    </Tabs>
                 </Tabs.TabPane>
             </Tabs>
         </div>

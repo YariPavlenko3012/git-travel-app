@@ -4,6 +4,17 @@ import CurrencyModel from "../currency.model";
 import LanguageModel from "../language.model";
 import CountryLanguageModel from "./language.model";
 
+
+const portraitImage = {
+    id: null,
+    path: "https://images.unsplash.com/photo-1629809189194-8302d4345c8a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dWtyYWluZSUyMGZsYWd8ZW58MHx8MHx8&w=1000&q=80"
+}
+
+const landscapeImage = {
+    id: null,
+    path: "https://media.istockphoto.com/photos/close-up-ukranian-flag-picture-id163641275?b=1&k=20&m=163641275&s=170667a&w=0&h=CVdqTfh31VTDbr7hqcBTbyocEZLlWTC02Kip6niMXBw="
+}
+
 export default class CountryModel {
     constructor(data = {}) {
         this.id = data.id;
@@ -22,8 +33,8 @@ export default class CountryModel {
         this.latitude = data.latitude;
         this.longitude = data.longitude;
         this.has_mountains = data.has_mountains;
-        this.landscape_image =  data.landscape_image && new MediaModel(data.landscape_image);
-        this.portrait_image =  data.portrait_image && new MediaModel(data.portrait_image);
+        this.landscape_image = new MediaModel(data.landscape_image || landscapeImage);
+        this.portrait_image = new MediaModel(data.portrait_image || portraitImage);
         this.has_mountains = data.has_mountains;
         this.happiness_rating = data.happiness_rating;
         this.highest_point = data.highest_point;

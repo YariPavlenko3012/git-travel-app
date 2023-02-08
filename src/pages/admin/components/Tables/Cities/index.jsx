@@ -37,6 +37,7 @@ import TablesKeyEnum from "../../../../../enums/TablesKey";
 import {AlertContext} from "../../../../context/alert.context";
 import {SettingsContext} from "../../../../context/settings.context";
 import {QueryString} from "../../../../../utils/Querystring";
+import ImageGallery from "../../../../../components/ImageGallery";
 
 export default function CityTable({ searchParams }) {
     const [cities, setCities] = useState(null);
@@ -57,10 +58,19 @@ export default function CityTable({ searchParams }) {
             key: 'img',
             render: (_, city) => {
                 return (
-                    <div style={{display: "flex", gap: 10}}>
-                        <PreviewFilesOriental oriental={FileOrientationEnums.landscape} image={city.landscape_image?.path} height={40}/>
-                        <PreviewFilesOriental oriental={FileOrientationEnums.portrait} image={city.portrait_image?.path} height={40}/>
-                    </div>
+                        <div style={{display: "flex", gap: 10}}>
+                            <ImageGallery images={[city.landscape_image, city.portrait_image]}
+                                          renderItem={({file, setImage}) => {
+                                              if(file.path === city.landscape_image?.path){
+                                                 return <PreviewFilesOriental oriental={FileOrientationEnums.landscape} image={file.path} height={40} onClick={setImage}/>
+                                              }
+
+                                              return <PreviewFilesOriental oriental={FileOrientationEnums.portrait} image={file.path} height={40} onClick={setImage}/>
+
+                                          }}>
+                            </ImageGallery>
+                        </div>
+
                 )
             }
         },
