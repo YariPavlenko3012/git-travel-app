@@ -1,7 +1,7 @@
 /**
  * external libs
  */
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Link, useParams} from 'react-router-dom'
 import {Button, Tabs} from 'antd'
 /**
@@ -10,14 +10,12 @@ import {Button, Tabs} from 'antd'
 import CitiesTable from '../../../components/Tables/Cities'
 import StatesTable from "../../../components/Tables/States";
 import PreviewFilesOriental from '../../../../../components/PreviewFilesOriental';
-import SightTable from "../../../components/Tables/Sights";
+import SightsTable from "../../../components/Tables/Sights";
+import CheckNormalImage from "../../../../../components/CheckNormalImage";
 /**
  * services
  */
 import CountryService from "../../../../../services/admin/country.service";
-import CityService from "../../../../../services/admin/city.service";
-import StateService from "../../../../../services/admin/state.service";
-import SightService from "../../../../../services/admin/sight.service";
 /**
  * constants
  */
@@ -25,9 +23,15 @@ import {
     ADMIN_MAKE_CREATE_STATE_URI,
     ADMIN_MAKE_EDIT_COUNTRY_URI,
     ADMIN_MAKE_EXCURSION_CREATE,
+    ADMIN_MAKE_GENERATE_CITY_URI,
+    ADMIN_MAKE_GENERATE_PLACE_URI,
     ADMIN_MAKE_SHOW_CITY_URI,
     ADMIN_MAKE_SHOW_CURRENCY_URI
 } from "../../../../../constants/admin/uri.constant";
+/**
+ * context
+ */
+import {DictionaryContext} from "../../../../context/dictionary.context";
 /**
  * style
  */
@@ -36,97 +40,15 @@ import styles from '../../../styles/show.module.scss'
  * enum
  */
 import FileOrientationEnums from '../../../../../enums/FileOrientation'
-import CityWorkStatusEnum from "../../../../../enums/CityWorkStatus";
-import SightsTable from "../../../components/Tables/Sights";
-import SightWorkStatusEnum from "../../../../../enums/SightWorkStatus";
-import CheckNormalImage from "../../../../../components/CheckNormalImage";
 
 export default function CountryShow() {
     const [country, setCountry] = useState(null);
     const {countryId} = useParams();
+    const {dictionary} = useContext(DictionaryContext)
 
     const getCountry = async () => {
         setCountry(await CountryService.show(countryId))
     };
-
-    const generate = async () => {
-        const list = {
-            "Автономна республіка крим":
-                ["Сімферополь", "Алушта", "Джанкой", "Євпаторія", "Керч", "Cевастополь", "Красноперекопськ", "Саки", "Армянськ", "Феодосія", "Судак", "Ялта", "Алупка", "Бахчисарай", "Білогірськ", "Старий крим", "Щолкіне"],
-            "Вінницька область":
-                ["Вінниця", "Жмеринка", "Могилів-подільський", "Козятин", "Ладижин", "Хмільник", "Бар", "Бершадь", "Гайсин", "Іллінці", "Калинівка", "Липовець", "Немирів", "Погребище", "Тульчин", "Гнівань", "Шаргород", "Ямпіль"],
-            "Волинська область":
-                ["Луцьк", "Володимир-волинський", "Ковель", "Нововолинськ", "Устилуг", "Горохів", "Берестечко", "Камінь-каширський", "Ківерці", "Любомль", "Рожище"],
-            "Дніпропетровська область":
-                ["Дніпро", "Вільногірськ", "Жовті води", "Марганець", "Нікополь", "Новомосковськ", "Покров", "Павлоград", "Першотравенськ", "Синельникове", "Тернівка", "Апостолове", "Зеленодольськ", "Верхньодніпровськ", "Верхівцеве", "Підгородне", "Перещепине", "П'ятихатки"],
-            "Донецька область":
-                ["Донецьк", "Моспине", "Авдіївка", "Бахмут", "Дебальцеве", "Торецьк", "Залізне", "Мирноград", "Добропілля", "Білицьке", "Білозерське", "Докучаєвськ", "Дружківка", "Єнакієве", "Бунге", "Жданівка", "Хрестівка", "Костянтинівка", "Краматорськ", "Покровськ", "Родинське", "Лиман", "Новогродівка", "Селидове", "Гірник", "Українськ", "Слов'янськ", "Святогірськ", "Сніжне", "Чистякове", "Вугледар", "Харцизьк", "Зугрес", "Іловайськ", "Шахтарськ", "Ясинувата", "Амвросіївка", "Вуглегірськ", "Сіверськ", "Світлодарськ", "Соледар", "Часів яр", "Волноваха", "Мар'їнка", "Красногорівка", "Курахове", "Новоазовськ", "Миколаївка", "Кальміуське"],
-            "Житомирська область":
-                ["Житомир", "Бердичів", "Коростень", "Малин", "Новоград-волинський", "Андрушівка", "Баранівка", "Коростишів", "Овруч", "Олевськ", "Радомишль", "Чуднів"],
-            "Закарпатська область":
-                ["Ужгород", "Берегове", "Мукачево", "Хуст", "Чоп", "Виноградів", "Іршава", "Перечин", "Рахів", "Свалява", "Тячів"],
-            "Запорізька область":
-                ["Запоріжжя", "Бердянськ", "Мелітополь", "Токмак", "Енергодар", "Василівка", "Дніпрорудне", "Вільнянськ", "Гуляйполе", "Кам'янка-дніпровська", "Оріхів", "Пологи", "Приморськ", "Молочанськ"],
-            "Івано-Франківська область":
-                ["Івано-Франківськ", "Болехів", "Бурштин", "Калуш", "Коломия", "Яремче", "Галич", "Городенка", "Долина", "Косів", "Надвірна", "Рогатин", "Снятин", "Тлумач", "Тисмениця"],
-            "Київська область":
-                ["Київ", "Біла церква", "Березань", "Бориспіль", "Бровари", "Васильків", "Буча", "Ірпінь", "Переяслав", "Прип'ять", "Фастів", "Ржищів", "Славутич", "Обухів", "Узин", "Богуслав", "Вишгород", "Чорнобиль", "Кагарлик", "Боярка", "Вишневе", "Миронівка", "Українка", "Сквира", "Тараща", "Тетіїв", "Яготин"],
-            "Кіровоградська область":
-                ["Кропівницький", "Олександрія", "Знам'янка", "Світловодськ", "Бобринець", "Гайворон", "Помічна", "Долинська", "Мала виска", "Новомиргород", "Новоукраїнка", "Благовіщенське"],
-            "Луганська область":
-                ["Луганськ", "Олександрівськ", "Антрацит", "Брянка", "Голубівка", "Алчевськ", "Сорокине", "Молодогвардійськ", "Суходільськ", "Хрустальний", "Боково-хрустальне", "Міусинськ", "Петрово-красносілля", "Лисичанськ", "Новодружеськ", "Привілля", "Первомайськ", "Ровеньки", "Рубіжне", "Довжанськ", "Вознесенівка", "Сєвєродонецьк", "Кадіївка", "Алмазна", "Ірміно", "Кремінна", "Лутугине", "Щастя", "Перевальськ", "Кипуче", "Зоринськ", "Попасна", "Гірське", "Золоте", "Сватове", "Зимогір'я", "Старобільськ"],
-            "Львівська область":
-                ["Львів", "Винники", "Борислав", "Дрогобич", "Стебник", "Моршин", "Новий розділ", "Самбір", "Стрий", "Трускавець", "Червоноград", "Броди", "Буськ", "Городок", "Комарно", "Жидачів", "Ходорів", "Золочів", "Глиняни", "Кам'янка-бузька", "Мостиська", "Судова вишня", "Жовква", "Дубляни", "Рава-руська", "Миколаїв", "Перемишляни", "Бібрка", "Пустомити", "Радехів", "Новий калинів", "Рудки", "Сколе", "Сокаль", "Соснівка", "Белз", "Великі мости", "Угнів", "Старий самбір", "Добромиль", "Хирів", "Турка", "Яворів", "Новояворівськ"],
-            "Миколаївська область":
-                ["Миколаїв", "Вознесенськ", "Очаків", "Первомайськ", "Южноукраїнськ", "Баштанка", "Новий буг", "Нова одеса", "Снігурівка"],
-            "Одеська область":
-                ["Одеса", "Балта", "Білгород-дністровський", "Біляївка", "Ізмаїл", "Чорноморськ", "Подільськ", "Теплодар", "Южне", "Ананьїв", "Арциз", "Березівка", "Болград", "Кілія", "Вилкове", "Кодима", "Роздільна", "Рені", "Татарбунари"],
-            "Полтавська область":
-                ["Полтава", "Горішні плавні", "Гадяч", "Лубни", "Миргород", "Глобине", "Гребінка", "Зіньків", "Карлівка", "Кобеляки", "Лохвиця", "Заводське", "Пирятин", "Решетилівка", "Хорол"],
-            "Рівненська область":
-                ["Рівне", "Дубно", "Вараш", "Острог", "Березне", "Дубровиця", "Здолбунів", "Корець", "Костопіль", "Сарни", "Радивилів"],
-            "Сумська область":
-                ["Суми", "Охтирка", "Глухів", "Конотоп", "Лебедин", "Ромни", "Шостка", "Білопілля", "Ворожба", "Буринь", "Кролевець", "Путивль", "Середина-буда", "Тростянець", "Дружба"],
-            "Тернопільська область":
-                ["Тернопіль", "Чортків", "Бережани", "Кременець", "Борщів", "Бучач", "Копичинці", "Хоростків", "Заліщики", "Збараж", "Зборів", "Почаїв", "Ланівці", "Монастириська", "Скалат", "Підгайці", "Теребовля", "Шумськ"],
-            "Харківська область":
-                ["Харків", "Ізюм", "Куп'янськ", "Лозова", "Люботин", "Первомайський", "Чугуїв", "Балаклія", "Барвінкове", "Богодухів", "Валки", "Вовчанськ", "Зміїв", "Дергачі", "Красноград", "Мерефа", "Південне"],
-            "Херсонська область":
-                ["Херсон", "Гола пристань", "Каховка", "Нова каховка", "Таврійськ", "Берислав", "Генічеськ", "Скадовськ", "Олешки"],
-            "Хмельницька область":
-                ["Хмельницький", "Кам'янець-подільський", "Нетішин", "Славута", "Шепетівка", "Старокостянтинів", "Волочиськ", "Городок", "Деражня", "Дунаївці", "Ізяслав", "Красилів", "Полонне"],
-            "Черкаська область":
-                ["Черкаси", "Ватутіне", "Канів", "Золотоноша", "Сміла", "Умань", "Городище", "Жашків", "Звенигородка", "Кам'янка", "Корсунь-шевченківський", "Монастирище", "Тальне", "Христинівка", "Чигирин", "Шпола"],
-            "Чернівецька область":
-                ["Чернівці", "Новодністровськ", "Вижниця", "Вашківці", "Герца", "Заставна", "Кіцмань", "Новоселиця", "Сокиряни", "Сторожинець", "Хотин"],
-            "Чернігівська область":
-                ["Чернігів", "Ніжин", "Новгород-сіверський", "Прилуки", "Бахмач", "Батурин", "Бобровиця", "Борзна", "Городня", "Ічня", "Остер", "Корюківка", "Мена", "Носівка", "Семенівка", "Сновськ"]
-        }
-        const states = Object.keys(list)
-
-        for (let i = 0; i < states.length; i++) {
-            const state = states[i];
-            console.log(state, "STATE")
-
-            const {id: stateId} = await StateService.create({
-                country_id: 1,
-                state_name: state
-            })
-
-            for (let j = 0; j < list[state].length; j++){
-                const city = list[state][j];
-                const {id: cityId} = await CityService.create({
-                    city: {
-                        city_description: "TEST",
-                        city_name: city,
-                        state_id: stateId
-                    }
-                })
-
-                console.log(`ID: ${cityId}. City: ${city}; ID_STAT: ${stateId}. STATE ${state}`)
-            }
-        }
-    }
 
     useEffect(() => {
         getCountry();
@@ -143,6 +65,16 @@ export default function CountryShow() {
                     {country.name}
                 </div>
                 <div style={{display: "flex", alignItems: "center", gap: 10}}>
+                    <Link to={ADMIN_MAKE_GENERATE_CITY_URI(countryId)}>
+                        <Button type="primary" className={styles.show__btn}>
+                            Generate City
+                        </Button>
+                    </Link>
+                    <Link to={ADMIN_MAKE_GENERATE_PLACE_URI(countryId)}>
+                        <Button type="primary" className={styles.show__btn}>
+                            Generate Sight
+                        </Button>
+                    </Link>
                     <Link to={ADMIN_MAKE_EXCURSION_CREATE(countryId)}>
                         <Button type="primary" className={styles.show__btn}>
                             Create Excursions
@@ -286,15 +218,11 @@ export default function CountryShow() {
                         City of {country.name}
                     </h3>
                     <Tabs type="card">
-                        <Tabs.TabPane tab="Pending" key="1">
-                            <CitiesTable searchParams={{country_id: countryId, work_status: CityWorkStatusEnum.pending}}/>
-                        </Tabs.TabPane>
-                        <Tabs.TabPane tab="In Progress" key="2">
-                            <CitiesTable searchParams={{country_id: countryId, work_status: CityWorkStatusEnum.inProgress}}/>
-                        </Tabs.TabPane>
-                        <Tabs.TabPane tab="Done" key="3">
-                            <CitiesTable searchParams={{country_id: countryId, work_status: CityWorkStatusEnum.done, per_page: 100}}/>
-                        </Tabs.TabPane>
+                        {dictionary.work_statuses.city.map(({label, value}) => (
+                            <Tabs.TabPane tab={label} key={value}>
+                                <CitiesTable searchParams={{country_id: countryId, work_status: value}}/>
+                            </Tabs.TabPane>
+                        ))}
                     </Tabs>
                 </Tabs.TabPane>
                 <Tabs.TabPane tab="Sight" key="3">
@@ -302,15 +230,177 @@ export default function CountryShow() {
                         Sights of {country.name}
                     </h3>
                     <Tabs type="card">
-                        <Tabs.TabPane tab="Pending" key="1">
-                            <SightsTable searchParams={{country_id: countryId, eq: {work_status: [SightWorkStatusEnum.pending]}}}/>
-                        </Tabs.TabPane>
-                        <Tabs.TabPane tab="Done" key="2">
-                            <SightsTable searchParams={{country_id: countryId, eq: {work_status: [SightWorkStatusEnum.done]}}}/>
-                        </Tabs.TabPane>
+                        {dictionary.work_statuses.sight.map(({label, value}) => (
+                            <Tabs.TabPane tab={label} key={value}>
+                                <SightsTable searchParams={{country_id: countryId, eq: {work_status: [value]}}}/>
+                            </Tabs.TabPane>
+                        ))}
                     </Tabs>
                 </Tabs.TabPane>
             </Tabs>
         </div>
     )
 }
+
+//
+// const getData = async (countryCode) => {
+//     for (let i = 0; ; i++) {
+//         const {data: states} = await (await fetch(`https://wft-geo-db.p.rapidapi.com/v1/geo/countries/${countryCode}/regions?limit=1&offset=${i}`, {
+//             headers: {
+//                 'X-RapidAPI-Key': '9b6599ddebmsh70080c0c4b276c4p172c5ajsn58e3d1228228',
+//                 'X-RapidAPI-Host': 'wft-geo-db.p.rapidapi.com'
+//             }
+//         })).json()
+//         const [state] = states
+//         console.log(state, "state")
+//
+//         if (i === 2) {
+//             break
+//         }
+//     }
+// }
+// const getData = async (countryCode) => {
+//     fetch(`https://wft-geo-db.p.rapidapi.com/v1/geo/countries/${countryCode}/regions?limit=3&offset=0`, {
+//         headers: {
+//             'X-RapidAPI-Key': '9b6599ddebmsh70080c0c4b276c4p172c5ajsn58e3d1228228',
+//             'X-RapidAPI-Host': 'wft-geo-db.p.rapidapi.com'
+//         }
+//     })
+//         .then(res => res.json())
+//         .then(res => console.log(res))
+// }
+
+// fetch(`http://geodb-free-service.wirefreethought.com/v1/geo/countries/${countryCode}/regions?limit=1&offset=0`)
+//     .then(res => res.json())
+//     .then(res => {
+//         Promise.all(new Array(Math.ceil(res.metadata.totalCount / 5)).fill(1).map((_, index) => {
+//             return fetch(`http://geodb-free-service.wirefreethought.com/v1/geo/countries/${countryCode}/regions?limit=5&offset=${index * 5}`)
+//                 .then(res => res.json())
+//                 .then(res => res)
+//         }))
+//             .then(res => {
+//                 const states = res.reduce((acc, state) => {
+//                     return [...acc, ...state.data]
+//                 }, [])
+//
+//                 Promise.all(states.map( ({isoCode}) => {
+//
+//                     return fetch(`http://geodb-free-service.wirefreethought.com/v1/geo/countries/${countryCode}/regions/${isoCode}/cities?minPopulation=40000&hateoasMode=false&limit=1&offset=0`)
+//                         .then(res => res.json())
+//                         .then(res => res)
+//                 }))
+//                     .then(res => {
+//                         Promise.all(states.map(({isoCode, name}, index) => {
+//                             return Promise.all(new Array(Math.ceil(res[index].metadata.totalCount / 10)).fill(1).map(({metadata}, index) => {
+//                                 return fetch(`http://geodb-free-service.wirefreethought.com/v1/geo/countries/${countryCode}/regions/${isoCode}/cities?minPopulation=40000&hateoasMode=false&limit=10&offset=${index * 10}`)
+//                                     .then(res => res.json())
+//                                     .then(res => res.data.filter(city => city.type === "CITY").map(city => ({
+//                                         ...city,
+//                                         latitude: city.latitude,
+//                                         longitude: city.longitude,
+//                                         cityName: city.name.split(" County")[0],
+//                                         stateName: name
+//                                     })))
+//                             }))
+//
+//                         }))
+//                             .then(cities => {
+//                                 const results = states.reduce((acc, state) => {
+//                                     acc[state.name] = []
+//                                     return acc
+//                                 }, {})
+//
+//                                 cities.forEach((currentCitiesList) => {
+//                                     currentCitiesList.forEach(currentCities => {
+//                                         currentCities.forEach((city) => {
+//                                             const {stateName, ...rest} = city;
+//                                             results[stateName] = [...results[stateName], rest]
+//                                         })
+//                                     })
+//                                 })
+//
+//                                 console.log(results)
+//                             })
+//                     })
+//             })
+// })
+
+
+const getData = async (countryCode = "PL", minPopulation= 100000) => {
+    const isDemo = false;
+    const url = isDemo ? "http://geodb-free-service.wirefreethought.com" : "https://wft-geo-db.p.rapidapi.com"
+    const LIMIT_RATE = isDemo ? 10 : 100;
+
+    const headers = {
+        'X-RapidAPI-Key': '9b6599ddebmsh70080c0c4b276c4p172c5ajsn58e3d1228228',
+        'X-RapidAPI-Host': 'wft-geo-db.p.rapidapi.com',
+    }
+    let states = [];
+
+    for (let i = 0; ; i++) {
+        const resultState = await ((await fetch(`${url}/v1/geo/countries/${countryCode}/regions?limit=${LIMIT_RATE}&offset=${LIMIT_RATE * i}`, {
+            headers: {
+                "Content-Type": "application/json",
+                ...headers
+            }
+        })).json())
+        console.log(i)
+        states = [...states, ...resultState.data]
+
+        const totalUploadState = LIMIT_RATE * (i + 1);
+        if (totalUploadState >= resultState.metadata.totalCount) {
+            break;
+        }
+    }
+
+    const cities = []
+
+    for (let i = 0; i < states.length; i++) {
+        const stateIso = states[i].isoCode;
+        for (let j = 0; ; j++) {
+            const resultCity = await ((await fetch(`${url}/v1/geo/countries/${countryCode}/regions/${stateIso}/cities?minPopulation=${minPopulation}&hateoasMode=false&limit=${LIMIT_RATE}&offset=${LIMIT_RATE * j}`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    ...headers
+                }
+            })).json())
+            console.log(i)
+            cities[i] = [...(cities[i] || []), ...resultCity.data
+                .filter(city => city.type === "CITY")
+                .filter(city => !["Białołęka", "Bemowo", "Żoliborz", "Włochy", "Ochota", "Ursus", "Wawer", "Mokotów", "Ursynów", "Wilanów"].includes(city.name))
+                .map(city => ({
+                    ...city,
+                    latitude: city.latitude,
+                    longitude: city.longitude,
+                    cityName: city.name.split(" County")[0],
+                    stateName: states[i].name
+                }))]
+
+            const totalUploadState = LIMIT_RATE * (j + 1);
+            if (totalUploadState >= resultCity.metadata.totalCount) {
+                break;
+            }
+        }
+    }
+
+    const list = states.reduce((acc, state) => {
+        acc[state.name] = []
+        return acc
+    }, {})
+
+    for (let i = 0; i < states.length; i++) {
+        const state = states[i];
+
+        list[state.name] = cities[i].map((city) => ({
+            latitude: city.latitude,
+            longitude: city.longitude,
+            name: city.name,
+        }))
+    }
+
+    console.log("States: ", states)
+    console.log("Cities: ", cities.reduce((accum, cities) => [...accum, ...cities], []))
+    console.log("List: ", list)
+}
+
+

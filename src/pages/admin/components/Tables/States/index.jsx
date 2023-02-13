@@ -66,11 +66,11 @@ export default function StatesTable({searchParams}) {
 
     const getStateHandler = async (params) => {
         setIsReady(false)
-        await getState(await getState({
+        await getState({
             ...QueryString.parseQueryString("?" + (window.location.hash.split("?")[1] || "")),
             ...searchParams,
             ...params,
-        }))
+        })
         setIsReady(true)
     }
 

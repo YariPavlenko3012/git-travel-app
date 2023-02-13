@@ -167,7 +167,7 @@ export default function SightTable({searchParams}) {
                         </Link>
                     </Tooltip>
                     <Tooltip title="Edit sight">
-                        <Link to={ADMIN_MAKE_EDIT_SIGHT_URI(row.id)} >
+                        <Link to={ADMIN_MAKE_EDIT_SIGHT_URI(row.id)} target="_blank" rel="noopener noreferrer">
                             <Button type="primary"
                                     icon={<EditOutlined/>} size={20}/>
                         </Link>

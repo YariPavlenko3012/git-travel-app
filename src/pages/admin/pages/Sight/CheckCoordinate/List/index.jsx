@@ -14,7 +14,7 @@ export default function CheckCoordinateList() {
           <div style={{padding: '10px 0'}}>
               <h3 style={{marginBottom: 20}}>Check coordinate</h3>
 
-              <SightsTable searchParams={{country_id: 1, eq: {check_coordinates: [0]}}}/>
+              <SightsTable searchParams={{eq: {check_coordinates: [0]}}}/>
           </div>
       </div>
     )

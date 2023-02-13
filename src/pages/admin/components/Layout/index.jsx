@@ -33,7 +33,10 @@ import {
     ADMIN_EXCURSION_LIST,
     ADMIN_SIGHT_LIST_CHANGE_COORDINATE_URI,
     ADMIN_SIGHT_CHECK_COORDINATE_URI,
-    ADMIN_MAKE_SIGHT_CHECK_COORDINATE_URI, ADMIN_SIGHT_LIST_CHECK_COORDINATE_URI,
+    ADMIN_MAKE_SIGHT_CHECK_COORDINATE_URI,
+    ADMIN_SIGHT_LIST_CHECK_COORDINATE_URI,
+    ADMIN_COUNTRY_LIST_URI,
+    ADMIN_MAKE_GENERATE_CITY_URI,
 } from "../../../../constants/admin/uri.constant";
 import {AUTH_PAGE_LOGOUT_URI,AUTH_PAGE_LOGIN_URI} from "../../../../constants/uri.constant";
 /**
@@ -91,7 +94,7 @@ export default function LayoutUI({children}) {
 
         const itemsAdmin = [
             // getItem('Country', '1', BankOutlined, ADMIN_COUNTRY_LIST_URI),
-            getItem('Country', '1', BankOutlined, ADMIN_MAKE_SHOW_COUNTRY_URI(1)),
+            getItem('Country', '1', BankOutlined, ADMIN_COUNTRY_LIST_URI),
             getItem('State', '7', GoldOutlined, ADMIN_STATE_LIST_URI),
             getItem('City', '2', HomeOutlined, ADMIN_CITY_LIST_URI),
             getItem('Sight', 'sub1', PictureOutlined, null, [
@@ -101,7 +104,6 @@ export default function LayoutUI({children}) {
             ]),
             getItem('Currency', '4', DollarCircleOutlined, ADMIN_CURRENCY_LIST_URI),
             getItem('Language', '5', SortAscendingOutlined, ADMIN_LANGUAGE_LIST_URI),
-            getItem('GeneratePlace', '8', YuqueOutlined, ADMIN_MAKE_GENERATE_PLACE_URI(1)),
             getItem('Excursion', '9',  RollbackOutlined, ADMIN_EXCURSION_LIST),
             // getItem('User', 'sub1', UserOutlined, null, [
             //     getItemChild('List', 'sub1_1', ADMIN_USERS_CREATE),

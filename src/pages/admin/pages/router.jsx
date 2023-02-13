@@ -44,7 +44,9 @@ import {
     ADMIN_ROUTE_URI,
     ADMIN_EXCURSION_SHOW,
     ADMIN_SIGHT_LIST_NEED_REVIEW_URI,
-    ADMIN_EXCURSION_EDIT, ADMIN_SIGHT_LIST_CHECK_COORDINATE_URI
+    ADMIN_EXCURSION_EDIT,
+    ADMIN_SIGHT_LIST_CHECK_COORDINATE_URI,
+    ADMIN_GENERATE_CITY_URI
 } from "../../../constants/admin/uri.constant";
 
 
@@ -193,7 +195,12 @@ export default function RouterPage() {
         {
             layout: AuthRoute,
             path: ADMIN_GENERATE_PLACE_URI,
-            component: lazy(() => import('./GeneratePlace'))
+            component: lazy(() => import('./Generate/Place'))
+        },
+        {
+            layout: AuthRoute,
+            path: ADMIN_GENERATE_CITY_URI,
+            component: lazy(() => import('./Generate/City'))
         },
         {
             layout: AuthRoute,

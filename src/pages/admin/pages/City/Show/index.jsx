@@ -8,10 +8,11 @@ import {DeleteOutlined} from "@ant-design/icons";
 /**
  * components
  */
-import SightTable from '../../../components/Tables/Sights';
 import ChangeWorkStatus from "../../../components/Tables/Cities/components/ChangeWorkStatus";
 import PreviewFilesOriental from "../../../../../components/PreviewFilesOriental";
 import UserCan from "../../../../../components/UserCan";
+import CheckNormalImage from "../../../../../components/CheckNormalImage";
+import SightsTable from "../../../components/Tables/Sights";
 /**
  * services
  */
@@ -39,15 +40,15 @@ import RolesEnum from "../../../../../enums/RolesEnum";
  * context
  */
 import {AlertContext} from "../../../../context/alert.context";
-import SightsTable from "../../../components/Tables/Sights";
-import SightWorkStatusEnum from "../../../../../enums/SightWorkStatus";
-import CheckNormalImage from "../../../../../components/CheckNormalImage";
+import {DictionaryContext} from "../../../../context/dictionary.context";
 
 
 export default function CityShow() {
     const {setAlertSuccess} = useContext(AlertContext)
+    const {dictionary} = useContext(DictionaryContext)
     const [city, setCity] = useState(null);
     const {cityId} = useParams();
+
 
     const deleteCity = async (cityId) => {
         await CityService.delete(cityId)
@@ -152,12 +153,11 @@ export default function CityShow() {
               </Link>
           </h3>
           <Tabs type="card">
-              <Tabs.TabPane tab="Pending" key="1">
-                  <SightsTable searchParams={{city_id: cityId, eq: {work_status: [SightWorkStatusEnum.pending]}}}/>
-              </Tabs.TabPane>
-              <Tabs.TabPane tab="Done" key="2">
-                  <SightsTable searchParams={{city_id: cityId, eq: {work_status: [SightWorkStatusEnum.done]}}}/>
-              </Tabs.TabPane>
+              {dictionary.work_statuses.sight.map(({label, value}) => (
+                  <Tabs.TabPane tab={label} key={value}>
+                      <SightsTable searchParams={{city_id: cityId, eq: {work_status: [value]}}}/>
+                  </Tabs.TabPane>
+              ))}
           </Tabs>
       </div>
     )

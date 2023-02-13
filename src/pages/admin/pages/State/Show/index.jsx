@@ -1,14 +1,14 @@
 /**
  * external libs
  */
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useContext, useState} from 'react';
 import {Link, useParams} from 'react-router-dom'
 import {Button, Tabs} from 'antd'
 /**
  * components
  */
 import CitiesTable from '../../../components/Tables/Cities'
-import SightTable from "../../../components/Tables/Sights";
+import SightsTable from "../../../components/Tables/Sights";
 /**
  * services
  */
@@ -25,12 +25,15 @@ import {
  * style
  */
 import styles from '../../../styles/show.module.scss'
-import SightsTable from "../../../components/Tables/Sights";
-import SightWorkStatusEnum from "../../../../../enums/SightWorkStatus";
+/**
+ * context
+ */
+import {DictionaryContext} from "../../../../context/dictionary.context";
 
 export default function StateShow() {
     const [state, setState] = useState(null);
     const {stateId} = useParams();
+    const {dictionary} = useContext(DictionaryContext)
 
     const getState = async () => {
         setState(await StateService.show(stateId))
@@ -81,19 +84,24 @@ export default function StateShow() {
                           </Button>
                       </Link>
                   </h3>
-                  <CitiesTable searchParams={{state_id: stateId}}/>
+                  <Tabs type="card">
+                      {dictionary.work_statuses.city.map(({label, value}) => (
+                          <Tabs.TabPane tab={label} key={value}>
+                              <CitiesTable searchParams={{state_id: stateId, work_status: value}}/>
+                          </Tabs.TabPane>
+                      ))}
+                  </Tabs>
               </Tabs.TabPane>
               <Tabs.TabPane tab="Sight" key="2">
                   <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
                       Sights of {state.name}
                   </h3>
                   <Tabs type="card">
-                      <Tabs.TabPane tab="Pending" key="1">
-                          <SightsTable searchParams={{state_id: stateId, eq: {work_status: [SightWorkStatusEnum.pending]}}}/>
-                      </Tabs.TabPane>
-                      <Tabs.TabPane tab="Done" key="2">
-                          <SightsTable searchParams={{state_id: stateId, eq: {work_status: [SightWorkStatusEnum.done]}}}/>
-                      </Tabs.TabPane>
+                      {dictionary.work_statuses.sight.map(({label, value}) => (
+                          <Tabs.TabPane tab={label} key={value}>
+                              <SightsTable searchParams={{state_id: stateId, eq: {work_status: [value]}}}/>
+                          </Tabs.TabPane>
+                      ))}
                   </Tabs>
               </Tabs.TabPane>
           </Tabs>

@@ -53,8 +53,14 @@ export const ADMIN_ROUTE_URI = `${ADMIN_ROUTE}/:cityId`;
 export const ADMIN_MAKE_ROUTE_URI = (cityId) => `${ADMIN_ROUTE}/${cityId}`;
 
 
-//GENERATE PLACE
-const ADMIN_GENERATE_PLACE = `${ADMIN}/generate-place`;
+//GENERATE
+const ADMIN_GENERATE = `${ADMIN}/generate`;
+
+const ADMIN_GENERATE_CITY = `${ADMIN_GENERATE}/city`;
+export const ADMIN_GENERATE_CITY_URI = `${ADMIN_GENERATE_CITY}/:countryId`;
+export const ADMIN_MAKE_GENERATE_CITY_URI = (countryId) => `${ADMIN_GENERATE_CITY}/${countryId}`;
+
+const ADMIN_GENERATE_PLACE = `${ADMIN_GENERATE}/place`;
 export const ADMIN_GENERATE_PLACE_URI = `${ADMIN_GENERATE_PLACE}/:countryId`;
 export const ADMIN_MAKE_GENERATE_PLACE_URI = (countryId) => `${ADMIN_GENERATE_PLACE}/${countryId}`;
 // export const ADMIN_CREATE_SIGHT_URI = `${ADMIN_SIGHT}/create/:cityId`;
