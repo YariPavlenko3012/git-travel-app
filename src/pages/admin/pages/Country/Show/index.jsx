@@ -9,6 +9,7 @@ import {Button, Tabs} from 'antd'
  */
 import CitiesTable from '../../../components/Tables/Cities'
 import StatesTable from "../../../components/Tables/States";
+import UserCan from "../../../../../components/UserCan";
 import PreviewFilesOriental from '../../../../../components/PreviewFilesOriental';
 import SightsTable from "../../../components/Tables/Sights";
 import CheckNormalImage from "../../../../../components/CheckNormalImage";
@@ -42,6 +43,7 @@ import styles from '../../../styles/show.module.scss'
  * enum
  */
 import FileOrientationEnums from '../../../../../enums/FileOrientation';
+import RolesEnum from "../../../../../enums/RolesEnum";
 
 export default function CountryShow() {
     const [country, setCountry] = useState(null);
@@ -94,11 +96,13 @@ export default function CountryShow() {
                     {/*        Generate City*/}
                     {/*    </Button>*/}
                     {/*</Link>*/}
-                    <Link to={ADMIN_MAKE_GENERATE_PLACE_URI(countryId)}>
-                        <Button type="primary" className={styles.show__btn}>
-                            Generate Sight
-                        </Button>
-                    </Link>
+                    <UserCan checkRole={RolesEnum.super_admin}>
+                        <Link to={ADMIN_MAKE_GENERATE_PLACE_URI(countryId)}>
+                            <Button type="primary" className={styles.show__btn}>
+                                Generate Sight
+                            </Button>
+                        </Link>
+                    </UserCan>
                     <Link to={ADMIN_MAKE_EXCURSION_CREATE(countryId)}>
                         <Button type="primary" className={styles.show__btn}>
                             Create Excursions
