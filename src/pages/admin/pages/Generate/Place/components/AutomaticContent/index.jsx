@@ -1,7 +1,7 @@
 /**
  * external libs
  */
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {Button} from 'antd';
 /**
  * services
@@ -19,6 +19,7 @@ import PlaceTypeTranslate from "../../../../../../../utils/PlaceTypeTranslate";
  * context
  */
 import {DictionaryContext} from "../../../../../../context/dictionary.context";
+import GoogleClient from "../../../../../../../utils/GoogleClient";
 
 
 export default function AutomaticContent({ generatePlacesByCity, typeColor, countryId, generationFinishCity }){
@@ -33,7 +34,8 @@ export default function AutomaticContent({ generatePlacesByCity, typeColor, coun
         console.log(data, "dataSort")
 
 
-        const dataSort = data.filter(({id}) => 454 === id)
+        const dataSort = data
+        // const dataSort = data.filter(({id}, index) => id !== 686)
 
         for (let i = 0; i < dataSort.length; i++) {
             const city = dataSort[i];
@@ -73,3 +75,5 @@ export default function AutomaticContent({ generatePlacesByCity, typeColor, coun
         </div>
     )
 }
+
+

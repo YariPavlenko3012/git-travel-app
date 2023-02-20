@@ -10,7 +10,6 @@ export default function FormUI({render, onSubmit = () => {} , onError = () => {}
         try {
             await onSubmit(values);
         } catch (e) {
-            console.log(e, "1")
             setAlertError(e.message);
 
             if(!e.errors){

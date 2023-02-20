@@ -1,21 +1,19 @@
 /**
  * external libs
  */
-import React, {useEffect, useRef, useContext, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {useParams} from "react-router-dom";
 /**
  * components
  */
-import AutomaticContent from './components/AutomaticContent'
 import ManualContent from './components/ManualContent'
 import CustomContent from './components/CustomContent'
 import RadioGenerationType from './components/RadioGenerationType'
 /**
  * enums
  */
-import PlaceTypeEnum from '../../../../../enums/PlaceType'
 import GenerationTypeEnums from "../../../../../enums/GenerationType";
-import PlaceTypeSquareEnum from "../../../../../enums/PlaceTypeSquare";
+import FoursquarePlaceTypeEnum from "../../../../../enums/FoursquarePlaceType";
 /**
  * service
  */
@@ -23,36 +21,21 @@ import GenerationPlaceService from "../../../../../services/admin/generationPlac
 import SightService from "../../../../../services/admin/sight.service";
 import CountryService from "../../../../../services/admin/country.service";
 /**
- * context
+ * utils
  */
-import {DictionaryContext} from "../../../../context/dictionary.context";
 import GoogleClient from "../../../../../utils/GoogleClient";
-
-
-const typeColor = {
-    [GenerationTypeEnums.automatic]: {
-        [PlaceTypeEnum.campground]: "red",
-        [PlaceTypeEnum.embassy]: "#650abf",
-        [PlaceTypeEnum.art_gallery]: "green",
-        [PlaceTypeEnum.museum]: "#ff8600",
-    },
-    [GenerationTypeEnums.manual]: {
-        [PlaceTypeEnum.amusement_park]: "green",
-        [PlaceTypeEnum.aquarium]: "red",
-        [PlaceTypeEnum.tourist_attraction]: "gray",
-        [PlaceTypeEnum.zoo]: "black",
-        [PlaceTypeEnum.restaurant]: "blue",
-    }
-}
+import FoursquareClient from "../../../../../utils/FoursquareClient";
 
 export default function GeneratePlace() {
-    const {dictionary} = useContext(DictionaryContext)
     const {countryId} = useParams();
-    const [generationType, setGenerationType] = useState(GenerationTypeEnums.automatic)
+    const [generationType, setGenerationType] = useState(GenerationTypeEnums.manual)
     const [country, setCountry] = useState(null)
+    const [loading, setLoading] = useState(false)
     const mapBlockRef = useRef(null);
     const squareRef = useRef(null);
     const mapRef = useRef(null);
+
+    console.log(country, "country")
 
     const mapInit = async (geometry = {}) => {
         const opt = {
@@ -70,7 +53,8 @@ export default function GeneratePlace() {
         mapRef.current = new window.google.maps.Map(mapBlockRef.current, opt)
     }
 
-    const generatePlacesByCity = async (city, placeTypes = []) => {
+    const generatePlacesByCity = async (city, placeTypes = [], limit) => {
+        setLoading(true)
         if (!city.geometry || !placeTypes.length) {
             return {failed: false};
         }
@@ -83,7 +67,7 @@ export default function GeneratePlace() {
                 const currentType = placeTypes[i];
 
                 //Берем колл-во квадратов по которым ходим. Есть значения захардкодженые, а есть с базы
-                let countStep = PlaceTypeSquareEnum[currentType] || city.generation_count_of_squares;
+                let countStep = 1;
 
                 //Ширина и Высота квадрата по которому идем (сити геометрия)
                 const placeHeightCoordinate = city.geometry.north - city.geometry.south;
@@ -97,7 +81,6 @@ export default function GeneratePlace() {
                 for (currentI; currentI <= countStep; currentI++) {
                     currentJ = 1;
                     for (currentJ; currentJ <= countStep; currentJ++) {
-                        console.log(`index: ${currentI}; jndex ${currentJ}`)
 
                         await new Promise(resolve => setTimeout(resolve, 500))
 
@@ -110,8 +93,9 @@ export default function GeneratePlace() {
                                     south: city.geometry.south + (stepVertical * (currentI - 1)),
                                     west: city.geometry.west + (stepHorizontal * (currentJ - 1)),
                                 },
-                                cityId: city.id,
+                                city: city,
                                 type: currentType,
+                                limit,
                             }
                         )
 
@@ -146,7 +130,7 @@ export default function GeneratePlace() {
             };
         }
     }
-    const getRectangle = async ({geometry, cityId, type}) => {
+    const getRectangle = async ({geometry, city, type, limit, countStep}) => {
         try {
             //Получение геометрии квадрата, его отрисовка на UI
             const {north, south, east, west} = geometry;
@@ -162,7 +146,7 @@ export default function GeneratePlace() {
             );
 
             //После получения и отрисовски всех данных идем получать плейсы
-            return await getPlaces(bounds, cityId, type)
+            return await getPlaces(bounds, city, type, limit)
         } catch (e) {
             return {
                 failed: true,
@@ -172,158 +156,102 @@ export default function GeneratePlace() {
         }
 
     }
-    const getPlaces = async (bounds, cityId, type) => {
-        //Инициализация гугл сервиса по получению плейсов
-        const service = new window.google.maps.places.PlacesService(mapRef.current);
+    const getPlaces = async (bounds, city, foursquareType, limit) => {
         let lastType = null;
 
         const forLoop = async () => {
-            let placesToDB = [];
+            lastType = foursquareType
+            const type = Object.keys(FoursquarePlaceTypeEnum.typeOriginIds).reduce((accum, type) => {
+                const foursquareIdsForType = FoursquarePlaceTypeEnum.typeOriginIds[type]
+                if (foursquareIdsForType.includes(foursquareType)) {
+                    return type
+                }
+
+                return accum
+            }, null)
+
             const geometry = GoogleClient.parseBounds(bounds)
-            lastType = type;
 
-            const requestNearbySearch = {bounds, types: [type]}
-            await new Promise(resolve => setTimeout(() => resolve(), 1000))
-
-            //Проверяем был ли сгинерирован квадрат ранее (чтобы не создавать дубликаты)
             const isGenerate = await GenerationPlaceService.generatedSquare({
                 json: {geometry},
-                eq: {type: [type]}
+                eq: {type: [foursquareType]}
             })
 
             if (isGenerate.data.length) {
                 return {failed: false};
             }
 
-            await new Promise((resolve, reject) => {
-                //Получения плейсов в текущем квадрате с которым работаем
-                service.nearbySearch(requestNearbySearch, async (places, status, pagination) => {
-                    if (!["ZERO_RESULTS", "OK"].includes(status)) {
-                        reject({
-                            message: `Google status error: ${status}`,
+            await new Promise(async (resolve, reject) => {
+                let placesToDB = []
+                const places = await FoursquareClient.getPlaces({
+                    categories: foursquareType,
+                    ne: `${geometry.north},${geometry.east}`,
+                    sw: `${geometry.south},${geometry.west}`,
+                    limit: limit
+                })
+
+
+                if (!places.length) {
+                    await GenerationPlaceService.create({
+                        country_id: countryId,
+                        geometry,
+                        type: `${foursquareType}`
+                    });
+                    resolve()
+                }
+
+                for (let i = 0; i < places.length; i++) {
+                    try {
+                        const place = places[i]
+
+                        let placeToBd = {
+                            city_id: city.id,
+                            country_id: countryId,
+                            sight_name: place.name,
+                            original_name: place.name,
+                            formatted_address: place.location.formatted_address,
+                            foursquare_place_id: place.fsq_id,
+                            check_coordinates: true,
+                            place_type: [type],
+                            latitude: place.geocodes.main.latitude,
+                            longitude: place.geocodes.main.longitude,
+                        }
+
+                        await new Promise(resolve => setTimeout(resolve, 200))
+
+                        placeToBd.files_ids = await FoursquareClient.getPhotosId(placeToBd.foursquare_place_id)
+
+                        const placeDetails = await FoursquareClient.getPlacesDetails(placeToBd.foursquare_place_id, ["tel", "website", "hours"])
+
+                        if (placeDetails) {
+                            placeToBd.website = placeDetails?.website || null;
+                            placeToBd.international_phone_number = placeDetails?.tel || null;
+                            placeToBd.opening_hours = placeDetails?.opening_hours || null;
+                        }
+
+                        GoogleClient.getMarker(
+                            mapRef.current,
+                            {lat: placeToBd.latitude, lng: placeToBd.longitude},
+                        )
+
+                        placesToDB = [...placesToDB, placeToBd]
+                    } catch (error) {
+                        return reject({
+                            message: error.message,
                         })
                     }
+                }
 
-                    if (!places.length) {
-                        //Запись в базу о том, в каком квадрате, какой тип плейсов мы достали
-                        await GenerationPlaceService.create({
-                            country_id: countryId,
-                            geometry,
-                            type
-                        });
-                        resolve()
-                    }
+                await SightService.createBatch(placesToDB.filter(place => place.files_ids.length))
 
-                    for (let i = 0; i < places.length; i++) {
-                        try {
-                            const currentPlace = places[i];
+                await GenerationPlaceService.create({
+                    country_id: countryId,
+                    geometry,
+                    type: `${foursquareType}`
+                })
 
-                            //Получения детайльной информации по плейсу
-                            const placeDetail = await GoogleClient.getPlaceDetails(currentPlace.place_id)
-
-                            if (placeDetail?.failed) {
-                                return reject({
-                                    message: placeDetail.message,
-                                })
-                            }
-
-                            //Мы можем найти плейс, но по нему не выдадут детальной информации поэтому записываем в плейс
-                            //в приоритете  детальный, если его не нашли записываем ту инфу что дали нам ранее
-                            const place = placeDetail || currentPlace;
-
-                            if (!place) {
-                                continue
-                            }
-
-                            //Общая информация у обычного плейса и у детального
-                            let placeToBd = {
-                                city_id: cityId,
-                                country_id: countryId,
-                                website: place.website && place.website.length < 255 ? place.website : null,
-                                international_phone_number: place.international_phone_number || null,
-                                sight_name: place.name,
-                                original_name: place.name,
-                                formatted_address: place.formatted_address,
-                                google_place_id: place.place_id,
-                                files_ids: [],
-                                check_coordinates: true,
-                                place_type: place.types.filter(type => {
-                                    return dictionary.place_types.list
-                                        .map(({value}) => value)
-                                        .includes(type)
-                                }),
-                                opening_hours: GoogleClient.parseOpeningHours(place.opening_hours?.periods),
-                            }
-
-
-                            //Доп инфа в зависимости от того работаем с детальным плейсом или нет
-                            if (placeDetail) {
-                                placeToBd = {
-                                    ...placeToBd,
-                                    latitude: place.geometry.location.lat,
-                                    longitude: place.geometry.location.lng,
-                                    files_ids: await GoogleClient.getPhotosId(place.photos),
-                                }
-                            }
-
-                            //Доп инфа в зависимости от того работаем с детальным плейсом или нет
-                            if (!placeDetail) {
-                                placeToBd = {
-                                    ...placeToBd,
-                                    latitude: place.geometry.location.lat(),
-                                    longitude: place.geometry.location.lng(),
-                                }
-                            }
-
-
-                            //Получаем цвета для маркеров (для понятной отрисовки на UI)
-                            const formattedTypeColor = {
-                                ...typeColor[GenerationTypeEnums.automatic],
-                                ...typeColor[GenerationTypeEnums.manual],
-                            }
-
-                            //Генерируем маркер на UI
-                            GoogleClient.getMarker(
-                                mapRef.current,
-                                {lat: placeToBd.latitude, lng: placeToBd.longitude},
-                                GoogleClient.generateCustomMarker(formattedTypeColor[type])
-                            )
-
-                            console.log(placeToBd)
-
-                            placesToDB = [...placesToDB, placeToBd]
-
-                            if (i + 1 === places.length) {
-                                //Если есть пагинация продолжаем брать плейсы дальше
-                                if (pagination && pagination.hasNextPage) {
-                                    pagination.nextPage()
-                                    return;
-                                }
-
-                                //Запись всех плейсов в базу
-                                await SightService.createBatch(placesToDB)
-
-                                //Запись в базу о том, в каком квадрате, какой тип плейсов мы достали
-                                await GenerationPlaceService.create({
-                                    country_id: countryId,
-                                    geometry,
-                                    type
-                                })
-
-                                console.log(placesToDB, "placesToDB")
-
-                                resolve()
-                            }
-                        } catch (error) {
-                            return reject({
-                                message: error.message,
-                            })
-                        }
-                    }
-                });
+                resolve()
             })
-
-            return {failed: false};
         }
 
         try {
@@ -364,32 +292,41 @@ export default function GeneratePlace() {
         mapInit(country.geometry)
     }, [generationType, country?.geometry])
 
+
     return (
         <div>
-
             <div style={{display: "flex", gap: 50}}>
                 <div ref={mapBlockRef} style={{width: "70%", height: 500}}/>
                 <div style={{width: "30%"}}>
+
                     <RadioGenerationType generationType={generationType}
                                          setGenerationType={setGenerationType}/>
                     <div style={{paddingTop: 20}}>
-                        {generationType === GenerationTypeEnums.automatic && (
-                            <AutomaticContent typeColor={typeColor[GenerationTypeEnums.automatic]}
-                                              generationFinishCity={generationFinishCity}
-                                              generatePlacesByCity={generatePlacesByCity}
-                                              countryId={countryId}/>
-                        )}
                         {generationType === GenerationTypeEnums.manual && (
-                            <ManualContent typeColor={typeColor[GenerationTypeEnums.manual]}
-                                           generationFinishCity={generationFinishCity}
+                            <ManualContent generationFinishCity={generationFinishCity}
                                            generatePlacesByCity={generatePlacesByCity}
                                            countryId={countryId}
+                                           setLoading={setLoading}
                                            mapRef={mapRef}/>
                         )}
                         {generationType === GenerationTypeEnums.custom && (
                             <CustomContent countryId={countryId} getRectangle={getRectangle} mapRef={mapRef}/>
                         )}
                     </div>
+                    {loading && (
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             version="1.0" width="64px" height="64px"
+                             viewBox="0 0 128 128" >
+                            <rect x="0" y="0" width="100%" height="100%" fill="#f0f2f5"/>
+                            <g>
+                                <path
+                                    d="M64 128A64 64 0 0 1 18.34 19.16L21.16 22a60 60 0 1 0 52.8-17.17l.62-3.95A64 64 0 0 1 64 128z"
+                                    fill="#000000"/>
+                                <animateTransform attributeName="transform" type="rotate" from="0 64 64" to="360 64 64"
+                                                  dur="1400ms" repeatCount="indefinite"/>
+                            </g>
+                        </svg>
+                    )}
                 </div>
             </div>
         </div>

@@ -1,17 +1,30 @@
+/**
+ * external libs
+ */
 import React, {useState} from 'react'
-import StateService from "../../../../../services/admin/state.service";
-import GoogleClient from "../../../../../utils/GoogleClient";
-import CityService from "../../../../../services/admin/city.service";
 import {useParams} from "react-router-dom";
 import {Button, List, Tooltip} from 'antd'
 import {DeleteOutlined} from "@ant-design/icons";
+/**
+ * services
+ */
+import StateService from "../../../../../services/admin/state.service";
+import CityService from "../../../../../services/admin/city.service";
+/**
+ * utils
+ */
+import GoogleClient from "../../../../../utils/GoogleClient";
 
 export default function GenerateCity() {
     const [cities, setCities] = useState(null);
     const [equalGeometryCity, setEqualGeometryCity] = useState(null);
     const {countryId} = useParams();
 
-    const generate = async (countryCode = "PL", minPopulation = 100000) => {
+    const generate = async (countryCode, minPopulation = 100000) => {
+        if(!countryCode){
+            return;
+        }
+
         const isDemo = false;
         const url = isDemo ? "http://geodb-free-service.wirefreethought.com" : "https://wft-geo-db.p.rapidapi.com"
         const LIMIT_RATE = isDemo ? 10 : 100;
@@ -29,7 +42,6 @@ export default function GenerateCity() {
                     ...headers
                 }
             })).json())
-            console.log(i)
             states = [...states, ...resultState.data]
 
             const totalUploadState = LIMIT_RATE * (i + 1);
@@ -49,7 +61,6 @@ export default function GenerateCity() {
                         ...headers
                     }
                 })).json())
-                console.log(i)
                 cities = [...cities, ...resultCity.data
                     .filter(city => city.type === "CITY")
                     .filter(city => !["Białołęka", "Bemowo", "Żoliborz", "Włochy", "Ochota", "Ursus", "Wawer", "Mokotów", "Ursynów", "Wilanów"].includes(city.name))
@@ -110,11 +121,6 @@ export default function GenerateCity() {
             return accum
         }, newEqualGeometryCity)
 
-
-        console.log(cities)
-
-
-
         setCities(cities)
         setEqualGeometryCity(Object.keys(newEqualGeometryCity).length ? newEqualGeometryCity : null)
     }
@@ -137,17 +143,16 @@ export default function GenerateCity() {
     }
 
     const createCity = async () => {
-        // const {id: stateId} = await StateService.create({
-        //     country_id: countryId,
-        //     state_name: "TEST STATE FOR DELETE"
-        // })
+        const {id: stateId} = await StateService.create({
+            country_id: countryId,
+            state_name: "TEST STATE FOR DELETE"
+        })
 
         for (let i = 0; i < cities.length; i++) {
             const city = cities[i];
-            console.log(city)
 
             const cityRequest = {
-                state_id: 56,
+                state_id: stateId,
                 city_name: city.name,
                 original_name: city.name,
                 generation_count_of_squares: 2,
@@ -174,7 +179,7 @@ export default function GenerateCity() {
                 </div>
             )}
             {!cities && (
-                <Button type="primary" onClick={() => generate("FR", 100000)}>
+                <Button type="primary" onClick={() => generate("ES", 150000)}>
                     Generate cities
                 </Button>
             )}

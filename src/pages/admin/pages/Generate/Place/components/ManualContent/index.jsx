@@ -1,8 +1,8 @@
 /**
  * external libs
  */
-import React, { useState, useEffect, useContext } from 'react';
-import {Button, Select} from 'antd';
+import React, {useState, useEffect, useContext} from 'react';
+import {Button, Input, Select} from 'antd';
 /**
  * utils
  */
@@ -16,23 +16,30 @@ import GenerationPlaceService from "../../../../../../../services/admin/generati
  * enums
  */
 import GenerationTypeEnums from "../../../../../../../enums/GenerationType";
+import FoursquarePlaceTypeEnum from "../../../../../../../enums/FoursquarePlaceType";
 /**
  * context
  */
 import {DictionaryContext} from "../../../../../../context/dictionary.context";
 import GoogleClient from "../../../../../../../utils/GoogleClient";
 
-export default function ManualContent({ generatePlacesByCity, countryId, typeColor, generationFinishCity, mapRef }){
+export default function ManualContent({generatePlacesByCity, countryId, setLoading, mapRef}) {
+    const [countOfLimitSearch, setCountOfLimitSearch] = useState(0)
+    const [cityList, setCityList] = useState([])
     const [city, setCity] = useState(null)
-    const [cityList, setCityList] = useState(null)
+    const [types, setTypes] = useState([])
+    const [type, setType] = useState(null)
     const {dictionary} = useContext(DictionaryContext)
 
     const getCity = async (cityId) => {
-        setCity(await CityService.show(cityId))
+        const city = await CityService.show(cityId)
+
+        await getType(city)
+        setCity(city)
     }
 
     const getCityList = async () => {
-        const { data } = await GenerationPlaceService.cityWhiteList({
+        const {data} = await GenerationPlaceService.cityWhiteList({
             country_id: countryId,
             type: GenerationTypeEnums.manual,
             per_page: 1000000
@@ -42,18 +49,54 @@ export default function ManualContent({ generatePlacesByCity, countryId, typeCol
     }
 
     const startManualGenerate = async () => {
-        if(!city){
+        if (!city) {
             return;
         }
 
-        const {failed} = await generatePlacesByCity(city, dictionary.place_types.manual.map(({value}) => value))
+        if(countOfLimitSearch > 50){
+            return;
+        }
+
+        const {failed} = await generatePlacesByCity(city, [type], countOfLimitSearch)
+
+        setLoading(false)
 
         if (failed) {
             console.log('failed END')
             return;
         }
 
-        await generationFinishCity(city.id, GenerationTypeEnums.manual, dictionary.place_types.manual.map(({value}) => value))
+        // await generationFinishCity(city.id, GenerationTypeEnums.manual, dictionary.place_types.manual.map(({value}) => value))
+
+        console.log("END")
+    }
+
+    const getType = async (city) => {
+        const isGeneratedTypes = await GenerationPlaceService.generatedSquare({
+            json: {geometry: city.geometry},
+            eq: {
+                type: Object.keys(FoursquarePlaceTypeEnum.typeIds).reduce((accum, key) => ([
+                    ...accum,
+                    FoursquarePlaceTypeEnum.typeIds[key]
+                ]), [])
+            }
+        })
+
+        const uniqTypesId = isGeneratedTypes.data.map(({type}) => +type)
+
+        setTypes(Object.keys(FoursquarePlaceTypeEnum.typeIds).reduce((accum, key) => {
+            if(uniqTypesId.includes(FoursquarePlaceTypeEnum.typeIds[key])){
+                return accum
+            }
+
+            return [
+                ...accum,
+                {
+                    value: FoursquarePlaceTypeEnum.typeIds[key],
+                    label: PlaceTypeTranslate.getTranslateForFoursquareType([key])
+                }
+            ]
+        }, []))
     }
 
     useEffect(() => {
@@ -79,14 +122,18 @@ export default function ManualContent({ generatePlacesByCity, countryId, typeCol
     }, [])
 
 
-    if(!cityList){
+    if (!cityList) {
         return null
     }
 
     return (
         <div>
             <div style={{display: "flex", gap: 10, alignItems: "center", marginBottom: -10}}>
-                <Button type="primary" onClick={startManualGenerate} disabled={city === null} style={{width: "100%"}}>Manual generation</Button>
+                <Button type="primary"
+                        onClick={startManualGenerate}
+                        disabled={(city === null) || !type || !countOfLimitSearch}
+                        style={{width: "100%"}}>Manual
+                    generation</Button>
             </div>
             <div style={{margin: "20px 0"}}>
                 <Select
@@ -103,14 +150,32 @@ export default function ManualContent({ generatePlacesByCity, countryId, typeCol
                     }}
                     onChange={getCity}
                 />
-            </div>
-            <div style={{display: "flex", flexDirection: "column", gap: 15, marginBottom: 10}}>
-                {Object.keys(typeColor).map(type => (
-                    <div style={{display: "flex", alignItems: "center"}}>
-                        <div style={{width: 10, height: 10, backgroundColor: typeColor[type]}}/>
-                        <span> :{PlaceTypeTranslate.getTranslateForType(type)}</span>
-                    </div>
-                ))}
+                {city && (
+                    <>
+                        <Select
+                            size="large"
+                            placeholder={"Select type"}
+                            options={types}
+                            showSearch={true}
+                            style={{minWidth: "100%", marginTop: 8}}
+                            filterOption={(text, {value, label}) => {
+                                const textLowerCase = text.trim().toLowerCase()
+                                const labelLowerCase = label.toLowerCase()
+                                const valueLowerCase = value.toString().toLowerCase()
+                                return labelLowerCase.includes(textLowerCase) || valueLowerCase.includes(text)
+                            }}
+                            onChange={setType}
+                        />
+                        {type && (
+                            <Input
+                                placeholder="Count of search (max 50)..."
+                                value={countOfLimitSearch}
+                                onChange={e => setCountOfLimitSearch(+e.target.value)}
+                                style={{marginTop: 8, display: 'block'}}
+                            />
+                        )}
+                    </>
+                )}
             </div>
         </div>
     )

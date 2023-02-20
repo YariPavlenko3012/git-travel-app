@@ -1,7 +1,7 @@
 /**
  * external libs
  */
-import React, {useContext, useRef, useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useParams} from "react-router-dom";
 /**
  * components
@@ -10,12 +10,12 @@ import SightUpdateForm from "../../components/Form/SightUpdate";
 /**
  * context
  */
-import {DictionaryContext} from "../../../../../context/dictionary.context";
 /**
  * services
  */
 import SightService from "../../../../../../services/admin/sight.service";
 import GoogleClient from "../../../../../../utils/GoogleClient";
+import FoursquareClient from "../../../../../../utils/FoursquareClient";
 
 const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
@@ -23,28 +23,10 @@ export default function CheckCoordinate() {
     const {sightId} = useParams();
     const mapBlockRef = useRef(null);
     const mapRef = useRef(null);
-    const {dictionary} = useContext(DictionaryContext)
     const [placeList, setPlaceList] = useState([]);
     const [place, setPlace] = useState(null);
     const [currentSight, setCurrentSight] = useState(null);
-    const key = "AIzaSyApPL4vfjbQ_iVFrfE-97KN-ncf8i1NDLU";
 
-    const generateMarker = (color = "#000") => {
-        const pinSVGFilled = "M 12,2 C 8.1340068,2 5,5.1340068 5,9 c 0,5.25 7,13 7,13 0,0 7,-7.75 7,-13 0,-3.8659932 -3.134007,-7 -7,-7 z";
-        const labelOriginFilled = new window.google.maps.Point(12, 9);
-
-
-        return {  // https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerLabel
-            path: pinSVGFilled,
-            anchor: new window.google.maps.Point(12, 17),
-            fillOpacity: 1,
-            fillColor: color,
-            strokeWeight: 2,
-            strokeColor: "white",
-            scale: 2,
-            labelOrigin: labelOriginFilled
-        };
-    }
     const searchPlace = async (sight) => {
         const squareSize = {
             north: sight.latitude + 0.025 / 2, //noth lat
@@ -56,22 +38,27 @@ export default function CheckCoordinate() {
             mapRef.current,
             squareSize
         )
-        const {north, south, east, west,} = squareSize
+        const {north, south, east, west} = squareSize
 
-        const placesList = (await fetch(`https://maps.googleapis.com/maps/api/place/textsearch/json?query=${sight.original_name}&location=${sight.latitude},${sight.longitude}&inputtype=textquery&key=AIzaSyApPL4vfjbQ_iVFrfE-97KN-ncf8i1NDLU`)).json()
-
-
+        const placesList = await FoursquareClient.getPlaces({
+            query: sight.original_name,
+            ll: `${sight.latitude},${sight.longitude}`,
+            radius: 1500,
+            limit: 3
+        })
+        // const placesList = (await fetch(`https://maps.googleapis.com/maps/api/place/textsearch/json?query=${sight.original_name}&location=${sight.latitude},${sight.longitude}&inputtype=textquery&key=AIzaSyApPL4vfjbQ_iVFrfE-97KN-ncf8i1NDLU`)).json()
         // const placesList = (await fetch(`https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${sight.original_name}&language=uk&fields=formatted_address,name,place_id,opening_hours,geometry&locationrestriction=rectangle:${south},${west}|${north},${east}&locationbias=rectangle:${south},${west}|${north},${east}&inputtype=textquery&key=${key}`)).json()
-        const places = await placesList
+        // const places = await placesList
 
-        if (!places.results.length) {
+        if (!placesList.length) {
             return setPlaceList([])
         }
 
-        places.results.forEach( place => {
+        placesList.forEach( place => {
+            console.log(place, "place")
             const marker = GoogleClient.getMarker(
                 mapRef.current,
-                {lat: place.geometry.location.lat, lng: place.geometry.location.lng},
+                {lat: place.geocodes.main.latitude, lng: place.geocodes.main.longitude},
                 GoogleClient.generateCustomMarker("red")
             )
 
@@ -81,52 +68,33 @@ export default function CheckCoordinate() {
             });
         })
 
-        setPlaceList(places.results)
+        setPlaceList(placesList)
     }
     const placeDetails = async (newPlace, place) => {
-        const requestDetailPlace = {
-            placeId: newPlace.place_id,
-            fields: [
-                'international_phone_number',
-                'opening_hours',
-                'website',
-                'geometry',
-                'type',
-                'photo',
-                'formatted_address',
-                'name',
-                'place_id',
-            ]
-        };
+        console.log(newPlace)
+        const placeDetail = await FoursquareClient.getPlacesDetails(newPlace.fsq_id, ["tel","website","hours"])
+        console.log(placeDetail, "111")
 
-        const placeDetail = await GoogleClient.getPlaceDetails(requestDetailPlace.placeId, requestDetailPlace.fields)
-
-        if (placeDetail?.failed) {
+        if (!placeDetail) {
             return setCurrentSight({
                 ...place,
-                google_place_name: place.name,
-                formatted_address: place.formatted_address || place.formatted_address || null,
-                google_place_id: place.place_id,
-                latitude: place.geometry.location.lat,
-                longitude: place.geometry.location.lng,
+                formatted_address: newPlace.location.formatted_address || place.formatted_address || null,
+                foursquare_place_id: newPlace.fsq_id,
+                latitude: newPlace.main.latitude,
+                longitude: newPlace.main.longitude,
             })
         }
+
         setCurrentSight({
             ...place,
-            google_place_name: placeDetail.name,
-            formatted_address: placeDetail.formatted_address || place.formatted_address || null,
-            google_place_id: placeDetail.place_id,
-            latitude: placeDetail.geometry.location.lat,
-            longitude: placeDetail.geometry.location.lng,
-            international_phone_number: placeDetail.international_phone_number || place.international_phone_number || null,
+            formatted_address: newPlace.location.formatted_address || place.formatted_address || null,
+            foursquare_place_id: newPlace.fsq_id,
+            latitude: newPlace.geocodes.main.latitude,
+            longitude: newPlace.geocodes.main.longitude,
+            international_phone_number: placeDetail.tel || place.international_phone_number || null,
             website: placeDetail.website || place.website || null,
-            opening_hours: GoogleClient.parseOpeningHours(placeDetail.opening_hours?.periods) || place.opening_hours || null,
-            place_type: [...new Set([...place.place_type, ...placeDetail.types])]
-                .filter( type => {
-                    return dictionary.place_types.list
-                        .map(({value}) => value)
-                        .includes(type)
-                }),
+            opening_hours: placeDetail?.opening_hours || null,
+            place_type: null
         })
     }
 
@@ -134,36 +102,6 @@ export default function CheckCoordinate() {
         const opt = {
             center: {lat, lng},
             zoom: 14,
-            // restriction: {
-            //     latLngBounds: {
-            //         north: lat + 0.025 / 2, //noth lat
-            //         south: lat - 0.025 / 2, //south lat
-            //         east: lng + 0.025, //noth lng = 0.05
-            //         west: lng - 0.025, //south lng = 0.05
-            //     },
-            //     strictBounds: true
-            // },
-            // styles: [
-            //     {
-            //         "featureType": "administrative",
-            //         "elementType": "all",
-            //         "stylers": [
-            //             {
-            //                 "visibility": "simplified"
-            //             }
-            //         ]
-            //     },
-            //     {
-            //         "featureType": "poi",
-            //         "elementType": "all",
-            //         "stylers": [
-            //             {
-            //                 "visibility": "off"
-            //             }
-            //         ]
-            //     },
-            //
-            // ]
         }
 
         mapRef.current = new window.google.maps.Map(mapBlockRef.current, opt)
@@ -197,10 +135,10 @@ export default function CheckCoordinate() {
                                 №: {index + 1}, {currentPlace.name}
                             </div>
                             <div>
-                                Lat: {currentPlace.geometry.location.lat}, Lng: {currentPlace.geometry.location.lng}
+                                Lat: {currentPlace.geocodes.main.latitude}, Lng: {currentPlace.geocodes.main.longitude}
                             </div>
                             <div>
-                                Address: {currentPlace.formatted_address}
+                                Address: {currentPlace.location.formatted_address}
                             </div>
                         </div>
                     ))}

@@ -59,11 +59,11 @@ export default function SightTable({searchParams}) {
             title: 'Images',
             dataIndex: 'images',
             key: 'images',
-            render: (images) => (
+            render: (images, sight) => (
                 <div style={{display: "flex", alignItems: "center", flexDirection: "column", gap: 5, minWidth: "max-content"}}>
                     <ImageGallery images={images}
                                   renderItem={({file, setImage}) => (
-                                      <img src={file.path} style={{height: 70, minWidth: "max-content"}} alt="photo" onClick={setImage}/>
+                                      <img src={file.path} loading="lazy" style={{height: 70, minWidth: "max-content"}} alt="photo" onClick={setImage}/>
                                   )} />
                 </div>
 

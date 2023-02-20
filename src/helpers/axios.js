@@ -13,16 +13,18 @@ import AuthService from '../services/auth.service';
 import StorageService from "../services/storage.service";
 
 axios.interceptors.request.use(async (req) => {
-	req.headers.Accept = 'application/json';
+
 	req.headers['Content-Type'] = 'application/json';
-	req.headers.Authorization = 'Bearer ' + StorageService.accessToken;
+	req.headers.Authorization = req.headers.Authorization || 'Bearer ' + StorageService.accessToken;
 	req.headers['Api-Key'] = btoa(process.env.REACT_APP_API_KEY);
 
 	return req;
 });
 
 axios.interceptors.response.use(
-	(response) => response.data,
+	(response) => {
+		return response.data
+	},
 	async (error) => {
 
 		if(error?.response?.status === 401){

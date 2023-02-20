@@ -54,8 +54,6 @@ export default function UpdateCityForm({cityId, city, getCity}) {
         }
     }
 
-    console.log(city, "city")
-
     return (
         <FormUI onSubmit={updateCity}
                 initialValues={{

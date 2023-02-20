@@ -6,5 +6,7 @@ export default class PlaceTypeSquareEnum{
     static get city_hall() {return 1}
     static get mosque() {return 1}
     static get embassy() {return 2}
+    static get restaurant() {return 1}
+    static get tourist_attraction() {return 1}
     static get park() {return 1}
 }

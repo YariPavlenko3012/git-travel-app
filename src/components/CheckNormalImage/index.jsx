@@ -13,8 +13,6 @@ export default function CheckNormalImage({children, url}){
         return setIsNormal(img.naturalWidth > 500 && img.naturalHeight > 250)
     };
 
-    console.log()
-
     useEffect(() => {
         getMeta(url)
     }, [url])

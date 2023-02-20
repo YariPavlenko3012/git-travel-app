@@ -9,7 +9,6 @@ export default class GoogleClient {
         return fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&result_type=locality&key=${this.key}`)
             .then(res => res.json())
             .then(city => {
-                console.log(city)
                 if (city.results[0]) {
                     const {northeast, southwest} = city.results[0].geometry.viewport;
 
@@ -29,7 +28,6 @@ export default class GoogleClient {
         return fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&result_type=country&key=${this.key}`)
             .then(res => res.json())
             .then(country => {
-                console.log(country)
                 if (country.results[0]) {
                     const {northeast, southwest} = country.results[0].geometry.viewport;
 
@@ -58,7 +56,7 @@ export default class GoogleClient {
 
     static async getPhotosId( photosList ){
         let filesIds = [];
-        const shortPhotosList = photosList?.filter((_, index) => index < 3) || [];
+        const shortPhotosList = photosList?.filter((_, index) => index === 0) || [];
 
         if(!shortPhotosList.length) {
             return []
@@ -90,8 +88,6 @@ export default class GoogleClient {
             'place_id',
         ]
 
-        console.log(placeId, fields)
-
         const requestDetailPlace = {
             placeId: placeId,
             fields: fields || defaultFields
@@ -100,7 +96,6 @@ export default class GoogleClient {
         return fetch(`https://maps.googleapis.com/maps/api/place/details/json?place_id=${requestDetailPlace.placeId}&fields=${requestDetailPlace.fields.join(",")}&key=${this.key}`)
             .then(res => res.json())
             .then(res => {
-                console.log(res)
                 if(res.status === "OK"){
                     return res.result;
                 }

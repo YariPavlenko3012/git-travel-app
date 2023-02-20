@@ -16,6 +16,8 @@ import CheckNormalImage from "../../../../../components/CheckNormalImage";
  * services
  */
 import CountryService from "../../../../../services/admin/country.service";
+import SightService from "../../../../../services/admin/sight.service";
+import FilesService from "../../../../../services/files.service";
 /**
  * constants
  */
@@ -39,7 +41,7 @@ import styles from '../../../styles/show.module.scss'
 /**
  * enum
  */
-import FileOrientationEnums from '../../../../../enums/FileOrientation'
+import FileOrientationEnums from '../../../../../enums/FileOrientation';
 
 export default function CountryShow() {
     const [country, setCountry] = useState(null);
@@ -49,6 +51,28 @@ export default function CountryShow() {
     const getCountry = async () => {
         setCountry(await CountryService.show(countryId))
     };
+
+    const deleteAllSights = async () => {
+        const {data} = await SightService.list({country_id: countryId, per_page: 500})
+
+        for (let i = 0; i < data.length; i++) {
+            const sight = data[i];
+
+            if (+sight.city.state.country.id === +countryId) {
+                const imagesId = sight.images.map(({id}) => id)
+                if (imagesId.length) {
+                    await FilesService.delete({files_ids: imagesId})
+                }
+
+                await SightService.delete(sight.id)
+            }
+
+
+            if (i % 50 === 0) {
+                console.log(i)
+            }
+        }
+    }
 
     useEffect(() => {
         getCountry();
@@ -65,11 +89,11 @@ export default function CountryShow() {
                     {country.name}
                 </div>
                 <div style={{display: "flex", alignItems: "center", gap: 10}}>
-                    <Link to={ADMIN_MAKE_GENERATE_CITY_URI(countryId)}>
-                        <Button type="primary" className={styles.show__btn}>
-                            Generate City
-                        </Button>
-                    </Link>
+                    {/*<Link to={ADMIN_MAKE_GENERATE_CITY_URI(countryId)}>*/}
+                    {/*    <Button type="primary" className={styles.show__btn}>*/}
+                    {/*        Generate City*/}
+                    {/*    </Button>*/}
+                    {/*</Link>*/}
                     <Link to={ADMIN_MAKE_GENERATE_PLACE_URI(countryId)}>
                         <Button type="primary" className={styles.show__btn}>
                             Generate Sight
@@ -326,7 +350,7 @@ export default function CountryShow() {
 // })
 
 
-const getData = async (countryCode = "PL", minPopulation= 100000) => {
+const getData = async (countryCode = "PL", minPopulation = 100000) => {
     const isDemo = false;
     const url = isDemo ? "http://geodb-free-service.wirefreethought.com" : "https://wft-geo-db.p.rapidapi.com"
     const LIMIT_RATE = isDemo ? 10 : 100;
@@ -344,7 +368,6 @@ const getData = async (countryCode = "PL", minPopulation= 100000) => {
                 ...headers
             }
         })).json())
-        console.log(i)
         states = [...states, ...resultState.data]
 
         const totalUploadState = LIMIT_RATE * (i + 1);
@@ -364,7 +387,6 @@ const getData = async (countryCode = "PL", minPopulation= 100000) => {
                     ...headers
                 }
             })).json())
-            console.log(i)
             cities[i] = [...(cities[i] || []), ...resultCity.data
                 .filter(city => city.type === "CITY")
                 .filter(city => !["Białołęka", "Bemowo", "Żoliborz", "Włochy", "Ochota", "Ursus", "Wawer", "Mokotów", "Ursynów", "Wilanów"].includes(city.name))

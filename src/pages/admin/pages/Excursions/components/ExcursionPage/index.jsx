@@ -212,8 +212,6 @@ export default function ExcursionsPage({pageType, handler}) {
             )
         })
 
-        console.log(currentDay, "currentDay")
-
         const polylinePath = currentDay
             .reduce((polylineResult, excursionItem) => {
                 const path = excursionItem.routes[ExcursionRouteTypeEnum.walking].path || [];
@@ -228,8 +226,6 @@ export default function ExcursionsPage({pageType, handler}) {
                 return new window.google.maps.LatLng(lat, lng);
             }, []);
 
-        console.log(polylinePath, "currentDay")
-
 
         polylineRef.current = GoogleClient.getPolyline(
             mapRef.current,
@@ -240,7 +236,6 @@ export default function ExcursionsPage({pageType, handler}) {
     }
 
     const changePriority = async (day, oldPriority, newPriority) => {
-        console.log(day, oldPriority, newPriority)
         let copyExcursionFormData = JSON.parse(JSON.stringify(excursionFormData));
         const currentDay = copyExcursionFormData.items[day - 1];
 
