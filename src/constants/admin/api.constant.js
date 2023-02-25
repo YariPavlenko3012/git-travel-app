@@ -10,8 +10,7 @@ export const API_ADMIN_COUNTRY_CREATE = `${ADMIN_COUNTRY}`;
 export const API_MAKE_ADMIN_COUNTRY_UPDATE = countryId => `${ADMIN_COUNTRY}/${countryId}`;
 export const API_MAKE_ADMIN_COUNTRY_DELETE = countryId => `${ADMIN_COUNTRY}/${countryId}`;
 export const API_MAKE_ADMIN_COUNTRY_SHOW = countryId => `${ADMIN_COUNTRY}/${countryId}`;
-export const API_MAKE_ADMIN_COUNTRY_TRANSLATE_CREATE = countryId =>  `${ADMIN_COUNTRY}/${countryId}/languages`;
-export const API_MAKE_ADMIN_COUNTRY_TRANSLATE_EDIT = (countryId, translateId) => `${ADMIN_COUNTRY}/${countryId}/languages/${translateId}`;
+export const API_MAKE_ADMIN_COUNTRY_TRANSLATE_EDIT = (countryId) => `${ADMIN_COUNTRY}/${countryId}/translations`;
 
 const ADMIN_STATE = `${ADMIN}/states`;
 export const API_ADMIN_STATE_LIST = `${ADMIN_STATE}`;
@@ -34,7 +33,7 @@ export const API_MAKE_ADMIN_SIGHT_NEED_REVIEW = sightId => `${ADMIN_SIGHT}/${sig
 export const API_MAKE_ADMIN_SIGHT_GET_CITIES = sightId => `${ADMIN_SIGHT}/${sightId}/cities`;
 export const API_MAKE_ADMIN_SIGHT_SHOW = sightId => `${ADMIN_SIGHT}/${sightId}`;
 export const API_MAKE_ADMIN_SIGHT_TRANSLATE_CREATE = sightId => `${ADMIN_SIGHT}/${sightId}/languages`;
-export const API_MAKE_ADMIN_SIGHT_TRANSLATE_EDIT = (sightId, translateId) => `${ADMIN_SIGHT}/${sightId}/languages/${translateId}`;
+export const API_MAKE_ADMIN_SIGHT_TRANSLATE_EDIT = (sightId) => `${ADMIN_SIGHT}/${sightId}/translations`;
 
 const ADMIN_CITY = `${ADMIN}/cities`;
 export const API_ADMIN_CITY_LIST = `${ADMIN_CITY}`;
@@ -44,9 +43,7 @@ export const API_MAKE_ADMIN_CITY_EDIT = cityId => `${ADMIN_CITY}/${cityId}`;
 export const API_MAKE_ADMIN_CITY_SHOW = cityId => `${ADMIN_CITY}/${cityId}`;
 export const API_MAKE_ADMIN_CITY_CHANGE_STATUS = cityId => `${ADMIN_CITY}/${cityId}/work-status`;
 export const API_MAKE_ADMIN_CITY_TRANSLATE_CREATE = cityId =>`${ADMIN_CITY}/${cityId}/languages`;
-export const API_MAKE_ADMIN_CITY_TRANSLATE_EDIT = (cityId, translateId) => `${ADMIN_CITY}/${cityId}/languages/${translateId}`;
-export const API_MAKE_ADMIN_CITY_TAXI_CREATE = cityId => `${ADMIN_CITY}/${cityId}/cabs`;
-export const API_MAKE_ADMIN_CITY_TAXI_EDIT = (cityId, cabId) => `${ADMIN_CITY}/${cityId}/cabs/${cabId}`;
+export const API_MAKE_ADMIN_CITY_TRANSLATE_EDIT = (cityId) => `${ADMIN_CITY}/${cityId}/translations`;
 
 const ADMIN_GENERATE_PLACE = `${ADMIN}/generation`;
 export const ADMIN_CREATE_SQUARE_GENERATE_PLACE = `${ADMIN_GENERATE_PLACE}/place`;

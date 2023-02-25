@@ -17,7 +17,6 @@ import TimePicker from "../TimePicker";
  * services
  */
 import SightService from "../../../../../../services/admin/sight.service";
-import StateService from "../../../../../../services/admin/state.service";
 /**
  * context
  */
@@ -35,9 +34,9 @@ export default function SightCreateForm({ cityId }) {
 
     const createSight = async (value) => {
         const copyValues = JSON.parse(JSON.stringify(value));
-        copyValues.files_ids = (copyValues.sight.images || []).map(({id}) => id);
-        copyValues.sight.original_name = copyValues.sight.sight_name;
-        copyValues.sight.work_status = "pending";
+        copyValues.files_ids = (copyValues.images || []).map(({id}) => id);
+        copyValues.original_name = copyValues.translatable?.name || "";
+        copyValues.work_status = "pending";
 
         const {id} = await SightService.create(copyValues);
 
@@ -49,8 +48,8 @@ export default function SightCreateForm({ cityId }) {
 
         if(coordinates.length === 2){
             setTimeout(() => {
-                setValues("sight.latitude", coordinates[0])
-                setValues("sight.longitude", coordinates[1])
+                setValues("latitude", coordinates[0])
+                setValues("longitude", coordinates[1])
             }, 0)
         }
     }
@@ -70,12 +69,10 @@ export default function SightCreateForm({ cityId }) {
     return (
       <FormUI onSubmit={createSight}
               initialValues={{
-                  sight: {
-                      country_id: city.state.country.id,
-                      city_id: +cityId,
-                      user_id: user.id,
-                      opening_hours: null
-                  },
+                  country_id: city.state.country.id,
+                  city_id: +cityId,
+                  user_id: user.id,
+                  opening_hours: null
               }}
               render={({handleSubmit, values, submitting, form}) => (
                 <Form onFinish={handleSubmit} layout="vertical">
@@ -83,7 +80,7 @@ export default function SightCreateForm({ cityId }) {
                     <div>
                         <div style={{display: "flex", flexWrap: "wrap", alignItems: "flex-end"}}>
                             <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
-                                <FieldSelectCity name="sight.city_id"
+                                <FieldSelectCity name="city_id"
                                                  required={true}
                                                  label="City"
                                                  disabled={true}
@@ -93,34 +90,34 @@ export default function SightCreateForm({ cityId }) {
                             </div>
                             <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
                                 <FieldInput label="Sight name"
-                                            name="sight.sight_name"
+                                            name="translatable.name"
                                             placeholder="Enter name"
                                             required={true}/>
                             </div>
                             <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
                                 <FieldInput label="Sight Description"
-                                            name="sight.sight_description"
+                                            name="translatable.description"
                                             placeholder="Enter description"
                                             required={true}/>
                             </div>
                             <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
                                 <FieldInput label="Latitude"
-                                            name="sight.latitude"
-                                            value={values.sight.latitude || ""}
+                                            name="latitude"
+                                            value={values.latitude || ""}
                                             onPaste={val => changeCoordinates(val, form.mutators.setValue)}
                                             placeholder="Enter latitude"
                                             required={true}/>
                             </div>
                             <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
                                 <FieldInput label="Longitude"
-                                            name="sight.longitude"
-                                            value={values.sight.longitude || ""}
+                                            name="longitude"
+                                            value={values.longitude || ""}
                                             onPaste={val => changeCoordinates(val, form.mutators.setValue)}
                                             placeholder="Enter longitude"
                                             required={true}/>
                             </div>
                             <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
-                                <FieldSelectPlaceType name="sight.place_type"
+                                <FieldSelectPlaceType name="place_type"
                                                  required={true}
                                                  label="Place type"
                                                  select={{
@@ -128,9 +125,24 @@ export default function SightCreateForm({ cityId }) {
                                                      showSearch: true,
                                                  }}/>
                             </div>
+                            <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
+                                <FieldInput label="Formatted address"
+                                            name="formatted_address"
+                                            placeholder="Enter formatted address"/>
+                            </div>
+                            <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
+                                <FieldInput label="Website"
+                                            name="website"
+                                            placeholder="Enter website"/>
+                            </div>
+                            <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
+                                <FieldInput label="Phone_number"
+                                            name="international_phone_number"
+                                            placeholder="Enter phone number"/>
+                            </div>
                         </div>
-                        <TimePicker value={values.sight.opening_hours} name={"sight.opening_hours"} setValue={form.mutators.setValue}/>
-                        <UploadFiles name="sight.images" fileName="images"  keyFiles="files_ids"/>
+                        <TimePicker value={values.opening_hours} name={"opening_hours"} setValue={form.mutators.setValue}/>
+                        <UploadFiles name="images" fileName="images"  keyFiles="files_ids"/>
                     </div>
                     <Button variant="primary" htmlType="submit" disabled={submitting}>Create</Button>
                 </Form>

@@ -36,17 +36,17 @@ export default function CreateCountryForm() {
     const createCountry = async (value) => {
         const copyValues = JSON.parse(JSON.stringify(value));
 
-        if(value.country.latitude && value.country.longitude){
-            copyValues.geometry = await GoogleClient.getGeometryForCountry(value.country.latitude, value.country.longitude)
+        if(value.latitude && value.longitude){
+            copyValues.geometry = await GoogleClient.getGeometryForCountry(value.latitude, value.longitude)
             if(!copyValues.geometry){
                 alert("Change coordinate. We have some error in google api")
                 return;
             }
         }
 
-        copyValues.country.landscape_image = copyValues.country.landscape_image?.id || null;
-        copyValues.country.portrait_image = copyValues.country.portrait_image?.id || null;
-        copyValues.country.original_name = copyValues.country.country_name;
+        copyValues.landscape_image = copyValues.landscape_image?.id || null;
+        copyValues.portrait_image = copyValues.portrait_image?.id || null;
+        copyValues.original_name = copyValues.translatable?.name || "";
 
         const {id} = await CountryService.create(copyValues);
 
@@ -56,10 +56,8 @@ export default function CreateCountryForm() {
     return (
       <FormUI onSubmit={createCountry}
               initialValues={{
-                  country: {
-                      has_seas: false,
-                      has_mountains: false,
-                  },
+                  has_seas: false,
+                  has_mountains: false,
               }}
               render={({handleSubmit, submitting}) => (
                 <Form onFinish={handleSubmit} layout="vertical">
@@ -67,14 +65,14 @@ export default function CreateCountryForm() {
                     <div>
                         <div style={{display: "flex", flexWrap: "wrap", alignItems: "flex-end"}}>
                             <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
-                                <FieldSelectCurrency name="country.currency"
+                                <FieldSelectCurrency name="currency_id"
                                                      required={true}
                                                      select={{
                                                          showSearch: true,
                                                      }}/>
                             </div>
                             <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
-                                <FieldSelectLanguage name="country.official_language"
+                                <FieldSelectLanguage name="official_language"
                                                      required={true}
                                                      select={{
                                                          showSearch: true,
@@ -82,75 +80,75 @@ export default function CreateCountryForm() {
                             </div>
                             <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
                                 <FieldInput label="Population"
-                                            name="country.population"
+                                            name="population"
                                             type="number"
                                             placeholder="Enter population"
                                             required={true}/>
                             </div>
                             <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
                                 <FieldInput label="Name"
-                                            name="country.country_name"
+                                            name="translatable.name"
                                             placeholder="Enter name"
                                             required={true}/>
                             </div>
                             <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
                                 <FieldInput label="Description"
-                                            name="country.country_description"
+                                            name="translatable.description"
                                             placeholder="Enter description"
                                             required={true}/>
                             </div>
                             <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
                                 <FieldInput label="Country code"
-                                            name="country.country_code_in_iso_3166_1_format"
+                                            name="country_code_in_iso_3166_1_format"
                                             placeholder="Enter country code (2 char)"
                                             required={true}/>
                             </div>
                             <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
                                 <FieldInput label="Emergency number"
-                                            name="country.ambulance_number"
+                                            name="ambulance_number"
                                             type="number"
                                             placeholder="Enter emergency number (911)"
                                             required={true}/>
                             </div>
                             <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
                                 <FieldInput label="Safety index"
-                                            name="country.safety_index"
+                                            name="safety_index"
                                             type="number"
                                             placeholder="Enter safety index"
                                             required={true}/>
                             </div>
                             <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
                                 <FieldInput label="Happiness rating"
-                                            name="country.happiness_rating"
+                                            name="happiness_rating"
                                             type="number"
                                             placeholder="Enter happiness rating"
                                             required={true}/>
                             </div>
                             <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
                                 <FieldInput label="Area"
-                                            name="country.country_area"
+                                            name="country_area"
                                             type="number"
                                             placeholder="Enter area"
                                             required={true}/>
                             </div>
                             <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
                                 <FieldInput label="Highest point"
-                                            name="country.highest_point"
+                                            name="highest_point"
                                             type="number"
                                             placeholder="Enter highest point"
                                             required={true}/>
                             </div>
                             <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10, display: "flex"}}>
-                                <FieldCheckbox label='Has seas' name="country.has_seas"/>
-                                <FieldCheckbox label='Has mountains' name="country.has_mountains"/>
+                                <FieldCheckbox label='Has seas' name="has_seas"/>
+                                <FieldCheckbox label='Has mountains' name="has_mountains"/>
                             </div>
                         </div>
                         <div style={{display: "flex", flexWrap: "wrap", alignItems: "flex-end"}}>
                             <div style={{marginRight: 10}}>
-                                <UploadOrientalFile oriental={FileOrientationEnums.landscape} name="country.landscape_image"/>
+                                <UploadOrientalFile oriental={FileOrientationEnums.landscape} name="landscape_image"/>
                             </div>
                             <div style={{marginRight: 10}}>
-                                <UploadOrientalFile oriental={FileOrientationEnums.portrait} name="country.portrait_image"/>
+                                <UploadOrientalFile oriental={FileOrientationEnums.portrait} name="portrait_image"/>
                             </div>
                         </div>
                     </div>

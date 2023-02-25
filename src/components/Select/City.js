@@ -19,7 +19,7 @@ export default function FieldSelectCity({label = "City", name, select, onChange,
     const [cityOptions, setCityOptions] = useState([]);
 
     const getCityOptions = async () => {
-        setCityOptions(data || Select.optionsByRow(await DictionaryService.cities(searchParams || {}), "id", "name"))
+        setCityOptions(data || Select.optionsByRow((await DictionaryService.cities(searchParams || {})).data, "id", "name"))
     };
 
 

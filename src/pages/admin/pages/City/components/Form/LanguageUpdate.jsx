@@ -28,8 +28,8 @@ const languages_list = [
 ];
 
 export default function UpdateCityLanguageForm({cityId, getCity, city}) {
-    const updateCityTranslate = async (value) => {
-        await CityService.updateTranslate(cityId, value.id, {city_id: cityId, ...value});
+    const updateCityTranslate = async (values) => {
+        await CityService.updateTranslate(cityId, values);
         await getCity(cityId)
     };
 
@@ -37,12 +37,14 @@ export default function UpdateCityLanguageForm({cityId, getCity, city}) {
       <div style={{display: "flex", justifyContent: "space-between"}}>
           {languages_list.map((lang) => (
             <FormUI onSubmit={updateCityTranslate}
-                    initialValues={city.languages.reduce((accum, translate) => {
+                    initialValues={city.translations.reduce((accum, translate) => {
                         if(translate.language.id === lang.id) {
                             accum = {
                                 ...accum,
-                                id: translate.id,
-                                city_name: translate.city_name,
+                                language_id: translate.language.id,
+                                fields: {
+                                    name: translate.fields.name,
+                                }
                             }
                         }
                         return accum
@@ -53,7 +55,7 @@ export default function UpdateCityLanguageForm({cityId, getCity, city}) {
                             style={{width: `calc(100% / ${languages_list.length} - 10px)`}}>
                           <h5>{lang.name} - {lang.lang_code}</h5>
                           <FieldInput label="City name"
-                                      name="city_name"
+                                      name="fields.name"
                                       placeholder={`Enter city name (${lang.lang_code})`}
                                       required={true}/>
                           <Button variant="primary" htmlType="submit">Update</Button>

@@ -50,7 +50,6 @@ export default function CountryTable({searchParams}) {
             title: 'Capital',
             dataIndex: 'capital',
             key: 'capital',
-            ...SearchInputForTable(),
             render: capital => {
                 if(capital?.id) {
                     return (
@@ -149,16 +148,20 @@ export default function CountryTable({searchParams}) {
 
     const getCountry = async (params = {}) => {
         const copyParams = JSON.parse(JSON.stringify(params));
+        copyParams.match = {}
 
         if(copyParams.filters) {
             if(copyParams.filters.name) {
-                copyParams.country_name = copyParams.filters.name[0];
-            }
-
-            if(copyParams.filters.capital) {
-                copyParams.city_name = copyParams.filters.capital[0];
+                copyParams.match = {
+                    ...copyParams.match,
+                    name: {
+                        query: copyParams.filters.name[0],
+                    }
+                }
             }
         }
+
+        delete copyParams.filters
 
         return await CountryService.list(copyParams)
     };

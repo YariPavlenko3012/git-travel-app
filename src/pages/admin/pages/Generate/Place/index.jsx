@@ -207,11 +207,13 @@ export default function GeneratePlace() {
                         let placeToBd = {
                             city_id: city.id,
                             country_id: countryId,
-                            sight_name: place.name,
+                            translatable: {
+                                name: place.name
+                            },
                             original_name: place.name,
                             formatted_address: place.location.formatted_address,
                             foursquare_place_id: place.fsq_id,
-                            check_coordinates: true,
+                            check_coordinates: false,
                             place_type: [type],
                             latitude: place.geocodes.main.latitude,
                             longitude: place.geocodes.main.longitude,
@@ -242,7 +244,7 @@ export default function GeneratePlace() {
                     }
                 }
 
-                await SightService.createBatch(placesToDB.filter(place => place.files_ids.length))
+                await SightService.createBatch({sights: placesToDB.filter(place => place.files_ids.length)})
 
                 await GenerationPlaceService.create({
                     country_id: countryId,

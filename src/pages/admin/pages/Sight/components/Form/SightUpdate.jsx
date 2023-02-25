@@ -21,13 +21,11 @@ import SightService from "../../../../../../services/admin/sight.service";
 import {AuthContext} from "../../../../../context/auth.context";
 import TimePicker from "../TimePicker";
 import {AlertContext} from "../../../../../context/alert.context";
+import ChangeWorkStatus from "../../../../components/Tables/Sights/components/ChangeWorkStatus";
 
 export default function UpdateSightForm({sight, sightId, getSight}) {
     const {user} = useContext(AuthContext);
     const {setAlertSuccess} = useContext(AlertContext)
-
-    console.log(sight)
-    console.log(sightId)
 
     const updateSight = async (value) => {
         console.log(value)
@@ -36,17 +34,12 @@ export default function UpdateSightForm({sight, sightId, getSight}) {
 
 
         //Delete after finish check coordinate
-        if(!getSight){
-            copyValues.check_coordinates = true;
-        }
         await SightService.update(sightId, copyValues)
         setAlertSuccess("Sight successfully updated")
         if(getSight){
             await getSight(sightId)
         }
     };
-
-    console.log(sight, "sight")
 
     return (
       <FormUI onSubmit={updateSight}
@@ -57,6 +50,7 @@ export default function UpdateSightForm({sight, sightId, getSight}) {
                   longitude: sight.longitude,
                   formatted_address: sight.formatted_address,
                   website: sight.website,
+                  check_coordinates: sight.check_coordinates,
                   international_phone_number: sight.international_phone_number,
                   images: sight.images,
                   original_name: sight.original_name || sight.name,
@@ -117,6 +111,9 @@ export default function UpdateSightForm({sight, sightId, getSight}) {
                             <FieldInput label="Phone_number"
                                         name="international_phone_number"
                                         placeholder="Enter phone number"/>
+                        </div>
+                        <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
+                            <ChangeWorkStatus workStatus={sight.work_status} sightId={sight.id}/>
                         </div>
                     </div>
                     <TimePicker value={values.opening_hours} name={"opening_hours"} setValue={form.mutators.setValue}/>

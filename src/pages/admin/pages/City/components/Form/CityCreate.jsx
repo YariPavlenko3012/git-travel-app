@@ -35,17 +35,17 @@ export default function CreateCityForm({stateId}) {
     const createCity = async (value) => {
         const copyValues = JSON.parse(JSON.stringify(value));
 
-        if(value.city.latitude && value.city.longitude){
-            copyValues.geometry = await GoogleClient.getGeometryForCity(value.city.latitude, value.city.longitude)
+        if(value.latitude && value.longitude){
+            copyValues.geometry = await GoogleClient.getGeometryForCity(value.latitude, value.longitude)
             if(!copyValues.geometry){
                 alert("Change coordinate. We have some error in google api")
                 return;
             }
         }
 
-        copyValues.city.landscape_image = copyValues.city.landscape_image?.id || null;
-        copyValues.city.portrait_image = copyValues.city.portrait_image?.id || null;
-        copyValues.city.original_name = copyValues.city.city_name;
+        copyValues.landscape_image = copyValues.landscape_image?.id || null;
+        copyValues.portrait_image = copyValues.portrait_image?.id || null;
+        copyValues.original_name = copyValues.translatable?.name || "";
 
         const {id} = await CityService.create(copyValues);
 
@@ -57,8 +57,8 @@ export default function CreateCityForm({stateId}) {
 
         if(coordinates.length === 2){
             setTimeout(() => {
-                setValues("city.latitude", coordinates[0].trim())
-                setValues("city.longitude", coordinates[1].trim())
+                setValues("latitude", coordinates[0].trim())
+                setValues("longitude", coordinates[1].trim())
             }, 0)
         }
     }
@@ -66,11 +66,8 @@ export default function CreateCityForm({stateId}) {
     return (
         <FormUI onSubmit={createCity}
                 initialValues={{
-                    city: {
-                        state_id: +stateId,
-                        generation_count_of_squares: 1,
-                    },
-                    cabs: [],
+                    state_id: +stateId,
+                    generation_count_of_squares: 1,
                 }}
                 render={({handleSubmit, form, submitting}) => (
                     <Form onFinish={handleSubmit} layout="vertical">
@@ -78,7 +75,7 @@ export default function CreateCityForm({stateId}) {
                         <div>
                             <div style={{display: "flex", flexWrap: "wrap", alignItems: "flex-end"}}>
                                 <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
-                                    <FieldSelectState name="city.state_id"
+                                    <FieldSelectState name="state_id"
                                                       required={true}
                                                       disabled={true}
                                                       select={{
@@ -87,14 +84,14 @@ export default function CreateCityForm({stateId}) {
                                 </div>
                                 <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
                                     <FieldInput label="City name"
-                                                name={`city.city_name`}
+                                                name={`translatable.name`}
                                                 placeholder={`Enter city name`}
                                                 required={true}/>
 
                                 </div>
                                 <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
                                     <FieldInput label="Latitude"
-                                                name={`city.latitude`}
+                                                name={`latitude`}
                                                 onPaste={val => changeCoordinates(val, form.mutators.setValue)}
                                                 placeholder={`Enter latitude`}
                                                 required={true}/>
@@ -102,7 +99,7 @@ export default function CreateCityForm({stateId}) {
                                 </div>
                                 <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
                                     <FieldInput label="Longitude"
-                                                name={`city.longitude`}
+                                                name={`longitude`}
                                                 onPaste={val => changeCoordinates(val, form.mutators.setValue)}
                                                 placeholder={`Enter longitude`}
                                                 required={true}/>
@@ -111,10 +108,10 @@ export default function CreateCityForm({stateId}) {
                             </div>
                             <div style={{display: "flex", flexWrap: "wrap", alignItems: "flex-end"}}>
                                 <div style={{marginRight: 10}}>
-                                    <UploadOrientalFile oriental={FileOrientationEnums.landscape} name="city.landscape_image"/>
+                                    <UploadOrientalFile oriental={FileOrientationEnums.landscape} name="landscape_image"/>
                                 </div>
                                 <div style={{marginRight: 10}}>
-                                    <UploadOrientalFile oriental={FileOrientationEnums.portrait} name="city.portrait_image"/>
+                                    <UploadOrientalFile oriental={FileOrientationEnums.portrait} name="portrait_image"/>
                                 </div>
                             </div>
                         </div>

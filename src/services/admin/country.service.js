@@ -10,7 +10,6 @@ import {
     API_ADMIN_COUNTRY_LIST,
     API_MAKE_ADMIN_COUNTRY_DELETE,
     API_MAKE_ADMIN_COUNTRY_SHOW,
-    API_MAKE_ADMIN_COUNTRY_TRANSLATE_CREATE,
     API_MAKE_ADMIN_COUNTRY_TRANSLATE_EDIT,
     API_MAKE_ADMIN_COUNTRY_UPDATE,
 } from "../../constants/admin/api.constant";
@@ -49,12 +48,8 @@ export default class CountryService {
         return new CountryModel(await axios.put(API_MAKE_ADMIN_COUNTRY_UPDATE(countryId), data));
     }
 
-    static async createTranslate(countryId, data) {
-        return await axios.post(API_MAKE_ADMIN_COUNTRY_TRANSLATE_CREATE(countryId), data);
-    }
-
-    static async updateTranslate(countryId, translateId, data) {
-        return await axios.put(API_MAKE_ADMIN_COUNTRY_TRANSLATE_EDIT(countryId, translateId), data);
+    static async updateTranslate(countryId, data) {
+        return await axios.put(API_MAKE_ADMIN_COUNTRY_TRANSLATE_EDIT(countryId), data);
     }
 
     static async delete(countryId) {

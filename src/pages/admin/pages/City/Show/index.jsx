@@ -121,19 +121,6 @@ export default function CityShow() {
                       </span>
                       <Link to={ADMIN_MAKE_SHOW_STATE_URI(city?.state?.id)}>{city?.state?.name}</Link>
                   </p>
-                  <p className={styles.show__item}>
-                      <span className={styles.show__item_key}>
-                          Cab name:
-                      </span>
-                      {city.cabs.map(({name}) => name).join(",")}
-                  </p>
-                  <p className={styles.show__item}>
-                      <span className={styles.show__item_key}>
-                          Cab phone number:
-                      </span>
-                      {city.cabs.map(({phone_number}) => phone_number).join(",")}
-
-                  </p>
               </div>
               <div style={{display: "flex", gap: 10, marginBottom: 10}}>
                   <CheckNormalImage url={city.landscape_image?.path}>

@@ -1,6 +1,6 @@
 import MediaModel from "../media.model";
-import CityModel from "../City/city.model";
-import SightLanguageModel from "./language.model";
+import SightLanguageFieldsModel from "./languageFields.model";
+import TranslateModel from "../translate.model";
 
 export default class SightModel {
     constructor(data = {}) {
@@ -20,7 +20,7 @@ export default class SightModel {
         this.formatted_address = data.formatted_address;
         this.website = data.website;
         this.international_phone_number = data.international_phone_number;
-        this.languages = (data.languages || []).map( language => new SightLanguageModel(language));
+        this.translations = (data.translations || []).map( translate => new TranslateModel(translate, SightLanguageFieldsModel));
         this.images = (data.images || []).map( image => new MediaModel(image));
     }
 };

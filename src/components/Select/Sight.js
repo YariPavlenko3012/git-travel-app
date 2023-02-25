@@ -20,7 +20,7 @@ export default function FieldSelectSight({label = true, name, select, onChange, 
     const [sightOptions, setSightOptions] = useState([]);
 
     const getSightOptions = async () => {
-        setSightOptions(data || Select.optionsByRow(await DictionaryService.sights(searchParams), "id", "name"))
+        setSightOptions(data || Select.optionsByRow((await DictionaryService.sights(searchParams)).data, "id", "name"))
     };
 
     useEffect(() => {

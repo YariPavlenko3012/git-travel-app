@@ -22,6 +22,7 @@ import FileOrientationEnums from "../../../../../../enums/FileOrientation";
  * utils
  */
 import GoogleClient from "../../../../../../utils/GoogleClient";
+import ChangeWorkStatus from "../../../../components/Tables/Cities/components/ChangeWorkStatus";
 
 export default function UpdateCityForm({cityId, city, getCity}) {
     const updateCity = async (value) => {
@@ -70,13 +71,6 @@ export default function UpdateCityForm({cityId, city, getCity}) {
                         <h5>General</h5>
                         <div style={{display: "flex", flexWrap: "wrap", alignItems: "flex-end"}}>
                             <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
-                                <FieldSelectState name="state_id"
-                                                  required={true}
-                                                  select={{
-                                                      showSearch: true,
-                                                  }}/>
-                            </div>
-                            <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
                                 <FieldInput label="Latitude"
                                             name={`latitude`}
                                             onPaste={val => changeCoordinates(val, form.mutators.setValue)}
@@ -110,6 +104,9 @@ export default function UpdateCityForm({cityId, city, getCity}) {
                                             }}
                                             required={true}/>
 
+                            </div>
+                            <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
+                                <ChangeWorkStatus workStatus={city.work_status} cityId={city.id}/>
                             </div>
                         </div>
                         <div style={{display: "flex", flexWrap: "wrap", alignItems: "flex-end"}}>

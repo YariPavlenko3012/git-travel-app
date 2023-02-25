@@ -2,7 +2,8 @@ import CityModel from '../City/city.model'
 import MediaModel from "../media.model";
 import CurrencyModel from "../currency.model";
 import LanguageModel from "../language.model";
-import CountryLanguageModel from "./language.model";
+import CountryFieldsModel from "./languageFields.model";
+import TranslateModel from "../translate.model";
 
 
 const portraitImage = {
@@ -25,7 +26,7 @@ export default class CountryModel {
         this.currency = new CurrencyModel(data.currency);
         this.name = data.name;
         this.geometry = data.geometry;
-        this.languages = (data.languages || []).map( language => new CountryLanguageModel(language));
+        this.translations = (data.translations || []).map( translate => new TranslateModel(translate, CountryFieldsModel));
         this.description = data.description;
         this.ambulance_number = data.ambulance_number;
         this.original_name = data.original_name;

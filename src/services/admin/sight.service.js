@@ -61,12 +61,9 @@ export default class SightService {
         return await axios.delete(API_MAKE_ADMIN_SIGHT_DELETE(sightId));
     }
 
-    static async createTranslate(sightId, data) {
-        return await axios.post(API_MAKE_ADMIN_SIGHT_TRANSLATE_CREATE(sightId), data);
-    }
 
-    static async updateTranslate(sightId, translateId, data) {
-        return await axios.put(API_MAKE_ADMIN_SIGHT_TRANSLATE_EDIT(sightId, translateId), data);
+    static async updateTranslate(sightId, data) {
+        return await axios.put(API_MAKE_ADMIN_SIGHT_TRANSLATE_EDIT(sightId), data);
     }
 
     static async updateWorkStatus(sightId, workStatus) {

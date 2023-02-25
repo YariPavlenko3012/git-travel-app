@@ -1,6 +1,6 @@
 import MediaModel from '../media.model'
-import CabModel from "./cabs.model";
-import CityLanguageModel from "./language.model";
+import CityLanguageModel from "./languageFields.model";
+import TranslateModel from "../translate.model";
 
 const portraitImage = {
     id: null,
@@ -24,11 +24,9 @@ export default class CityModel {
         this.work_status = data.work_status;
         this.generation_count_of_squares = data.generation_count_of_squares;
         this.original_name = data.original_name;
-        this.languages = (data.languages || []).map( language => new CityLanguageModel(language));
-        this.images = (data.images || []).map( image => new MediaModel(image));
+        this.translations = (data.translations || []).map( translate => new TranslateModel(translate, CityLanguageModel));
         this.population = data.population;
         this.landscape_image =  new MediaModel(data.landscape_image || landscapeImage);
         this.portrait_image =  new MediaModel(data.portrait_image || portraitImage)
-        this.cabs = (data.cabs || []).map( cab => new CabModel(cab));
     }
 }

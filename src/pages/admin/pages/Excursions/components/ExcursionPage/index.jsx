@@ -34,6 +34,7 @@ import ExcursionPageTypeEnum from "../../../../../../enums/ExcursionPageType";
 import {DictionaryContext} from "../../../../../context/dictionary.context";
 import PlaceTypeEnum from "../../../../../../enums/PlaceType";
 import RouteTypeInfo from "../RouteTypeInfo";
+import {ExcursionUtils} from "../../../../../../utils/Excursion";
 
 
 export default function ExcursionsPage({pageType, handler}) {
@@ -261,6 +262,29 @@ export default function ExcursionsPage({pageType, handler}) {
         await generateRoutesByGoogle(newExcursionFormData, currentDay - 1)
     }
 
+    const handlerAction = async () => {
+        const requestExcursionFormData = JSON.parse(JSON.stringify(excursionFormData))
+
+        const time = ExcursionUtils.time(requestExcursionFormData.items, ExcursionRouteTypeEnum.walking)
+        const placeCount = ExcursionUtils.placeCount(requestExcursionFormData.items)
+        const daysCount = ExcursionUtils.daysCount(requestExcursionFormData.items)
+        const images = ExcursionUtils.images(requestExcursionFormData.items)
+
+        console.log({
+            time,
+            placeCount,
+            daysCount,
+            images,
+        })
+
+        requestExcursionFormData.items = requestExcursionFormData.items.reduce((itemResult, day) => ([
+            ...itemResult,
+            ...day,
+        ]), [])
+
+        // await handler(requestExcursionFormData)
+    }
+
     const init = async () => {
         let country = null;
         let city = null;
@@ -283,6 +307,7 @@ export default function ExcursionsPage({pageType, handler}) {
 
         await mapInit(country?.geometry);
     }
+
 
     useEffect(() => {
         init()
@@ -363,7 +388,7 @@ export default function ExcursionsPage({pageType, handler}) {
                         <Button onClick={finishDay}>Finish day</Button>
                     )}
                     {excursionFormData.name && !!excursionFormData.items.length && !!excursionFormData.items[0].length && !excursionFormData.items[excursionFormData.items.length - 1].length && (
-                        <Button onClick={() => handler(excursionFormData)}>{pageType === ExcursionPageTypeEnum.edit ? "EDIT" : "CREATE"} EXCURSION</Button>
+                        <Button onClick={handlerAction}>{pageType === ExcursionPageTypeEnum.edit ? "EDIT" : "CREATE"} EXCURSION</Button>
                     )}
                 </div>
             )}

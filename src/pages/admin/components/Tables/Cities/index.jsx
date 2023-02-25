@@ -85,7 +85,6 @@ export default function CityTable({ searchParams }) {
             title: 'Country',
             dataIndex: 'country',
             key: 'country',
-            ...SearchInputForTable(),
             render: (_, city) => {
                 return <Link to={ADMIN_MAKE_SHOW_COUNTRY_URI(city?.state?.country?.id)} style={{color: city?.state?.country?.name ? "#0d6efd" : "red"}}>{city?.state?.country?.name || "No name"}</Link>
             }
@@ -112,24 +111,6 @@ export default function CityTable({ searchParams }) {
                     {city.longitude || "-"}
                 </div>
             )
-        },
-        {
-            title: 'Image count',
-            dataIndex: 'images',
-            key: 'images',
-            render: images => <div style={{color: images.length ? "#0d6efd" : "red"}}>{images.length || 0}</div>,
-        },
-        {
-            title: 'Taxi name',
-            dataIndex: 'cab_name',
-            key: 'cab_name',
-            render: (_, row) => row.cabs.length ? row.cabs.map(({name}) => name || "-").join(",") : "-"
-        },
-        {
-            title: 'Taxi phone',
-            dataIndex: 'cab_phone_number',
-            key: 'cab_phone_number',
-            render: (_, row) => row.cabs.length ? row.cabs.map(({phone_number}) => phone_number || "-").join(",") : "-"
         },
         {
             title: 'Action',
@@ -168,16 +149,20 @@ export default function CityTable({ searchParams }) {
 
     const getCity = async (params = {}) => {
         const copyParams = JSON.parse(JSON.stringify(params));
+        copyParams.match = {}
 
-        if (copyParams.filters) {
-            if (copyParams.filters.country) {
-                copyParams.country_name = copyParams.filters.country[0];
-            }
-
-            if (copyParams.filters.name) {
-                copyParams.city_name = copyParams.filters.name[0];
+        if(copyParams.filters) {
+            if(copyParams.filters.name) {
+                copyParams.match = {
+                    ...copyParams.match,
+                    name: {
+                        query: copyParams.filters.name[0],
+                    }
+                }
             }
         }
+
+        delete copyParams.filters
 
         return await CityService.list(copyParams)
     };

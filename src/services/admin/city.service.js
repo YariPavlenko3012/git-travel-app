@@ -55,16 +55,8 @@ export default class CityService {
         return new CityModel(await axios.put(API_MAKE_ADMIN_CITY_EDIT(cityId), data));
     }
 
-    static async createTaxi(cityId, data) {
-        return await axios.post(API_MAKE_ADMIN_CITY_TAXI_CREATE(cityId), data);
-    }
-
-    static async updateTaxi(cityId, cabId, data) {
-        return await axios.put(API_MAKE_ADMIN_CITY_TAXI_EDIT(cityId, cabId), data);
-    }
-
-    static async updateTranslate(cityId, translateId, data) {
-        return await axios.put(API_MAKE_ADMIN_CITY_TRANSLATE_EDIT(cityId, translateId), data);
+    static async updateTranslate(cityId, data) {
+        return await axios.put(API_MAKE_ADMIN_CITY_TRANSLATE_EDIT(cityId), data);
     }
 
     static async updateWorkStatus(cityId, workStatus) {

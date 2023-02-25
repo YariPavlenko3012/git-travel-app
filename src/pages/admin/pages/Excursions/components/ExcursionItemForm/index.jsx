@@ -78,7 +78,7 @@ export default function ExcursionItemForm({
                             <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
                                 <FieldSelectPlace name="place_id"
                                                   required={true}
-                                                  data={Select.optionsByRow(places, "id", "name")}
+                                                  data={Select.optionsByRow(places.data, "id", "name")}
                                                   select={{
                                                       showSearch: true,
                                                   }}/>

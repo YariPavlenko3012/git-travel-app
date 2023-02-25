@@ -60,7 +60,7 @@ export default function UpdateCountryForm({countryId, getCountry, country}) {
     return (
       <FormUI onSubmit={updateCountry}
               initialValues={{
-                  currency: +country.currency?.id,
+                  currency_id: +country.currency?.id,
                   official_language: +country.official_language?.id,
                   capital: +country.capital?.id,
                   population: country.population,
@@ -84,7 +84,7 @@ export default function UpdateCountryForm({countryId, getCountry, country}) {
                     <h5>General</h5>
                     <div style={{display: "flex", flexWrap: "wrap", alignItems: "flex-end"}}>
                         <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
-                            <FieldSelectCurrency name="currency"
+                            <FieldSelectCurrency name="currency_id"
                                                  required={true}
                                                  select={{
                                                      showSearch: true,

@@ -49,10 +49,6 @@ export default class StateService {
         return new StateModel(await axios.put(API_MAKE_ADMIN_STATE_UPDATE(stateId), data));
     }
 
-    static async createTranslate(stateId, data) {
-        return await axios.post(API_MAKE_ADMIN_STATE_TRANSLATE_CREATE(stateId), data);
-    }
-
     static async updateTranslate(stateId, translateId, data) {
         return await axios.put(API_MAKE_ADMIN_STATE_TRANSLATE_EDIT(stateId, translateId), data);
     }

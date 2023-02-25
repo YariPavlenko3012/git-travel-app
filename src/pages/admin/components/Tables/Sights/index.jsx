@@ -200,12 +200,20 @@ export default function SightTable({searchParams}) {
 
     const getSight = async (params = {}) => {
         const copyParams = JSON.parse(JSON.stringify(params));
+        copyParams.match = {}
 
         if(copyParams.filters) {
-            if(copyParams.filters?.name) {
-                copyParams.sight_name = copyParams.filters.name[0];
+            if(copyParams.filters.name) {
+                copyParams.match = {
+                    ...copyParams.match,
+                    name: {
+                        query: copyParams.filters.name[0],
+                    }
+                }
             }
         }
+
+        delete copyParams.filters
 
         return await SightService.list(copyParams)
     };

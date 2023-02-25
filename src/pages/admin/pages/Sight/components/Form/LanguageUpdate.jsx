@@ -28,13 +28,8 @@ const languages_list = [
 ];
 
 export default function LanguageUpdateForm({sightId, sight, getSight}) {
-    const updateSightTranslate = async (value) => {
-        console.log(value, "value")
-        await SightService.updateTranslate(sightId, value.id, {
-            sight_id: sightId,
-            sight_description: value.sight_description || "",
-            sight_name: value.sight_name || "",
-        });
+    const updateSightTranslate = async (values) => {
+        await SightService.updateTranslate(sightId, values);
         await getSight(sightId)
     };
 
@@ -42,13 +37,15 @@ export default function LanguageUpdateForm({sightId, sight, getSight}) {
       <div style={{display: "flex", justifyContent: "space-between"}}>
           {languages_list.map((lang) => (
             <FormUI onSubmit={updateSightTranslate}
-                    initialValues={sight.languages.reduce((accum, translate) => {
+                    initialValues={sight.translations.reduce((accum, translate) => {
                         if(translate.language.id === lang.id) {
                             accum = {
                                 ...accum,
-                                id: translate.id,
-                                sight_name: translate.sight_name,
-                                sight_description: translate.sight_description,
+                                language_id: translate.language.id,
+                                fields: {
+                                    name: translate.fields.name,
+                                    description: translate.fields.description,
+                                }
                             }
                         }
                         return accum
@@ -59,11 +56,11 @@ export default function LanguageUpdateForm({sightId, sight, getSight}) {
                             style={{width: `calc(100% / ${languages_list.length} - 10px)`}}>
                           <h5>{lang.name} - {lang.lang_code}</h5>
                           <FieldInput label="Sight name"
-                                      name="sight_name"
+                                      name="fields.name"
                                       placeholder={`Enter sight name (${lang.lang_code})`}
                                       required={true}/>
                           <FieldTextarea label="Sight description"
-                                         name="sight_description"
+                                         name="fields.description"
                                          placeholder={`Enter sight description (${lang.lang_code})`}
                                          required={true}/>
                           <Button variant="primary" htmlType="submit">Update</Button>

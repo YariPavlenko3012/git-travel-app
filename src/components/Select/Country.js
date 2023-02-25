@@ -20,7 +20,7 @@ export default function FieldSelectCountry({label = true, name, select, onChange
     const [countryOptions, setCountryOptions] = useState([]);
 
     const getCountryOptions = async () => {
-        setCountryOptions(data || Select.optionsByRow(await DictionaryService.countries(searchParams), "id", "name"))
+        setCountryOptions(data || Select.optionsByRow((await DictionaryService.countries(searchParams)).data, "id", "name"))
     };
 
     useEffect(() => {
