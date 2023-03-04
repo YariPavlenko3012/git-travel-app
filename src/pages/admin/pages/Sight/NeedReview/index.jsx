@@ -58,7 +58,7 @@ export default function NeedReview(){
                         placeholder={"Select city"}
                         options={Select.optionsByRow(cityList, "id", "name")}
                         showSearch={true}
-                        defaultValue={sight.city.id}
+                        defaultValue={+sight.city.id}
                         style={{minWidth: "200px"}}
                         filterOption={(text, {value, label}) => {
                             const textLowerCase = text.trim().toLowerCase()
@@ -140,7 +140,7 @@ export default function NeedReview(){
 
     const getSightWithNeedReview = async (params) => {
         setIsReady(false)
-        setSights(await SightService.list({ ...params, per_page: 5, eq: {need_review: [1]}  }))
+        setSights(await SightService.list({ ...params, per_page: 5, eq: {need_review: [1]}}))
         setIsReady(true)
     }
 

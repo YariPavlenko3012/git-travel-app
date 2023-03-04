@@ -30,7 +30,25 @@ export default class CityService {
         let cityList = await axios.get(API_ADMIN_CITY_LIST, {
             params,
             paramsSerializer: params => {
-                return QueryString.stringify(params)
+                return QueryString.stringify({
+                    ...params,
+                    include: {
+                        translation: null,
+                        portraitImage: null,
+                        landscapeImage: null,
+                        state: {
+                            include: {
+                                translation: null,
+                            }
+                        },
+                        country: {
+                            include: {
+                                translation: null,
+                            }
+                        },
+                        ...params.include
+                    }
+                })
             }
         });
 
@@ -39,8 +57,29 @@ export default class CityService {
         return cityList;
     }
 
-    static async show(cityId) {
-        return new CityModel(await axios.get(API_MAKE_ADMIN_CITY_SHOW(cityId)));
+    static async show(cityId, params = {}) {
+        return new CityModel(await axios.get(API_MAKE_ADMIN_CITY_SHOW(cityId, {
+            params,
+            paramsSerializer: params => {
+                return QueryString.stringify({
+                    ...params,
+                    include: {
+                        translation: null,
+                        state: {
+                            include: {
+                                translation: null,
+                            }
+                        },
+                        country: {
+                            include: {
+                                translation: null,
+                            }
+                        },
+                        ...params.include
+                    }
+                })
+            }
+        })));
     }
 
     static async create(data) {

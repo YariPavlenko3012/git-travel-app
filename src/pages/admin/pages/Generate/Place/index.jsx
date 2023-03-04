@@ -269,9 +269,9 @@ export default function GeneratePlace() {
 
     const generationFinishCity = async (cityId, generationType, placeTypes) => {
         await GenerationPlaceService.finish({
-            "city_id": cityId,
-            "generation_type": generationType,
-            "types": placeTypes
+            city_id: cityId,
+            generation_type: generationType,
+            types: placeTypes
         })
     }
 

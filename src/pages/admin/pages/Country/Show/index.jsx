@@ -55,7 +55,7 @@ export default function CountryShow() {
     };
 
     const deleteAllSights = async () => {
-        const {data} = await SightService.list({country_id: countryId, per_page: 500})
+        const {data} = await SightService.list({relation: {city: {relation: { state: { relation: { country: {eq: {id: [countryId]}}}}}}}, per_page: 500})
 
         for (let i = 0; i < data.length; i++) {
             const sight = data[i];
@@ -96,6 +96,11 @@ export default function CountryShow() {
                     {/*        Generate City*/}
                     {/*    </Button>*/}
                     {/*</Link>*/}
+                    <UserCan checkRole={RolesEnum.super_admin}>
+                        <Button type="primary" className={styles.show__btn} onClick={deleteAllSights}>
+                            Delete All Sight
+                        </Button>
+                    </UserCan>
                     <UserCan checkRole={RolesEnum.super_admin}>
                         <Link to={ADMIN_MAKE_GENERATE_PLACE_URI(countryId)}>
                             <Button type="primary" className={styles.show__btn}>
@@ -228,7 +233,6 @@ export default function CountryShow() {
                     </CheckNormalImage>
                 </div>
             </div>
-
             <Tabs type="card">
                 <Tabs.TabPane tab="State" key="1">
                     <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
@@ -239,7 +243,7 @@ export default function CountryShow() {
                             </Button>
                         </Link>
                     </h3>
-                    <StatesTable searchParams={{country_id: countryId}}/>
+                    <StatesTable searchParams={{relation: {country: {eq: {id: [countryId]}}}}}/>
                 </Tabs.TabPane>
                 <Tabs.TabPane tab="City" key="2">
                     <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
@@ -248,7 +252,7 @@ export default function CountryShow() {
                     <Tabs type="card">
                         {dictionary.work_statuses.city.map(({label, value}) => (
                             <Tabs.TabPane tab={label} key={value}>
-                                <CitiesTable searchParams={{country_id: countryId, work_status: value}}/>
+                                <CitiesTable searchParams={{eq: {work_status: [value]}, relation: {state: {relation: {country: {eq: {id: [countryId]}}}}}}}/>
                             </Tabs.TabPane>
                         ))}
                     </Tabs>
@@ -260,7 +264,7 @@ export default function CountryShow() {
                     <Tabs type="card">
                         {dictionary.work_statuses.sight.map(({label, value}) => (
                             <Tabs.TabPane tab={label} key={value}>
-                                <SightsTable searchParams={{country_id: countryId, eq: {work_status: [value]}}}/>
+                                <SightsTable searchParams={{eq: {work_status: [value]}, relation: {city: {relation: {state: {relation: {country: {eq: {id: [countryId]}}}}}}}}}/>
                             </Tabs.TabPane>
                         ))}
                     </Tabs>
@@ -269,164 +273,3 @@ export default function CountryShow() {
         </div>
     )
 }
-
-//
-// const getData = async (countryCode) => {
-//     for (let i = 0; ; i++) {
-//         const {data: states} = await (await fetch(`https://wft-geo-db.p.rapidapi.com/v1/geo/countries/${countryCode}/regions?limit=1&offset=${i}`, {
-//             headers: {
-//                 'X-RapidAPI-Key': '9b6599ddebmsh70080c0c4b276c4p172c5ajsn58e3d1228228',
-//                 'X-RapidAPI-Host': 'wft-geo-db.p.rapidapi.com'
-//             }
-//         })).json()
-//         const [state] = states
-//         console.log(state, "state")
-//
-//         if (i === 2) {
-//             break
-//         }
-//     }
-// }
-// const getData = async (countryCode) => {
-//     fetch(`https://wft-geo-db.p.rapidapi.com/v1/geo/countries/${countryCode}/regions?limit=3&offset=0`, {
-//         headers: {
-//             'X-RapidAPI-Key': '9b6599ddebmsh70080c0c4b276c4p172c5ajsn58e3d1228228',
-//             'X-RapidAPI-Host': 'wft-geo-db.p.rapidapi.com'
-//         }
-//     })
-//         .then(res => res.json())
-//         .then(res => console.log(res))
-// }
-
-// fetch(`http://geodb-free-service.wirefreethought.com/v1/geo/countries/${countryCode}/regions?limit=1&offset=0`)
-//     .then(res => res.json())
-//     .then(res => {
-//         Promise.all(new Array(Math.ceil(res.metadata.totalCount / 5)).fill(1).map((_, index) => {
-//             return fetch(`http://geodb-free-service.wirefreethought.com/v1/geo/countries/${countryCode}/regions?limit=5&offset=${index * 5}`)
-//                 .then(res => res.json())
-//                 .then(res => res)
-//         }))
-//             .then(res => {
-//                 const states = res.reduce((acc, state) => {
-//                     return [...acc, ...state.data]
-//                 }, [])
-//
-//                 Promise.all(states.map( ({isoCode}) => {
-//
-//                     return fetch(`http://geodb-free-service.wirefreethought.com/v1/geo/countries/${countryCode}/regions/${isoCode}/cities?minPopulation=40000&hateoasMode=false&limit=1&offset=0`)
-//                         .then(res => res.json())
-//                         .then(res => res)
-//                 }))
-//                     .then(res => {
-//                         Promise.all(states.map(({isoCode, name}, index) => {
-//                             return Promise.all(new Array(Math.ceil(res[index].metadata.totalCount / 10)).fill(1).map(({metadata}, index) => {
-//                                 return fetch(`http://geodb-free-service.wirefreethought.com/v1/geo/countries/${countryCode}/regions/${isoCode}/cities?minPopulation=40000&hateoasMode=false&limit=10&offset=${index * 10}`)
-//                                     .then(res => res.json())
-//                                     .then(res => res.data.filter(city => city.type === "CITY").map(city => ({
-//                                         ...city,
-//                                         latitude: city.latitude,
-//                                         longitude: city.longitude,
-//                                         cityName: city.name.split(" County")[0],
-//                                         stateName: name
-//                                     })))
-//                             }))
-//
-//                         }))
-//                             .then(cities => {
-//                                 const results = states.reduce((acc, state) => {
-//                                     acc[state.name] = []
-//                                     return acc
-//                                 }, {})
-//
-//                                 cities.forEach((currentCitiesList) => {
-//                                     currentCitiesList.forEach(currentCities => {
-//                                         currentCities.forEach((city) => {
-//                                             const {stateName, ...rest} = city;
-//                                             results[stateName] = [...results[stateName], rest]
-//                                         })
-//                                     })
-//                                 })
-//
-//                                 console.log(results)
-//                             })
-//                     })
-//             })
-// })
-
-
-const getData = async (countryCode = "PL", minPopulation = 100000) => {
-    const isDemo = false;
-    const url = isDemo ? "http://geodb-free-service.wirefreethought.com" : "https://wft-geo-db.p.rapidapi.com"
-    const LIMIT_RATE = isDemo ? 10 : 100;
-
-    const headers = {
-        'X-RapidAPI-Key': '9b6599ddebmsh70080c0c4b276c4p172c5ajsn58e3d1228228',
-        'X-RapidAPI-Host': 'wft-geo-db.p.rapidapi.com',
-    }
-    let states = [];
-
-    for (let i = 0; ; i++) {
-        const resultState = await ((await fetch(`${url}/v1/geo/countries/${countryCode}/regions?limit=${LIMIT_RATE}&offset=${LIMIT_RATE * i}`, {
-            headers: {
-                "Content-Type": "application/json",
-                ...headers
-            }
-        })).json())
-        states = [...states, ...resultState.data]
-
-        const totalUploadState = LIMIT_RATE * (i + 1);
-        if (totalUploadState >= resultState.metadata.totalCount) {
-            break;
-        }
-    }
-
-    const cities = []
-
-    for (let i = 0; i < states.length; i++) {
-        const stateIso = states[i].isoCode;
-        for (let j = 0; ; j++) {
-            const resultCity = await ((await fetch(`${url}/v1/geo/countries/${countryCode}/regions/${stateIso}/cities?minPopulation=${minPopulation}&hateoasMode=false&limit=${LIMIT_RATE}&offset=${LIMIT_RATE * j}`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    ...headers
-                }
-            })).json())
-            cities[i] = [...(cities[i] || []), ...resultCity.data
-                .filter(city => city.type === "CITY")
-                .filter(city => !["Białołęka", "Bemowo", "Żoliborz", "Włochy", "Ochota", "Ursus", "Wawer", "Mokotów", "Ursynów", "Wilanów"].includes(city.name))
-                .map(city => ({
-                    ...city,
-                    latitude: city.latitude,
-                    longitude: city.longitude,
-                    cityName: city.name.split(" County")[0],
-                    stateName: states[i].name
-                }))]
-
-            const totalUploadState = LIMIT_RATE * (j + 1);
-            if (totalUploadState >= resultCity.metadata.totalCount) {
-                break;
-            }
-        }
-    }
-
-    const list = states.reduce((acc, state) => {
-        acc[state.name] = []
-        return acc
-    }, {})
-
-    for (let i = 0; i < states.length; i++) {
-        const state = states[i];
-
-        list[state.name] = cities[i].map((city) => ({
-            latitude: city.latitude,
-            longitude: city.longitude,
-            name: city.name,
-        }))
-    }
-
-    console.log("States: ", states)
-    console.log("Cities: ", cities.reduce((accum, cities) => [...accum, ...cities], []))
-    console.log("List: ", list)
-}
-
-

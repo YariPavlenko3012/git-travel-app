@@ -8,8 +8,8 @@ import axios from 'axios'
 import {
     ADMIN_CREATE_FINISH_STATUS_BY_CITY_GENERATE_PLACE,
     ADMIN_CREATE_SQUARE_GENERATE_PLACE,
-    ADMIN_GET_CITY_WHITE_LIST_GENERATE_PLACE,
     ADMIN_GET_GENERATED_SQUARE_GENERATE_PLACE,
+    API_ADMIN_CITY_LIST,
     API_ADMIN_SIGHT_DOWNLOAD_IMAGE,
 } from "../../constants/admin/api.constant";
 import {QueryString} from "../../utils/Querystring";
@@ -38,11 +38,34 @@ export default class GenerationPlaceService {
         })
     }
 
-    static async cityWhiteList(params) {
-        let cityList =  await axios.get(ADMIN_GET_CITY_WHITE_LIST_GENERATE_PLACE, {
+    static async cityWhiteList({country_id, type, ...params}) {
+        let cityList =  await axios.get(API_ADMIN_CITY_LIST, {
             params,
             paramsSerializer: params => {
-                return QueryString.stringify(params)
+                return QueryString.stringify({
+                    ...params,
+                    relation: {
+                        state: {
+                            relation: {
+                                country: {
+                                    eq: {
+                                        id: [country_id]
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    noRelation: {
+                        generatedTypes: {
+                            eq: {
+                                generation_type: [type]
+                            }
+                        }
+                    },
+                    include: {
+                        translation: null
+                    },
+                })
             }
         })
 

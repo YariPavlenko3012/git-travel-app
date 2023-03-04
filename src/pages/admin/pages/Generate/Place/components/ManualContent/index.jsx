@@ -23,7 +23,7 @@ import FoursquarePlaceTypeEnum from "../../../../../../../enums/FoursquarePlaceT
 import {DictionaryContext} from "../../../../../../context/dictionary.context";
 import GoogleClient from "../../../../../../../utils/GoogleClient";
 
-export default function ManualContent({generatePlacesByCity, countryId, setLoading, mapRef}) {
+export default function ManualContent({generatePlacesByCity, generationFinishCity, countryId, setLoading, mapRef}) {
     const [countOfLimitSearch, setCountOfLimitSearch] = useState(0)
     const [cityList, setCityList] = useState([])
     const [city, setCity] = useState(null)
@@ -66,7 +66,7 @@ export default function ManualContent({generatePlacesByCity, countryId, setLoadi
             return;
         }
 
-        // await generationFinishCity(city.id, GenerationTypeEnums.manual, dictionary.place_types.manual.map(({value}) => value))
+        await generationFinishCity(city.id, GenerationTypeEnums.manual, dictionary.place_types.list.map(({value}) => value))
 
         console.log("END")
     }

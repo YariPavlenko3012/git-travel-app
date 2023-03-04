@@ -86,7 +86,7 @@ export default function CityTable({ searchParams }) {
             dataIndex: 'country',
             key: 'country',
             render: (_, city) => {
-                return <Link to={ADMIN_MAKE_SHOW_COUNTRY_URI(city?.state?.country?.id)} style={{color: city?.state?.country?.name ? "#0d6efd" : "red"}}>{city?.state?.country?.name || "No name"}</Link>
+                return <Link to={ADMIN_MAKE_SHOW_COUNTRY_URI(city?.country?.id)} style={{color: city?.country?.name ? "#0d6efd" : "red"}}>{city?.country?.name || "No name"}</Link>
             }
         },
         {
@@ -192,6 +192,8 @@ export default function CityTable({ searchParams }) {
     if(!cities){
         return <div>Loader...</div>
     }
+
+    console.log(cities, "cities")
 
     return (
       <Table data={cities}

@@ -51,11 +51,12 @@ export default function CountryTable({searchParams}) {
             dataIndex: 'capital',
             key: 'capital',
             render: capital => {
-                if(capital?.id) {
+                if (capital?.id) {
                     return (
-                      <Link to={ADMIN_MAKE_SHOW_CITY_URI(capital.id)} style={{color: capital.name ? "#0d6efd" : "red"}}>
-                          {capital.name || "No name"}
-                      </Link>
+                        <Link to={ADMIN_MAKE_SHOW_CITY_URI(capital.id)}
+                              style={{color: capital.name ? "#0d6efd" : "red"}}>
+                            {capital.name || "No name"}
+                        </Link>
                     )
                 }
 
@@ -79,7 +80,7 @@ export default function CountryTable({searchParams}) {
             dataIndex: 'official_language',
             key: 'official_language',
             render: official_language => <Link
-              to={ADMIN_MAKE_SHOW_LANGUAGE_URI(official_language.id)}>{official_language.name}</Link>,
+                to={ADMIN_MAKE_SHOW_LANGUAGE_URI(official_language.id)}>{official_language.name}</Link>,
         },
         {
             title: 'Population',
@@ -128,20 +129,20 @@ export default function CountryTable({searchParams}) {
             dataIndex: 'action',
             key: 'action',
             render: (_, row) => (
-              <Space size={10}>
-                  <Tooltip title="View country">
-                      <Button type="primary" onClick={() => history.push(ADMIN_MAKE_SHOW_COUNTRY_URI(row.id))}
-                              icon={<EyeOutlined/>} size={20}/>
-                  </Tooltip>
-                  <Tooltip title="Edit country">
-                      <Button type="primary" onClick={() => history.push(ADMIN_MAKE_EDIT_COUNTRY_URI(row.id))}
-                              icon={<EditOutlined/>} size={20}/>
-                  </Tooltip>
-                  <Tooltip title="Create excursion">
-                      <Button type="primary" onClick={() => history.push(ADMIN_MAKE_EXCURSION_CREATE(row.id))}
-                              icon={<RollbackOutlined/>} size={20}/>
-                  </Tooltip>
-              </Space>
+                <Space size={10}>
+                    <Tooltip title="View country">
+                        <Button type="primary" onClick={() => history.push(ADMIN_MAKE_SHOW_COUNTRY_URI(row.id))}
+                                icon={<EyeOutlined/>} size={20}/>
+                    </Tooltip>
+                    <Tooltip title="Edit country">
+                        <Button type="primary" onClick={() => history.push(ADMIN_MAKE_EDIT_COUNTRY_URI(row.id))}
+                                icon={<EditOutlined/>} size={20}/>
+                    </Tooltip>
+                    <Tooltip title="Create excursion">
+                        <Button type="primary" onClick={() => history.push(ADMIN_MAKE_EXCURSION_CREATE(row.id))}
+                                icon={<RollbackOutlined/>} size={20}/>
+                    </Tooltip>
+                </Space>
             )
         },
     ]), []);
@@ -150,8 +151,8 @@ export default function CountryTable({searchParams}) {
         const copyParams = JSON.parse(JSON.stringify(params));
         copyParams.match = {}
 
-        if(copyParams.filters) {
-            if(copyParams.filters.name) {
+        if (copyParams.filters) {
+            if (copyParams.filters.name) {
                 copyParams.match = {
                     ...copyParams.match,
                     name: {
@@ -180,15 +181,15 @@ export default function CountryTable({searchParams}) {
         getCountryHandler()
     }, [])
 
-    if(!countries){
+    if (!countries) {
         return <div>Loader...</div>
     }
 
     return (
-      <Table data={countries}
-             columns={columns}
-             fetchingData={getCountryHandler}
-             loader={!isReady}
-      />
+        <Table data={countries}
+               columns={columns}
+               fetchingData={getCountryHandler}
+               loader={!isReady}
+        />
     )
 }

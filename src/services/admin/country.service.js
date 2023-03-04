@@ -27,7 +27,20 @@ export default class CountryService {
         let countryList = await axios.get(API_ADMIN_COUNTRY_LIST, {
             params,
             paramsSerializer: params => {
-                return QueryString.stringify(params)
+                return QueryString.stringify({
+                    ...params,
+                    include: {
+                        translation: null,
+                        officialLanguage: null,
+                        currency: null,
+                        capital: {
+                            include: {
+                                translation: null,
+                            }
+                        },
+                        ...params.include,
+                    }
+                })
             }
         });
 
@@ -36,8 +49,26 @@ export default class CountryService {
         return countryList;
     }
 
-    static async show(countryId) {
-        return new CountryModel(await axios.get(API_MAKE_ADMIN_COUNTRY_SHOW(countryId)));
+    static async show(countryId, params = {}) {
+        return new CountryModel(await axios.get(API_MAKE_ADMIN_COUNTRY_SHOW(countryId), {
+            params,
+            paramsSerializer: params => {
+                return QueryString.stringify({
+                    ...params,
+                    include: {
+                        translation: null,
+                        officialLanguage: null,
+                        currency: null,
+                        capital: {
+                            include: {
+                                translation: null,
+                            }
+                        },
+                        ...params.include,
+                    }
+                })
+            }
+        }));
     }
 
     static async create(data) {

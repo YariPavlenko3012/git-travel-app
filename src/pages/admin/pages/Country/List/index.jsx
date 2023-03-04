@@ -30,10 +30,10 @@ export default function CountryList({history}) {
             </h3>
             <Tabs type="card">
                 <Tabs.TabPane tab="Completed" key="1">
-                    <CountryTable searchParams={{has_capital: 1}}/>
+                    <CountryTable searchParams={{notNull: ["capital_id"]}}/>
                 </Tabs.TabPane>
                 <Tabs.TabPane tab="Without capital" key="2">
-                    <CountryTable searchParams={{has_capital: 0}}/>
+                    <CountryTable searchParams={{isNull: ["capital_id"]}}/>
                 </Tabs.TabPane>
             </Tabs>
         </div>

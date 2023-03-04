@@ -5,6 +5,7 @@ import React, {useMemo, useState, useEffect} from 'react';
 import {Link, useHistory} from 'react-router-dom'
 import {Button, Space, Tooltip} from 'antd'
 import {EditOutlined, EyeOutlined} from '@ant-design/icons'
+import merge from 'deepmerge'
 /**
  * components
  */
@@ -64,13 +65,13 @@ export default function StatesTable({searchParams}) {
         setStates(await StateService.list(params))
     };
 
-    const getStateHandler = async (params) => {
+    const getStateHandler = async (params = {}) => {
         setIsReady(false)
-        await getState({
-            ...QueryString.parseQueryString("?" + (window.location.hash.split("?")[1] || "")),
-            ...searchParams,
-            ...params,
-        })
+        await getState(merge.all([
+            QueryString.parseQueryString("?" + (window.location.hash.split("?")[1] || "")),
+            searchParams,
+            params
+        ]))
         setIsReady(true)
     }
 

@@ -1,6 +1,8 @@
 import MediaModel from '../media.model'
 import CityLanguageModel from "./languageFields.model";
 import TranslateModel from "../translate.model";
+import StateModel from "../State/state.model";
+import CountryModel from "../Country/country.model";
 
 const portraitImage = {
     id: null,
@@ -15,12 +17,13 @@ const landscapeImage = {
 export default class CityModel {
     constructor(data = {}) {
         this.id = data.id;
-        this.name = data.name;
-        this.description = data.description;
-        this.state = data.state;
+        this.name = data.translation?.name || "";
+        this.description = data.translation?.description || "";
+        this.state = new StateModel(data.state || {});
         this.latitude = data.latitude;
         this.longitude = data.longitude;
         this.geometry = data.geometry;
+        this.country = new CountryModel(data.country || {});
         this.work_status = data.work_status;
         this.generation_count_of_squares = data.generation_count_of_squares;
         this.original_name = data.original_name;

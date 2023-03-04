@@ -25,17 +25,67 @@ import {QueryString} from "../../utils/Querystring";
  * model
  */
 import SightModel from "../../model/Sight/sight.model";
+import CityModel from "../../model/City/city.model";
 
 export default class SightService {
-    static async show(sightId) {
-        return new SightModel(await axios.get(API_MAKE_ADMIN_SIGHT_SHOW(sightId)));
+    static async show(sightId, params = {}) {
+        return new SightModel(await axios.get(API_MAKE_ADMIN_SIGHT_SHOW(sightId, {
+            params,
+            paramsSerializer: params => {
+                return QueryString.stringify({
+                    ...params,
+                    include: {
+                        images: null,
+                        translation: null,
+                        city: {
+                            include: {
+                                translation: null,
+                                state: {
+                                    include: {
+                                        translation: null,
+                                        country: {
+                                            include: {
+                                                translation: null,
+                                            }
+                                        },
+                                    }
+                                },
+                            }
+                        },
+                        ...params.include,
+                    }
+                })
+            }
+        })));
     }
 
     static async list(params) {
         let sightList = await axios.get(API_ADMIN_SIGHT_LIST, {
             params,
             paramsSerializer: params => {
-                return QueryString.stringify(params)
+                return QueryString.stringify({
+                    ...params,
+                    include: {
+                        images: null,
+                        translation: null,
+                        city: {
+                            include: {
+                                translation: null,
+                                state: {
+                                    include: {
+                                        translation: null,
+                                        country: {
+                                            include: {
+                                                translation: null,
+                                            }
+                                        },
+                                    }
+                                },
+                            }
+                        },
+                        ...params.include,
+                    }
+                })
             }
         });
 
@@ -74,8 +124,21 @@ export default class SightService {
         return await axios.put(API_MAKE_ADMIN_SIGHT_NEED_REVIEW(sightId), data);
     }
 
-    static async getCitiesBySight(sightId) {
-        return await axios.get(API_MAKE_ADMIN_SIGHT_GET_CITIES(sightId));
+    static async getCitiesBySight(sightId, params = {}) {
+        const cities = await axios.get(API_MAKE_ADMIN_SIGHT_GET_CITIES(sightId), {
+            params,
+            paramsSerializer: params => {
+                return QueryString.stringify({
+                    ...params,
+                    include: {
+                        translation: null,
+                        ...params.include,
+                    }
+                })
+            }
+        })
+
+        return cities.data.map(city => new CityModel(city));
     }
 }
 

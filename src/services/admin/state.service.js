@@ -28,7 +28,18 @@ export default class StateService {
         let stateList = await axios.get(API_ADMIN_STATE_LIST, {
             params,
             paramsSerializer: params => {
-                return QueryString.stringify(params)
+                return QueryString.stringify({
+                    ...params,
+                    include: {
+                        translation: null,
+                        country: {
+                            include: {
+                                translation: null,
+                            }
+                        },
+                        ...params.include,
+                    }
+                })
             }
         });
 
@@ -37,8 +48,24 @@ export default class StateService {
         return stateList;
     }
 
-    static async show(stateId) {
-        return new StateModel(await axios.get(API_MAKE_ADMIN_STATE_SHOW(stateId)));
+    static async show(stateId, params = {}) {
+        return new StateModel(await axios.get(API_MAKE_ADMIN_STATE_SHOW(stateId, {
+            params,
+            paramsSerializer: params => {
+                return QueryString.stringify({
+                    ...params,
+                    include: {
+                        translation: null,
+                        country: {
+                            include: {
+                                translation: null,
+                            }
+                        },
+                        ...params.include,
+                    }
+                })
+            }
+        })));
     }
 
     static async create(data) {

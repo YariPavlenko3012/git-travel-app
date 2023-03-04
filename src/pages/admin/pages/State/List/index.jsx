@@ -13,7 +13,7 @@ export default function StateList({ countryId }) {
           <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
               State
           </h3>
-          <StateTable searchParams={{ country_id: countryId}}/>
+          <StateTable searchParams={{relation: {country: {eq: {id: [countryId]}}}}}/>
       </div>
     )
 }

@@ -86,10 +86,24 @@ export default function ExcursionsPage({pageType, handler}) {
     }
     const getPlaces = async (countryId, cityId) => {
         setPlaces(await DictionaryService.sights({
-            eq: {
-                country_id: [countryId]
-            },
-            city_id: cityId
+            relation: {
+                city: {
+                    eq: {
+                        id: [cityId]
+                    },
+                    relation: {
+                        state: {
+                            relation: {
+                                country: {
+                                    eq: {
+                                        id: [countryId]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }))
     }
     const getCity = async (cityId) => {
@@ -266,14 +280,14 @@ export default function ExcursionsPage({pageType, handler}) {
         const requestExcursionFormData = JSON.parse(JSON.stringify(excursionFormData))
 
         const time = ExcursionUtils.time(requestExcursionFormData.items, ExcursionRouteTypeEnum.walking)
-        const placeCount = ExcursionUtils.placeCount(requestExcursionFormData.items)
-        const daysCount = ExcursionUtils.daysCount(requestExcursionFormData.items)
+        const count_of_places = ExcursionUtils.placeCount(requestExcursionFormData.items)
+        const count_of_days = ExcursionUtils.daysCount(requestExcursionFormData.items)
         const images = ExcursionUtils.images(requestExcursionFormData.items)
 
         console.log({
             time,
-            placeCount,
-            daysCount,
+            count_of_places,
+            count_of_days,
             images,
         })
 

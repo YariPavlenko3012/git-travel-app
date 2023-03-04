@@ -31,7 +31,20 @@ export default class ExcursionService {
         let excursionList = await axios.get(ADMIN_EXCURSION_LIST, {
             params,
             paramsSerializer: params => {
-                return QueryString.stringify(params)
+                return QueryString.stringify({
+                    ...params,
+                    include: {
+                        items: {
+                            include: {
+                                routes: null,
+                                place:  {
+                                    translation: null
+                                },
+                            }
+                        },
+                        translation: null
+                    }
+                })
             }
         });
 
@@ -40,8 +53,26 @@ export default class ExcursionService {
         return excursionList;
     }
 
-    static async show(excursionId) {
-        return new ExcursionModel(await axios.get(ADMIN_MAKE_EXCURSION_SHOW(excursionId)));
+    static async show(excursionId, params ={}) {
+        return new ExcursionModel(await axios.get(ADMIN_MAKE_EXCURSION_SHOW(excursionId)), {
+            params,
+            paramsSerializer: params => {
+                return QueryString.stringify({
+                    ...params,
+                    include: {
+                        items: {
+                            include: {
+                                routes: null,
+                                place: {
+                                    translation: null
+                                },
+                            }
+                        },
+                        translation: null
+                    }
+                })
+            }
+        });
     }
 
     static async delete(excursionId) {

@@ -74,37 +74,6 @@ export default function StateShow() {
                   </p>
               </div>
           </div>
-          <Tabs type="card">
-              <Tabs.TabPane tab="City" key="1">
-                  <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
-                      City of {state.name}
-                      <Link to={ADMIN_MAKE_CREATE_CITY_URI(stateId)}>
-                          <Button type="primary" className={styles.show__btn}>
-                              Create City
-                          </Button>
-                      </Link>
-                  </h3>
-                  <Tabs type="card">
-                      {dictionary.work_statuses.city.map(({label, value}) => (
-                          <Tabs.TabPane tab={label} key={value}>
-                              <CitiesTable searchParams={{state_id: stateId, work_status: value}}/>
-                          </Tabs.TabPane>
-                      ))}
-                  </Tabs>
-              </Tabs.TabPane>
-              <Tabs.TabPane tab="Sight" key="2">
-                  <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
-                      Sights of {state.name}
-                  </h3>
-                  <Tabs type="card">
-                      {dictionary.work_statuses.sight.map(({label, value}) => (
-                          <Tabs.TabPane tab={label} key={value}>
-                              <SightsTable searchParams={{state_id: stateId, eq: {work_status: [value]}}}/>
-                          </Tabs.TabPane>
-                      ))}
-                  </Tabs>
-              </Tabs.TabPane>
-          </Tabs>
       </div>
     )
 }
