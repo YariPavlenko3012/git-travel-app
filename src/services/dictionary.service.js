@@ -37,10 +37,7 @@ export default class DictionaryService {
             paramsSerializer: params => {
                 return QueryString.stringify({
                     ...params,
-                    include: {
-                        translation: null,
-                        ...params.include,
-                    }
+                    include: ['translation']
                 })
             }
         });
@@ -56,10 +53,7 @@ export default class DictionaryService {
             paramsSerializer: params => {
                 return QueryString.stringify({
                     ...params,
-                    include: {
-                        translation: null,
-                        ...params.include
-                    }
+                    include: ['translation']
                 })
             }
         });
@@ -87,10 +81,7 @@ export default class DictionaryService {
             paramsSerializer: params => {
                 return QueryString.stringify({
                     ...params,
-                    include: {
-                        translation: null,
-                        ...params.include,
-                    }
+                    include: ['translation']
                 })
             }
         });

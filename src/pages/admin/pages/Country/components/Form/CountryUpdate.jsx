@@ -108,17 +108,7 @@ export default function UpdateCountryForm({countryId, getCountry, country}) {
                                              label={"Capital"}
                                              required={true}
                                              searchParams={{
-                                                 relation: {
-                                                     state: {
-                                                         relation: {
-                                                             country: {
-                                                                 eq: {
-                                                                     id: [countryId]
-                                                                 }
-                                                             }
-                                                         }
-                                                     }
-                                                 }
+                                                 country_id: countryId
                                              }}
                                              select={{
                                                  showSearch: true,

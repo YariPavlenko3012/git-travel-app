@@ -2,6 +2,7 @@
  *service
  */
 import axios from 'axios'
+import merge from 'deepmerge'
 /**
  * const
  */
@@ -15,7 +16,7 @@ import {
     API_ADMIN_COUNTRY_LIST
 } from "../../constants/admin/api.constant";
 import {QueryString} from "../../utils/Querystring";
-import ExcursionModel from "../../model/excursion.model";
+import ExcursionModel from "../../model/Excursion/excursion.model";
 import CountryModel from "../../model/Country/country.model";
 
 
@@ -31,20 +32,12 @@ export default class ExcursionService {
         let excursionList = await axios.get(ADMIN_EXCURSION_LIST, {
             params,
             paramsSerializer: params => {
-                return QueryString.stringify({
-                    ...params,
-                    include: {
-                        items: {
-                            include: {
-                                routes: null,
-                                place:  {
-                                    translation: null
-                                },
-                            }
-                        },
-                        translation: null
+                return QueryString.stringify(merge.all([
+                    params,
+                    {
+                        include: ['translation', 'items.routes', 'items.place'],
                     }
-                })
+                ]))
             }
         });
 
@@ -53,26 +46,18 @@ export default class ExcursionService {
         return excursionList;
     }
 
-    static async show(excursionId, params ={}) {
-        return new ExcursionModel(await axios.get(ADMIN_MAKE_EXCURSION_SHOW(excursionId)), {
+    static async show(excursionId, params = {}) {
+        return new ExcursionModel(await axios.get(ADMIN_MAKE_EXCURSION_SHOW(excursionId), {
             params,
             paramsSerializer: params => {
-                return QueryString.stringify({
-                    ...params,
-                    include: {
-                        items: {
-                            include: {
-                                routes: null,
-                                place: {
-                                    translation: null
-                                },
-                            }
-                        },
-                        translation: null
+                return QueryString.stringify(merge.all([
+                    params,
+                    {
+                        include: ['translation', 'items.routes', 'items.place'],
                     }
-                })
+                ]))
             }
-        });
+        }));
     }
 
     static async delete(excursionId) {

@@ -2,6 +2,7 @@
  *service
  */
 import axios from 'axios'
+import merge from 'deepmerge'
 /**
  * const
  */
@@ -28,18 +29,12 @@ export default class StateService {
         let stateList = await axios.get(API_ADMIN_STATE_LIST, {
             params,
             paramsSerializer: params => {
-                return QueryString.stringify({
-                    ...params,
-                    include: {
-                        translation: null,
-                        country: {
-                            include: {
-                                translation: null,
-                            }
-                        },
-                        ...params.include,
+                return QueryString.stringify(merge.all([
+                    params,
+                    {
+                        include: ["translation", "translations.language", "country.translations"],
                     }
-                })
+                ]))
             }
         });
 
@@ -52,18 +47,12 @@ export default class StateService {
         return new StateModel(await axios.get(API_MAKE_ADMIN_STATE_SHOW(stateId, {
             params,
             paramsSerializer: params => {
-                return QueryString.stringify({
-                    ...params,
-                    include: {
-                        translation: null,
-                        country: {
-                            include: {
-                                translation: null,
-                            }
-                        },
-                        ...params.include,
+                return QueryString.stringify(merge.all([
+                    params,
+                    {
+                        include: ["translation", "translations.language", "country.translations"],
                     }
-                })
+                ]))
             }
         })));
     }

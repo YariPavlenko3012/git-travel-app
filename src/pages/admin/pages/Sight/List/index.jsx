@@ -22,7 +22,7 @@ export default function SightList() {
               <Tabs type="card">
                   {dictionary.work_statuses.sight.map(({value, label}) => (
                       <Tabs.TabPane tab={label} key={value}>
-                          <SightsTable searchParams={{eq: {work_status: [value]}}}/>
+                          <SightsTable searchParams={{work_status: value}}/>
                       </Tabs.TabPane>
                   ))}
               </Tabs>

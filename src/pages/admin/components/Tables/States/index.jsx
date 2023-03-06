@@ -31,7 +31,8 @@ export default function StatesTable({searchParams}) {
             dataIndex: 'name',
             key: 'name',
             render: (_, state) => {
-                return <Link to={ADMIN_MAKE_SHOW_STATE_URI(state.id)} style={{color: state.name ? "#0d6efd" : "red"}}>{state.name || "No name"}</Link>
+                return <Link to={ADMIN_MAKE_SHOW_STATE_URI(state.id)}
+                             style={{color: state.name ? "#0d6efd" : "red"}}>{state.name || "No name"}</Link>
             }
         },
         {
@@ -39,7 +40,8 @@ export default function StatesTable({searchParams}) {
             dataIndex: 'country',
             key: 'country',
             render: (_, state) => {
-                return <Link to={ADMIN_MAKE_SHOW_COUNTRY_URI(state.country.id)} style={{color: state.country.name ? "#0d6efd" : "red"}}>{state.country.name || "No name"}</Link>
+                return <Link to={ADMIN_MAKE_SHOW_COUNTRY_URI(state.country.id)}
+                             style={{color: state.country.name ? "#0d6efd" : "red"}}>{state.country.name || "No name"}</Link>
             }
         },
         {
@@ -47,16 +49,16 @@ export default function StatesTable({searchParams}) {
             dataIndex: 'action',
             key: 'action',
             render: (_, row) => (
-              <Space size={10}>
-                  <Tooltip title="View state">
-                      <Button type="primary" onClick={() => history.push(ADMIN_MAKE_SHOW_STATE_URI(row.id))}
-                              icon={<EyeOutlined/>} size={20}/>
-                  </Tooltip>
-                  <Tooltip title="Edit state">
-                      <Button type="primary" onClick={() => history.push(ADMIN_MAKE_EDIT_STATE_URI(row.id))}
-                              icon={<EditOutlined/>} size={20}/>
-                  </Tooltip>
-              </Space>
+                <Space size={10}>
+                    <Tooltip title="View state">
+                        <Button type="primary" onClick={() => history.push(ADMIN_MAKE_SHOW_STATE_URI(row.id))}
+                                icon={<EyeOutlined/>} size={20}/>
+                    </Tooltip>
+                    <Tooltip title="Edit state">
+                        <Button type="primary" onClick={() => history.push(ADMIN_MAKE_EDIT_STATE_URI(row.id))}
+                                icon={<EditOutlined/>} size={20}/>
+                    </Tooltip>
+                </Space>
             )
         },
     ]), []);
@@ -67,11 +69,11 @@ export default function StatesTable({searchParams}) {
 
     const getStateHandler = async (params = {}) => {
         setIsReady(false)
-        await getState(merge.all([
-            QueryString.parseQueryString("?" + (window.location.hash.split("?")[1] || "")),
-            searchParams,
-            params
-        ]))
+        await getState({
+            ...QueryString.parseQueryString("?" + (window.location.hash.split("?")[1] || "")),
+            ...searchParams,
+            ...params
+        })
         setIsReady(true)
     }
 
@@ -79,15 +81,15 @@ export default function StatesTable({searchParams}) {
         getStateHandler()
     }, [])
 
-    if(!states){
+    if (!states) {
         return <div>Loading...</div>
     }
 
     return (
-      <Table data={states}
-             columns={columns}
-             fetchingData={getState}
-             loader={!isReady}
-      />
+        <Table data={states}
+               columns={columns}
+               fetchingData={getStateHandler}
+               loader={!isReady}
+        />
     )
 }

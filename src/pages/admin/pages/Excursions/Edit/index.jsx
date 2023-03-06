@@ -26,15 +26,7 @@ export default function ExcursionsEdit() {
     const {setAlertSuccess} = useContext(AlertContext)
 
     const updateExcursion = async (excursionFormData) => {
-        const requestExcursionFormData = JSON.parse(JSON.stringify(excursionFormData))
-
-        requestExcursionFormData.items = excursionFormData.items.reduce((itemResult, day) => ([
-            ...itemResult,
-            ...day,
-        ]), [])
-
-
-        await ExcursionService.update(excursionId, requestExcursionFormData)
+        await ExcursionService.update(excursionId, excursionFormData)
         setAlertSuccess("Excursion successfully edited")
     }
 
@@ -42,3 +34,4 @@ export default function ExcursionsEdit() {
         <ExcursionPage pageType={ExcursionPageTypeEnum.edit} handler={updateExcursion}/>
     )
 }
+

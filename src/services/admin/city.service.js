@@ -2,6 +2,7 @@
  *service
  */
 import axios from 'axios'
+import merge from 'deepmerge'
 /**
  * const
  */
@@ -30,25 +31,12 @@ export default class CityService {
         let cityList = await axios.get(API_ADMIN_CITY_LIST, {
             params,
             paramsSerializer: params => {
-                return QueryString.stringify({
-                    ...params,
-                    include: {
-                        translation: null,
-                        portraitImage: null,
-                        landscapeImage: null,
-                        state: {
-                            include: {
-                                translation: null,
-                            }
-                        },
-                        country: {
-                            include: {
-                                translation: null,
-                            }
-                        },
-                        ...params.include
+                return QueryString.stringify(merge.all([
+                    params,
+                    {
+                        include: ["translation", "translations.language", "portraitImage", "landscapeImage", "state", "state.translation", "country", "country.translation"]
                     }
-                })
+                ]))
             }
         });
 
@@ -58,28 +46,17 @@ export default class CityService {
     }
 
     static async show(cityId, params = {}) {
-        return new CityModel(await axios.get(API_MAKE_ADMIN_CITY_SHOW(cityId, {
+        return new CityModel(await axios.get(API_MAKE_ADMIN_CITY_SHOW(cityId), {
             params,
             paramsSerializer: params => {
-                return QueryString.stringify({
-                    ...params,
-                    include: {
-                        translation: null,
-                        state: {
-                            include: {
-                                translation: null,
-                            }
-                        },
-                        country: {
-                            include: {
-                                translation: null,
-                            }
-                        },
-                        ...params.include
+                return QueryString.stringify(merge.all([
+                    params,
+                    {
+                        include: ["translation", "translations.language", "portraitImage", "landscapeImage", "state", "state.translation", "country", "country.translation"]
                     }
-                })
+                ]))
             }
-        })));
+        }));
     }
 
     static async create(data) {

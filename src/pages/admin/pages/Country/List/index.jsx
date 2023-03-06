@@ -17,6 +17,7 @@ import {ADMIN_CREATE_COUNTRY_URI, ADMIN_MAKE_SHOW_COUNTRY_URI} from "../../../..
  */
 import styles from "../../../styles/show.module.scss";
 
+
 export default function CountryList({history}) {
     return (
         <div>
@@ -30,10 +31,10 @@ export default function CountryList({history}) {
             </h3>
             <Tabs type="card">
                 <Tabs.TabPane tab="Completed" key="1">
-                    <CountryTable searchParams={{notNull: ["capital_id"]}}/>
+                    <CountryTable searchParams={{capital: 1}}/>
                 </Tabs.TabPane>
                 <Tabs.TabPane tab="Without capital" key="2">
-                    <CountryTable searchParams={{isNull: ["capital_id"]}}/>
+                    <CountryTable searchParams={{capital: 0}}/>
                 </Tabs.TabPane>
             </Tabs>
         </div>

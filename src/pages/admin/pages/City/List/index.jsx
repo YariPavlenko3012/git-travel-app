@@ -21,7 +21,7 @@ export default function CityList() {
             <Tabs type="card">
                 {dictionary.work_statuses.city.map(({label, value}) => (
                     <Tabs.TabPane tab={label} key={value}>
-                        <CitiesTable searchParams={{eq: {work_status: [value]}}}/>
+                        <CitiesTable searchParams={{work_status: value}}/>
                     </Tabs.TabPane>
                 ))}
             </Tabs>

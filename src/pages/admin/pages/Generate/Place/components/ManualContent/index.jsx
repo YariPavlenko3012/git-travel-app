@@ -40,7 +40,7 @@ export default function ManualContent({generatePlacesByCity, generationFinishCit
 
     const getCityList = async () => {
         const {data} = await GenerationPlaceService.cityWhiteList({
-            country_id: countryId,
+            countryId: countryId,
             type: GenerationTypeEnums.manual,
             per_page: 1000000
         })

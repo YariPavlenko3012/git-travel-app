@@ -27,7 +27,7 @@ export default function AutomaticContent({ generatePlacesByCity, typeColor, coun
 
     const startAutomaticGenerate = async () => {
         const {data} = await GenerationPlaceService.cityWhiteList({
-            country_id: countryId,
+            countryId: countryId,
             type: GenerationTypeEnums.automatic,
             per_page: 1000000
         })

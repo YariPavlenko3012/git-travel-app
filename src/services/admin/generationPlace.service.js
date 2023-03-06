@@ -38,33 +38,15 @@ export default class GenerationPlaceService {
         })
     }
 
-    static async cityWhiteList({country_id, type, ...params}) {
+    static async cityWhiteList({countryId, type, ...params}) {
         let cityList =  await axios.get(API_ADMIN_CITY_LIST, {
             params,
             paramsSerializer: params => {
                 return QueryString.stringify({
                     ...params,
-                    relation: {
-                        state: {
-                            relation: {
-                                country: {
-                                    eq: {
-                                        id: [country_id]
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    noRelation: {
-                        generatedTypes: {
-                            eq: {
-                                generation_type: [type]
-                            }
-                        }
-                    },
-                    include: {
-                        translation: null
-                    },
+                    type: type,
+                    country_id: countryId,
+                    include: ['translation'],
                 })
             }
         })

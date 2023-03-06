@@ -55,7 +55,7 @@ export default function CountryShow() {
     };
 
     const deleteAllSights = async () => {
-        const {data} = await SightService.list({relation: {city: {relation: { state: { relation: { country: {eq: {id: [countryId]}}}}}}}, per_page: 500})
+        const {data} = await SightService.list({country_id: countryId, per_page: 500})
 
         for (let i = 0; i < data.length; i++) {
             const sight = data[i];
@@ -96,11 +96,11 @@ export default function CountryShow() {
                     {/*        Generate City*/}
                     {/*    </Button>*/}
                     {/*</Link>*/}
-                    <UserCan checkRole={RolesEnum.super_admin}>
-                        <Button type="primary" className={styles.show__btn} onClick={deleteAllSights}>
-                            Delete All Sight
-                        </Button>
-                    </UserCan>
+                    {/*<UserCan checkRole={RolesEnum.super_admin}>*/}
+                    {/*    <Button type="primary" className={styles.show__btn} onClick={deleteAllSights}>*/}
+                    {/*        Delete All Sight*/}
+                    {/*    </Button>*/}
+                    {/*</UserCan>*/}
                     <UserCan checkRole={RolesEnum.super_admin}>
                         <Link to={ADMIN_MAKE_GENERATE_PLACE_URI(countryId)}>
                             <Button type="primary" className={styles.show__btn}>
@@ -243,7 +243,7 @@ export default function CountryShow() {
                             </Button>
                         </Link>
                     </h3>
-                    <StatesTable searchParams={{relation: {country: {eq: {id: [countryId]}}}}}/>
+                    <StatesTable searchParams={{country_id: countryId}}/>
                 </Tabs.TabPane>
                 <Tabs.TabPane tab="City" key="2">
                     <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
@@ -252,7 +252,7 @@ export default function CountryShow() {
                     <Tabs type="card">
                         {dictionary.work_statuses.city.map(({label, value}) => (
                             <Tabs.TabPane tab={label} key={value}>
-                                <CitiesTable searchParams={{eq: {work_status: [value]}, relation: {state: {relation: {country: {eq: {id: [countryId]}}}}}}}/>
+                                <CitiesTable searchParams={{work_status: value, country_id: countryId}}/>
                             </Tabs.TabPane>
                         ))}
                     </Tabs>
@@ -264,7 +264,7 @@ export default function CountryShow() {
                     <Tabs type="card">
                         {dictionary.work_statuses.sight.map(({label, value}) => (
                             <Tabs.TabPane tab={label} key={value}>
-                                <SightsTable searchParams={{eq: {work_status: [value]}, relation: {city: {relation: {state: {relation: {country: {eq: {id: [countryId]}}}}}}}}}/>
+                                <SightsTable searchParams={{work_status: value, country_id: countryId}}/>
                             </Tabs.TabPane>
                         ))}
                     </Tabs>

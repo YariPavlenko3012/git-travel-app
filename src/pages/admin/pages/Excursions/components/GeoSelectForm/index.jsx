@@ -12,17 +12,8 @@ import FormUI from "../../../../../../components/Form";
 
 export default function GeoSelectForm({countryId, cityId, getCountry, getCity }) {
     const citySearchParams = useMemo(() => ({
-        relation: {
-            state: {
-                relation: {
-                    country: {
-                        eq: {
-                            id: [countryId]
-                        }
-                    }
-                }
-            }
-        }
+        country_id: countryId,
+        per_page: 100000
 
     }), [countryId])
 

@@ -7,13 +7,13 @@ import React from 'react';
  */
 import StateTable from "../../../components/Tables/States";
 
-export default function StateList({ countryId }) {
+export default function StateList( ) {
     return (
       <div>
           <h3 style={{marginBottom: 20, display: "flex", justifyContent: "space-between"}}>
               State
           </h3>
-          <StateTable searchParams={{relation: {country: {eq: {id: [countryId]}}}}}/>
+          <StateTable/>
       </div>
     )
 }

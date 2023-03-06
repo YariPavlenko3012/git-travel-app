@@ -86,24 +86,8 @@ export default function ExcursionsPage({pageType, handler}) {
     }
     const getPlaces = async (countryId, cityId) => {
         setPlaces(await DictionaryService.sights({
-            relation: {
-                city: {
-                    eq: {
-                        id: [cityId]
-                    },
-                    relation: {
-                        state: {
-                            relation: {
-                                country: {
-                                    eq: {
-                                        id: [countryId]
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            city_id: cityId,
+            country_id: countryId
         }))
     }
     const getCity = async (cityId) => {
@@ -277,26 +261,11 @@ export default function ExcursionsPage({pageType, handler}) {
     }
 
     const handlerAction = async () => {
-        const requestExcursionFormData = JSON.parse(JSON.stringify(excursionFormData))
+        let excursionData = JSON.parse(JSON.stringify(excursionFormData))
 
-        const time = ExcursionUtils.time(requestExcursionFormData.items, ExcursionRouteTypeEnum.walking)
-        const count_of_places = ExcursionUtils.placeCount(requestExcursionFormData.items)
-        const count_of_days = ExcursionUtils.daysCount(requestExcursionFormData.items)
-        const images = ExcursionUtils.images(requestExcursionFormData.items)
+        const requestExcursionFormData = ExcursionUtils.toBackendFormat(excursionData)
 
-        console.log({
-            time,
-            count_of_places,
-            count_of_days,
-            images,
-        })
-
-        requestExcursionFormData.items = requestExcursionFormData.items.reduce((itemResult, day) => ([
-            ...itemResult,
-            ...day,
-        ]), [])
-
-        // await handler(requestExcursionFormData)
+        await handler(requestExcursionFormData)
     }
 
     const init = async () => {

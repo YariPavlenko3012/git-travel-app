@@ -142,7 +142,7 @@ export default function CityShow() {
           <Tabs type="card">
               {dictionary.work_statuses.sight.map(({label, value}) => (
                   <Tabs.TabPane tab={label} key={value}>
-                      <SightsTable searchParams={{eq: {work_status: [value]}, relation: {city: {eq: {id: [cityId] }}} }}/>
+                      <SightsTable searchParams={{work_status: value, city_id: cityId}}/>
                   </Tabs.TabPane>
               ))}
           </Tabs>

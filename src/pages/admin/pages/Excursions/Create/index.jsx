@@ -24,15 +24,7 @@ export default function ExcursionsCreate() {
     const {setAlertSuccess} = useContext(AlertContext)
 
     const createExcursion = async (excursionFormData) => {
-        const requestExcursionFormData = JSON.parse(JSON.stringify(excursionFormData))
-
-        requestExcursionFormData.items = excursionFormData.items.reduce((itemResult, day) => ([
-            ...itemResult,
-            ...day,
-        ]), [])
-
-
-        await ExcursionService.create(requestExcursionFormData)
+        await ExcursionService.create(excursionFormData)
         setAlertSuccess("Excursion successfully created")
     }
 

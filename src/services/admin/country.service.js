@@ -2,6 +2,7 @@
  *service
  */
 import axios from 'axios'
+import merge from 'deepmerge'
 /**
  * const
  */
@@ -27,20 +28,12 @@ export default class CountryService {
         let countryList = await axios.get(API_ADMIN_COUNTRY_LIST, {
             params,
             paramsSerializer: params => {
-                return QueryString.stringify({
-                    ...params,
-                    include: {
-                        translation: null,
-                        officialLanguage: null,
-                        currency: null,
-                        capital: {
-                            include: {
-                                translation: null,
-                            }
-                        },
-                        ...params.include,
+                return QueryString.stringify(merge.all([
+                    params,
+                    {
+                        include: ["translation", "translations.language", "officialLanguage", "currency", "capital", "capital.translation"]
                     }
-                })
+                ]))
             }
         });
 
@@ -53,20 +46,12 @@ export default class CountryService {
         return new CountryModel(await axios.get(API_MAKE_ADMIN_COUNTRY_SHOW(countryId), {
             params,
             paramsSerializer: params => {
-                return QueryString.stringify({
-                    ...params,
-                    include: {
-                        translation: null,
-                        officialLanguage: null,
-                        currency: null,
-                        capital: {
-                            include: {
-                                translation: null,
-                            }
-                        },
-                        ...params.include,
+                return QueryString.stringify(merge.all([
+                    params,
+                    {
+                        include: ["translation", "translations.language", "officialLanguage", "currency", "capital", "capital.translation"]
                     }
-                })
+                ]))
             }
         }));
     }
