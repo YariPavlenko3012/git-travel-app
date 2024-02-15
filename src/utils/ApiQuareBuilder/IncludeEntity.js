@@ -4,9 +4,9 @@ class CountryIncludeEntity {
   static get translation() {return "translation"}
   static get translations() {return "translations"}
   static get currency() {return "currency"}
-  static get officialLanguage() {return "officialLanguage"}
-  static get portraitImage() {return "portraitImage"}
-  static get landscapeImage() {return "landscapeImage"}
+  static get officialLanguage() {return "officialLanguageRelation"}
+  static get portraitImage() {return "portraitImageRelation"}
+  static get landscapeImage() {return "landscapeImageRelation"}
 }
 class StateIncludeEntity {
   static get translation() {return "translation"}
@@ -15,8 +15,8 @@ class StateIncludeEntity {
 class CityIncludeEntity {
   static get translation() {return "translation"}
   static get translations() {return "translations"}
-  static get portraitImage() {return "portraitImage"}
-  static get landscapeImage() {return "landscapeImage"}
+  static get portraitImage() {return "portraitImageRelation"}
+  static get landscapeImage() {return "landscapeImageRelation"}
 }
 class SightIncludeEntity {
   static get translation() {return "translation"}

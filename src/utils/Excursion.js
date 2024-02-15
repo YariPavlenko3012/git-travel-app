@@ -90,6 +90,10 @@ export class ExcursionUtils {
 
         newExcursionDataFormat = {
             ...newExcursionDataFormat,
+            translation: {
+                name: newExcursionDataFormat.name,
+                description: newExcursionDataFormat.description,
+            },
             time: ExcursionUtils.time(newExcursionDataFormat.items, ExcursionRouteTypeEnum.walking),
             count_of_places: ExcursionUtils.placeCount(newExcursionDataFormat.items),
             count_of_days: ExcursionUtils.daysCount(newExcursionDataFormat.items),

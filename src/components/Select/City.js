@@ -22,8 +22,6 @@ export default function FieldSelectCity({label = "City", name, select, onChange,
         setCityOptions(data || Select.optionsByRow((await DictionaryService.cities(searchParams || {})).data, "id", "name"))
     };
 
-
-
     useEffect(() => {
         getCityOptions();
     }, [searchParams]);

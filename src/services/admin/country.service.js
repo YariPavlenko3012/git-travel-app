@@ -31,7 +31,7 @@ export default class CountryService {
                 return QueryString.stringify(merge.all([
                     params,
                     {
-                        include: ["translation", "translations.language", "officialLanguage", "currency", "capital", "capital.translation"]
+                        include: ["translation", "translations.language", "officialLanguageRelation", "currency", "capital", "capital.translation"]
                     }
                 ]))
             }
@@ -49,7 +49,7 @@ export default class CountryService {
                 return QueryString.stringify(merge.all([
                     params,
                     {
-                        include: ["translation", "translations.language", "officialLanguage", "currency", "capital", "capital.translation"]
+                        include: ["landscapeImageRelation", "portraitImageRelation", "translation", "translations.language", "officialLanguageRelation", "currency", "capital", "capital.translation", ]
                     }
                 ]))
             }

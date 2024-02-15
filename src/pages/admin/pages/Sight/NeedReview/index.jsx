@@ -48,6 +48,8 @@ export default function NeedReview(){
             dataIndex: 'city',
             key: 'city',
             render: (_, sight) => {
+                console.log(sight, "sight")
+                console.log(currentSight, "currentSight")
                 if(sight.id !== currentSight?.id){
                     return <div>{sight.city.name}</div>
                 }
@@ -140,7 +142,7 @@ export default function NeedReview(){
 
     const getSightWithNeedReview = async (params) => {
         setIsReady(false)
-        setSights(await SightService.list({ ...params, per_page: 5, eq: {need_review: [1]}}))
+        setSights(await SightService.list({ ...params, per_page: 5, need_review: 1}))
         setIsReady(true)
     }
 

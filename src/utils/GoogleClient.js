@@ -163,6 +163,8 @@ export default class GoogleClient {
     }
 
     static getRectangle( map, bounds, color = "blue", props = {} ){
+        console.log('HERE 9')
+
         return new window.google.maps.Rectangle({
             strokeColor: color,
             strokeOpacity: 0.8,

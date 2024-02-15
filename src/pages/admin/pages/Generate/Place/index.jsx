@@ -55,10 +55,11 @@ export default function GeneratePlace() {
 
     const generatePlacesByCity = async (city, placeTypes = [], limit) => {
         setLoading(true)
+        console.log('HERE 2')
         if (!city.geometry || !placeTypes.length) {
             return {failed: false};
         }
-
+        console.log('HERE 3')
         let currentI = 1;
         let currentJ = 1;
 
@@ -76,6 +77,7 @@ export default function GeneratePlace() {
                 //Делим этот квадрат (сити геометрию) на колл-во шагов
                 const stepHorizontal = placeWidthCoordinate / countStep;
                 const stepVertical = placeHeightCoordinate / countStep;
+                console.log('HERE 4')
 
                 currentI = 1;
                 for (currentI; currentI <= countStep; currentI++) {
@@ -99,12 +101,15 @@ export default function GeneratePlace() {
                             }
                         )
 
+                        console.log('HERE 5')
+
                         if (failed) {
                             return {failed: true}
                         }
                     }
                 }
             }
+            console.log('HERE 6')
 
             if (squareRef.current) {
                 squareRef.current.setMap(null)
@@ -133,6 +138,8 @@ export default function GeneratePlace() {
     const getRectangle = async ({geometry, city, type, limit, countStep}) => {
         try {
             //Получение геометрии квадрата, его отрисовка на UI
+            console.log('HERE 7')
+
             const {north, south, east, west} = geometry;
             const bounds = GoogleClient.getBounds(north, south, east, west)
 
@@ -144,6 +151,8 @@ export default function GeneratePlace() {
                 mapRef.current,
                 GoogleClient.parseBounds(bounds)
             );
+
+            console.log('HERE 8')
 
             //После получения и отрисовски всех данных идем получать плейсы
             return await getPlaces(bounds, city, type, limit)
@@ -159,8 +168,12 @@ export default function GeneratePlace() {
     const getPlaces = async (bounds, city, foursquareType, limit) => {
         let lastType = null;
 
+        console.log('10')
+
         const forLoop = async () => {
             lastType = foursquareType
+            console.log('11')
+
             const type = Object.keys(FoursquarePlaceTypeEnum.typeOriginIds).reduce((accum, type) => {
                 const foursquareIdsForType = FoursquarePlaceTypeEnum.typeOriginIds[type]
                 if (foursquareIdsForType.includes(foursquareType)) {
@@ -170,18 +183,25 @@ export default function GeneratePlace() {
                 return accum
             }, null)
 
+            console.log('12')
+
             const geometry = GoogleClient.parseBounds(bounds)
+            console.log('13')
 
             const isGenerate = await GenerationPlaceService.generatedSquare({
                 json: {geometry},
                 eq: {type: [foursquareType]}
             })
+            console.log('14')
 
             if (isGenerate.data.length) {
                 return {failed: false};
             }
+            console.log('15')
 
             await new Promise(async (resolve, reject) => {
+                console.log('16')
+
                 let placesToDB = []
                 const places = await FoursquareClient.getPlaces({
                     categories: foursquareType,
@@ -189,6 +209,7 @@ export default function GeneratePlace() {
                     sw: `${geometry.south},${geometry.west}`,
                     limit: limit
                 })
+                console.log('17')
 
 
                 if (!places.length) {
@@ -199,6 +220,7 @@ export default function GeneratePlace() {
                     });
                     resolve()
                 }
+                console.log('18')
 
                 for (let i = 0; i < places.length; i++) {
                     try {
@@ -218,6 +240,7 @@ export default function GeneratePlace() {
                             latitude: place.geocodes.main.latitude,
                             longitude: place.geocodes.main.longitude,
                         }
+                        console.log('19')
 
                         await new Promise(resolve => setTimeout(resolve, 200))
 
@@ -230,6 +253,7 @@ export default function GeneratePlace() {
                             placeToBd.international_phone_number = placeDetails?.tel || null;
                             placeToBd.opening_hours = placeDetails?.opening_hours || null;
                         }
+                        console.log('20')
 
                         GoogleClient.getMarker(
                             mapRef.current,
@@ -245,6 +269,7 @@ export default function GeneratePlace() {
                 }
 
                 await SightService.createBatch({sights: placesToDB.filter(place => place.files_ids.length)})
+                console.log('21')
 
                 await GenerationPlaceService.create({
                     country_id: countryId,
@@ -287,6 +312,8 @@ export default function GeneratePlace() {
     }, [])
 
     useEffect(() => {
+        console.log(generationType, "generationType")
+        console.log(country?.geometry, "country?.geometry")
         if (!generationType || !country?.geometry) {
             return;
         }
@@ -300,7 +327,6 @@ export default function GeneratePlace() {
             <div style={{display: "flex", gap: 50}}>
                 <div ref={mapBlockRef} style={{width: "70%", height: 500}}/>
                 <div style={{width: "30%"}}>
-
                     <RadioGenerationType generationType={generationType}
                                          setGenerationType={setGenerationType}/>
                     <div style={{paddingTop: 20}}>

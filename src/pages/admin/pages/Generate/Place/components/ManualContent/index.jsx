@@ -57,6 +57,8 @@ export default function ManualContent({generatePlacesByCity, generationFinishCit
             return;
         }
 
+        console.log('HERE 1')
+
         const {failed} = await generatePlacesByCity(city, [type], countOfLimitSearch)
 
         setLoading(false)

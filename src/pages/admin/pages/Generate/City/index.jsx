@@ -25,7 +25,7 @@ export default function GenerateCity() {
             return;
         }
 
-        const isDemo = false;
+        const isDemo = true;
         const url = isDemo ? "http://geodb-free-service.wirefreethought.com" : "https://wft-geo-db.p.rapidapi.com"
         const LIMIT_RATE = isDemo ? 10 : 100;
 
@@ -145,7 +145,8 @@ export default function GenerateCity() {
     const createCity = async () => {
         const {id: stateId} = await StateService.create({
             country_id: countryId,
-            state_name: "TEST STATE FOR DELETE"
+            state_name: "TEST STATE FOR DELETE",
+            original_name: "TEST STATE FOR DELETE",
         })
 
         for (let i = 0; i < cities.length; i++) {
@@ -155,17 +156,20 @@ export default function GenerateCity() {
                 state_id: stateId,
                 city_name: city.name,
                 original_name: city.name,
+                translatable: {
+                  name: city.name,
+                },
                 generation_count_of_squares: 2,
             }
 
             await new Promise(resolve => setTimeout(resolve, 400))
             if (city.geometry) {
                 cityRequest.geometry = city.geometry;
-                cityRequest.latitude = city.latitude;
-                cityRequest.longitude = city.longitude;
+                cityRequest.latitude = `${city.latitude}`;
+                cityRequest.longitude = `${city.longitude}`;
             }
 
-            const {id: cityId} = await CityService.create({city: cityRequest})
+            const {id: cityId} = await CityService.create(cityRequest)
 
             console.log(`ID: ${cityId}. City: ${city}; ID_STAT: ${56}`)
         }
@@ -179,7 +183,7 @@ export default function GenerateCity() {
                 </div>
             )}
             {!cities && (
-                <Button type="primary" onClick={() => generate("ES", 150000)}>
+                <Button type="primary" onClick={() => generate("NO", 100000)}>
                     Generate cities
                 </Button>
             )}

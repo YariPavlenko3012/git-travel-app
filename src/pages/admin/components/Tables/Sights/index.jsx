@@ -55,20 +55,20 @@ export default function SightTable({searchParams}) {
             dataIndex: 'id',
             key: 'id',
         },
-        {
-            title: 'Images',
-            dataIndex: 'images',
-            key: 'images',
-            render: (images, sight) => (
-                <div style={{display: "flex", alignItems: "center", flexDirection: "column", gap: 5, minWidth: "max-content"}}>
-                    <ImageGallery images={images}
-                                  renderItem={({file, setImage}) => (
-                                      <img src={file.path} loading="lazy" style={{height: 70, minWidth: "max-content"}} alt="photo" onClick={setImage}/>
-                                  )} />
-                </div>
-
-            ),
-        },
+        // {
+        //     title: 'Images',
+        //     dataIndex: 'images',
+        //     key: 'images',
+        //     render: (images, sight) => (
+        //         <div style={{display: "flex", alignItems: "center", flexDirection: "column", gap: 5, minWidth: "max-content"}}>
+        //             <ImageGallery images={images}
+        //                           renderItem={({file, setImage}) => (
+        //                               <img src={file.path} loading="lazy" style={{height: 70, minWidth: "max-content"}} alt="photo" onClick={setImage}/>
+        //                           )} />
+        //         </div>
+        //
+        //     ),
+        // },
         {
             title: 'Name',
             dataIndex: 'name',
@@ -244,6 +244,7 @@ export default function SightTable({searchParams}) {
     if(!sights){
         return <div>Loading...</div>
     }
+
 
     return (
         <Table data={sights}

@@ -34,7 +34,7 @@ export default class CityService {
                 return QueryString.stringify(merge.all([
                     params,
                     {
-                        include: ["translation", "translations.language", "portraitImage", "landscapeImage", "state", "state.translation", "country", "country.translation"]
+                        include: ["translation", "translations.language", "portraitImageRelation", "landscapeImageRelation", "state", "state.translation", "country", "country.translation"]
                     }
                 ]))
             }
@@ -52,7 +52,7 @@ export default class CityService {
                 return QueryString.stringify(merge.all([
                     params,
                     {
-                        include: ["translation", "translations.language", "portraitImage", "landscapeImage", "state", "state.translation", "country", "country.translation"]
+                        include: ["translation", "translations.language", "portraitImageRelation", "landscapeImageRelation", "state", "state.translation", "country", "country.translation"]
                     }
                 ]))
             }

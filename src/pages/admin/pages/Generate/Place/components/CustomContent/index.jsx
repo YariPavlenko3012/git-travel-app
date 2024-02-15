@@ -33,7 +33,7 @@ const typeColor = {
     [PlaceTypeEnum.restaurant]: "blue",
 }
 
-export default function AutomaticContent({ getRectangle, countryId, mapRef }){
+export default function AutomaticContent({getRectangle, countryId, mapRef}) {
     const {dictionary} = useContext(DictionaryContext)
     const [placeTypes, setPlaceTypes] = useState(null)
     const [geometry, setGeometry] = useState(null)
@@ -81,9 +81,9 @@ export default function AutomaticContent({ getRectangle, countryId, mapRef }){
         // })
     }
 
-    const  drawRec = () => {
-        const center =  mapRef.current.getCenter();
-        const maxHorizontalDif  = 0.4;
+    const drawRec = () => {
+        const center = mapRef.current.getCenter();
+        const maxHorizontalDif = 0.4;
         const maxVerticalDif = 0.6;
 
         const squareSize = {
@@ -113,7 +113,7 @@ export default function AutomaticContent({ getRectangle, countryId, mapRef }){
 
                 let newGeometry = GoogleClient.parseBounds(bounds)
 
-                if(geometry && geometry.north === newGeometry.north && geometry.east === newGeometry.east && geometry.west === newGeometry.west && geometry.south === newGeometry.south){
+                if (geometry && geometry.north === newGeometry.north && geometry.east === newGeometry.east && geometry.west === newGeometry.west && geometry.south === newGeometry.south) {
                     return;
                 }
 
@@ -123,14 +123,14 @@ export default function AutomaticContent({ getRectangle, countryId, mapRef }){
                 const errorDifHorizontal = maxHorizontalDif < difHorizontal;
                 const errorDifVertical = maxVerticalDif < difVertical;
 
-                if(errorDifHorizontal){
+                if (errorDifHorizontal) {
                     newGeometry = {
                         ...newGeometry,
                         north: centerHorizontalLat - maxHorizontalDif / 2,
                         south: centerHorizontalLat + maxHorizontalDif / 2,
                     }
                 }
-                if(errorDifVertical){
+                if (errorDifVertical) {
                     newGeometry = {
                         ...newGeometry,
                         west: centerVerticalLng - maxVerticalDif / 2,
@@ -138,34 +138,32 @@ export default function AutomaticContent({ getRectangle, countryId, mapRef }){
                     }
                 }
 
-                if(errorDifHorizontal || errorDifVertical){
+                if (errorDifHorizontal || errorDifVertical) {
                     setGeometry(newGeometry)
                     rectangle.current.setOptions({
                         bounds: newGeometry
                     })
                 }
-            },500);
+            }, 500);
         });
     }
 
-    const  close = () => {
+    const close = () => {
 
     }
 
     const drawSquareByPlaceType = async () => {
-        if(!placeTypes){
+        if (!placeTypes) {
             return;
         }
 
-        allGeneratedSquare.current.forEach(( square ) => {
+        allGeneratedSquare.current.forEach((square) => {
             square.setMap(null)
         })
 
         const {data} = await GenerationPlaceService.generatedSquare({
-            eq: {
-                country_id: [countryId],
-                type: [placeTypes]
-            },
+            country_id: countryId,
+            type: placeTypes,
             per_page: 1000000,
         });
 
@@ -179,13 +177,14 @@ export default function AutomaticContent({ getRectangle, countryId, mapRef }){
     }
 
     useEffect(() => {
-       drawSquareByPlaceType()
+        drawSquareByPlaceType()
     }, [placeTypes])
 
     return (
         <div>
             <div style={{display: "flex", gap: 10, alignItems: "center"}}>
-                <Button type="primary" onClick={generateSquareByGeometry} style={{width: "100%"}}>Custom generation</Button>
+                <Button type="primary" onClick={generateSquareByGeometry} style={{width: "100%"}}>Custom
+                    generation</Button>
                 <Button type="primary" onClick={drawRec} style={{width: "100%"}}>Draw</Button>
                 <Button type="primary" onClick={close} style={{width: "100%"}}>close</Button>
             </div>

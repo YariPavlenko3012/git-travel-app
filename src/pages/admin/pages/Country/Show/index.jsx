@@ -91,11 +91,11 @@ export default function CountryShow() {
                     {country.name}
                 </div>
                 <div style={{display: "flex", alignItems: "center", gap: 10}}>
-                    {/*<Link to={ADMIN_MAKE_GENERATE_CITY_URI(countryId)}>*/}
-                    {/*    <Button type="primary" className={styles.show__btn}>*/}
-                    {/*        Generate City*/}
-                    {/*    </Button>*/}
-                    {/*</Link>*/}
+                    <Link to={ADMIN_MAKE_GENERATE_CITY_URI(countryId)}>
+                        <Button type="primary" className={styles.show__btn}>
+                            Generate City
+                        </Button>
+                    </Link>
                     {/*<UserCan checkRole={RolesEnum.super_admin}>*/}
                     {/*    <Button type="primary" className={styles.show__btn} onClick={deleteAllSights}>*/}
                     {/*        Delete All Sight*/}

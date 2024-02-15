@@ -13,7 +13,7 @@ export default function CheckCoordinateList() {
       <div>
           <div style={{padding: '10px 0'}}>
               <h3 style={{marginBottom: 20}}>Check coordinate</h3>
-              <SightsTable searchParams={{eq: {check_coordinates: [0]}}}/>
+              <SightsTable searchParams={{check_coordinates: 0}}/>
           </div>
       </div>
     )

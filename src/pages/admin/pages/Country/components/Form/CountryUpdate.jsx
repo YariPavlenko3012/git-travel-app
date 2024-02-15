@@ -62,7 +62,7 @@ export default function UpdateCountryForm({countryId, getCountry, country}) {
               initialValues={{
                   currency_id: +country.currency?.id,
                   official_language: +country.official_language?.id,
-                  capital: +country.capital?.id,
+                  capital_id: +country.capital?.id,
                   population: country.population,
                   country_code_in_iso_3166_1_format: country.country_code_in_iso_3166_1_format,
                   ambulance_number: country.ambulance_number,
@@ -104,11 +104,12 @@ export default function UpdateCountryForm({countryId, getCountry, country}) {
                                                  }}/>
                         </div>
                         <div style={{width: "calc(100% / 4 - 10px)", marginRight: 10}}>
-                            <FieldSelectCity name="capital"
+                            <FieldSelectCity name="capital_id"
                                              label={"Capital"}
                                              required={true}
                                              searchParams={{
-                                                 country_id: countryId
+                                                 country_id: countryId,
+                                                 per_page: 10000
                                              }}
                                              select={{
                                                  showSearch: true,
